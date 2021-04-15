@@ -1,0 +1,189 @@
+package cdc.office.ss;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import cdc.util.lang.Checks;
+
+public class WorkbookWriterFeatures {
+    public static final WorkbookWriterFeatures DEFAULT = builder().build();
+    public static final WorkbookWriterFeatures STANDARD_BEST = builder().enable(Feature.AUTO_FILTER_COLUMNS)
+                                                                        .enable(Feature.AUTO_SIZE_COLUMNS)
+                                                                        .enable(Feature.TRUNCATE_CELLS)
+                                                                        .enable(Feature.CSV_SEPARATE_SHEETS)
+                                                                        .enable(Feature.CSV_WRITE_SHEET_NAMES)
+                                                                        .build();
+    public static final WorkbookWriterFeatures STANDARD_FAST = builder().enable(Feature.AUTO_FILTER_COLUMNS)
+                                                                        .enable(Feature.TRUNCATE_CELLS)
+                                                                        .enable(Feature.CSV_SEPARATE_SHEETS)
+                                                                        .enable(Feature.CSV_WRITE_SHEET_NAMES)
+                                                                        .build();
+
+    private final Set<Feature> features = new HashSet<>();
+
+    /** CSV separator. */
+    private final char separator;
+
+    /** CSV charset. */
+    private final String charset;
+    // TODO Locale
+
+    private final int maxLineLength;
+
+    private WorkbookWriterFeatures(Set<Feature> features,
+                                   char separator,
+                                   String charset,
+                                   int maxLineLength) {
+        this.features.addAll(features);
+        this.separator = separator;
+        this.charset = charset;
+        this.maxLineLength = maxLineLength;
+    }
+
+    /**
+     * Enumeration of possible features.
+     * <p>
+     * Some features can be used to configure a WorkbookWriter.<br>
+     * All features can be used to know if the WorkbookWriter supports it, whether it is enabled or not.
+     *
+     * @author Damien Carbonne
+     */
+    public enum Feature {
+        /**
+         * If enabled, thousands separator are added for numbers.
+         * <p>
+         * Configuration feature.
+         */
+        USE_THOUSANDS_SEPARATOR,
+
+        /**
+         * CSV: If enabled, writes each sheet name.
+         * <p>
+         * Configuration feature.
+         */
+        CSV_WRITE_SHEET_NAMES,
+
+        /**
+         * CSV: If enabled, separates sheets with one line.
+         * <p>
+         * Configuration feature.
+         */
+        CSV_SEPARATE_SHEETS,
+
+        /**
+         * If enabled, auto sizes columns width.
+         * <p>
+         * Configuration feature.<br>
+         * <b>WARNING:</b> This generally leads to much slower processing.
+         */
+        AUTO_SIZE_COLUMNS,
+
+        /**
+         * If enabled, adds filters to headers.
+         * <p>
+         * Configuration feature.<br>
+         */
+        AUTO_FILTER_COLUMNS,
+
+        /**
+         * If enabled, cells are truncated to remain in allowed limits.
+         * <p>
+         * Limit depends on workbook kind.
+         */
+        TRUNCATE_CELLS,
+
+        /**
+         * If enabled, each cell line is truncated to remain in allowed limits.
+         * <p>
+         * The line max length is set with {@link WorkbookWriterFeatures.Builder#maxLineLength(int)}.<br>
+         * Limit depends on workbook kind.
+         */
+        TRUNCATE_CELLS_LINES,
+
+        /**
+         * Support feature.
+         */
+        COMMENTS;
+
+        public boolean isConfiguration() {
+            return this != COMMENTS;
+        }
+    }
+
+    public boolean isEnabled(Feature feature) {
+        return features.contains(feature);
+    }
+
+    /**
+     * @return The CSV separator to use. Default to ';'.<br>
+     *         Used for {@link WorkbookKind#CSV}.
+     */
+    public char getSeparator() {
+        return separator;
+    }
+
+    /**
+     * @return The CSV charset to use. Default to {@code null}.<br>
+     *         Used for {@link WorkbookKind#CSV}.
+     */
+    public String getCharset() {
+        return charset;
+    }
+
+    public int getMaxLineLength() {
+        return maxLineLength;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private final Set<Feature> features = new HashSet<>();
+        private char separator = ';';
+        private String charset = null;
+        private int maxLineLength = 255;
+
+        protected Builder() {
+        }
+
+        public Builder enable(Feature feature) {
+            Checks.isNotNull(feature, "feature");
+            Checks.isTrue(feature.isConfiguration(), feature + " is not a configuration feature");
+            this.features.add(feature);
+            return this;
+        }
+
+        public Builder setEnabled(Feature feature,
+                                  boolean enabled) {
+            if (enabled) {
+                this.features.add(feature);
+            } else {
+                this.features.remove(feature);
+            }
+            return this;
+        }
+
+        public Builder separator(char separator) {
+            this.separator = separator;
+            return this;
+        }
+
+        public Builder charset(String charset) {
+            this.charset = charset;
+            return this;
+        }
+
+        public Builder maxLineLength(int maxLineLength) {
+            this.maxLineLength = maxLineLength;
+            return this;
+        }
+
+        public WorkbookWriterFeatures build() {
+            return new WorkbookWriterFeatures(features,
+                                              separator,
+                                              charset,
+                                              maxLineLength);
+        }
+    }
+}

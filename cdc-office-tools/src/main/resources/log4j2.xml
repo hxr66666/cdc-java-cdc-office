@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <configuration status="warn" xsi:noNamespaceSchemaLocation="Log4j-V2.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> -->
+<configuration status="warn">
+   <appenders>
+      <console name="Console" target="SYSTEM_OUT">
+         <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+      </console>
+   </appenders>
+   <loggers>
+      <root level="info">
+         <appender-ref ref="Console" />
+      </root>
+   </loggers>
+</configuration>
