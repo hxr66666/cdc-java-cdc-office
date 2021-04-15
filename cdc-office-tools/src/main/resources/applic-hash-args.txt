@@ -1,0 +1,24 @@
+# Options to compute perfect hash functions for applic   
+--verbose
+#--show-all
+--stop-on-best
+#--help
+#######################
+# One char tokens 
+#--chars
+#(){},~=&|¬∧∨∈∉≠→↔⊤⊥≮≯≤≥≰≱∅
+#--filler
+#.
+#######################
+# Spaces
+#--chars
+#\t\n\u000B\f\r\u0020\u0085\u00A0\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u200B\u2028\u2029\u202F\u205F\u3000\u303F\uFEFF
+#--filler
+#.
+#######################
+# One char separators
+# One char tokens + !<> + spaces  
+--chars
+(){},~=&|¬∧∨∈∉≠→↔⊤⊥≮≯≤≥≰≱∅!<>\t\n\u000B\f\r\u0020\u0085\u00A0\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u200B\u2028\u2029\u202F\u205F\u3000\u303F\uFEFF
+--filler
+.
