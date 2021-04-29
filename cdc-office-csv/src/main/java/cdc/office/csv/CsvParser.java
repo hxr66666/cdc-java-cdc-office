@@ -9,6 +9,8 @@ import java.nio.charset.Charset;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import cdc.io.txt.LineParser;
+import cdc.io.txt.LinesHandler;
 import cdc.office.tables.Row;
 import cdc.office.tables.RowLocation;
 import cdc.office.tables.TableHandler;
@@ -17,8 +19,6 @@ import cdc.util.function.Evaluation;
 import cdc.util.lang.Checks;
 import cdc.util.lang.ImplementationException;
 import cdc.util.lang.InvalidStateException;
-import cdc.util.txt.LineParser;
-import cdc.util.txt.LinesHandler;
 
 /**
  * Parsing of csv files. Special handling of text is done. However, one must not

@@ -14,19 +14,10 @@
    <dependencies>
       <dependency>
          <groupId>com.gitlab.cdc-java.office</groupId>
-         <artifactId>cdc-office-csv</artifactId>
+         <artifactId>cdc-office-tools</artifactId>
          <version>${project.version}</version>
       </dependency>
 
-      <dependency>
-         <groupId>com.gitlab.cdc-java.util</groupId>
-         <artifactId>cdc-util-core</artifactId>
-      </dependency>
-
-      <dependency>
-         <groupId>org.apache.logging.log4j</groupId>
-         <artifactId>log4j-api</artifactId>
-      </dependency>
       <dependency>
          <groupId>org.apache.logging.log4j</groupId>
          <artifactId>log4j-core</artifactId>

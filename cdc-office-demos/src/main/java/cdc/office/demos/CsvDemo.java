@@ -2,8 +2,8 @@ package cdc.office.demos;
 
 import java.io.File;
 
-import cdc.office.csv.tools.SeparatorConverter;
-import cdc.office.csv.tools.AbstractFilter.BaseMainArgs.BaseFeature;
+import cdc.office.ss.tools.SeparatorConverter;
+import cdc.office.ss.tools.AbstractFilter.BaseMainArgs.BaseFeature;
 
 public final class CsvDemo {
     private CsvDemo() {

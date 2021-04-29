@@ -19,12 +19,12 @@
       </dependency>
 
       <dependency>
-         <groupId>com.gitlab.cdc-java.util</groupId>
-         <artifactId>cdc-util-core</artifactId>
+         <groupId>com.gitlab.cdc-java.io</groupId>
+         <artifactId>cdc-io-txt</artifactId>
       </dependency>
       <dependency>
          <groupId>com.gitlab.cdc-java.util</groupId>
-         <artifactId>cdc-util-txt</artifactId>
+         <artifactId>cdc-util-core</artifactId>
       </dependency>
 
       <dependency>

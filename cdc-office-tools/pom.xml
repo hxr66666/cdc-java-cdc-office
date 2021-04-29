@@ -14,6 +14,11 @@
    <dependencies>
       <dependency>
          <groupId>com.gitlab.cdc-java.office</groupId>
+         <artifactId>cdc-office-csv</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>com.gitlab.cdc-java.office</groupId>
          <artifactId>cdc-office-ss</artifactId>
          <version>${project.version}</version>
       </dependency>
@@ -38,6 +43,14 @@
          <version>${project.version}</version>
       </dependency>
 
+      <dependency>
+         <groupId>com.gitlab.cdc-java.tuples</groupId>
+         <artifactId>cdc-tuples</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>com.gitlab.cdc-java.util</groupId>
+         <artifactId>cdc-util-cli</artifactId>
+      </dependency>
       <dependency>
          <groupId>com.gitlab.cdc-java.util</groupId>
          <artifactId>cdc-util-core</artifactId>

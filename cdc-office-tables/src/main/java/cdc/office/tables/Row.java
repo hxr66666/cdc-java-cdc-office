@@ -11,10 +11,10 @@ import java.util.function.Function;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cdc.util.converters.defaults.StringToDate;
-import cdc.util.converters.defaults.StringToLocalDate;
-import cdc.util.converters.defaults.StringToLocalDateTime;
-import cdc.util.converters.defaults.StringToLocalTime;
+import cdc.converters.defaults.StringToDate;
+import cdc.converters.defaults.StringToLocalDate;
+import cdc.converters.defaults.StringToLocalDateTime;
+import cdc.converters.defaults.StringToLocalTime;
 import cdc.util.encoding.Encoders;
 import cdc.util.lang.FailureReaction;
 

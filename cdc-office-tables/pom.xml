@@ -18,8 +18,8 @@
       </dependency>
 
       <dependency>
-         <groupId>com.gitlab.cdc-java.util</groupId>
-         <artifactId>cdc-util-converters</artifactId>
+         <groupId>com.gitlab.cdc-java.kernel</groupId>
+         <artifactId>cdc-kernel-converters</artifactId>
       </dependency>
       <dependency>
          <groupId>com.gitlab.cdc-java.util</groupId>

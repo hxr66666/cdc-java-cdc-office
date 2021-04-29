@@ -1,4 +1,4 @@
-package cdc.office.csv.tools;
+package cdc.office.ss.tools;
 
 import java.io.IOException;
 
@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import cdc.office.csv.CsvParser;
 import cdc.office.csv.CsvWriter;
-import cdc.office.csv.tools.AbstractFilter.BaseMainArgs.BaseFeature;
+import cdc.office.ss.tools.AbstractFilter.BaseMainArgs.BaseFeature;
 import cdc.office.tables.Row;
 import cdc.office.tables.RowLocation;
 import cdc.office.tables.TableHandler;
