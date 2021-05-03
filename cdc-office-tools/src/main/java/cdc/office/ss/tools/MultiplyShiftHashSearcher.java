@@ -427,7 +427,7 @@ public final class MultiplyShiftHashSearcher {
 
         @Override
         protected String getVersion() {
-            return cdc.util.Config.VERSION;
+            return Config.VERSION;
         }
 
         @Override

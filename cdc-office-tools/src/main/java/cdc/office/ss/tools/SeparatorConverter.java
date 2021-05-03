@@ -109,7 +109,7 @@ public final class SeparatorConverter extends AbstractFilter<SeparatorConverter.
 
         @Override
         protected String getVersion() {
-            return cdc.util.Config.VERSION;
+            return Config.VERSION;
         }
 
         @Override

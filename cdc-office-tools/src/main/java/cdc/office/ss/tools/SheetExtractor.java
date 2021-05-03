@@ -150,7 +150,7 @@ public class SheetExtractor {
 
         @Override
         protected String getVersion() {
-            return cdc.util.Config.VERSION;
+            return Config.VERSION;
         }
 
         @Override

@@ -189,7 +189,7 @@ public final class Anonymizer extends AbstractFilter<Anonymizer.MainArgs> {
 
         @Override
         protected String getVersion() {
-            return cdc.util.Config.VERSION;
+            return Config.VERSION;
         }
 
         @Override
