@@ -6,12 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import cdc.office.tables.MemoryTableHandler;
-import cdc.office.tables.Row;
-import cdc.office.tables.RowLocation;
-import cdc.office.tables.TableRowsFilter;
-import cdc.office.tables.TableSection;
-
 class TableRowsFilterTest {
     @Test
     void testWithHeader() throws Exception {

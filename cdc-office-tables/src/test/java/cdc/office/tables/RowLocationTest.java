@@ -6,9 +6,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
-import cdc.office.tables.RowLocation;
-import cdc.office.tables.TableSection;
-
 class RowLocationTest {
     private static final Logger LOGGER = LogManager.getLogger(RowLocationTest.class);
 

@@ -4,8 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
-import cdc.office.tables.Header;
-import cdc.office.tables.Row;
 import cdc.office.tables.diff.RowDiff;
 
 class RowDiffTest {
