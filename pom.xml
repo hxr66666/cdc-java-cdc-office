@@ -13,9 +13,9 @@
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
       <cdc.io.version>0.10.0</cdc.io.version>
-      <cdc.kernel.version>0.10.0</cdc.kernel.version>
+      <cdc.kernel.version>0.11.0</cdc.kernel.version>
       <cdc.tuples.version>1.0.0</cdc.tuples.version>
-      <cdc.util.version>0.10.0</cdc.util.version>
+      <cdc.util.version>0.10.1</cdc.util.version>
       <fastods.version>0.7.3</fastods.version>
       <htmlflow.version>3.6</htmlflow.version>
       <junit.version>5.7.0</junit.version>
