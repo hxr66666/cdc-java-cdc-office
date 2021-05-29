@@ -153,13 +153,14 @@ public class PoiStandardSheetParser implements SheetParser {
         final Row.Builder r = Row.builder();
         final RowLocation.Builder location = RowLocation.builder();
         int previousRowIndex = -1;
+        boolean active = true;
         for (final org.apache.poi.ss.usermodel.Row row : sheet) {
             r.clear();
 
             final int rowIndex = row.getRowNum();
-            for (int index = previousRowIndex; index < rowIndex - 1; index++) {
+            for (int index = previousRowIndex; active && index < rowIndex - 1; index++) {
                 location.incrementNumbers(headers);
-                TableHandler.processRow(handler, r.build(), location.build());
+                active = TableHandler.processRow(handler, r.build(), location.build()).isContinue();
             }
             location.incrementNumbers(headers);
             previousRowIndex = rowIndex;
@@ -173,7 +174,9 @@ public class PoiStandardSheetParser implements SheetParser {
                 r.addValue(toString(cell));
                 previousColumnIndex = columnIndex;
             }
-            TableHandler.processRow(handler, r.build(), location.build());
+            if (active) {
+                active = TableHandler.processRow(handler, r.build(), location.build()).isContinue();
+            }
         }
         handler.processEnd();
     }

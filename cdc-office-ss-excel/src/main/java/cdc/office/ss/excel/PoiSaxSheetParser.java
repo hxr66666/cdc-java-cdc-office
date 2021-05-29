@@ -32,6 +32,7 @@ import cdc.office.ss.WorkbookKind;
 import cdc.office.tables.Row;
 import cdc.office.tables.RowLocation;
 import cdc.office.tables.TableHandler;
+import cdc.util.function.Evaluation;
 import cdc.util.lang.ExceptionWrapper;
 
 public class PoiSaxSheetParser implements SheetParser {
@@ -286,6 +287,7 @@ public class PoiSaxSheetParser implements SheetParser {
         private int previousColumnIndex = -1;
         private final Row.Builder r = Row.builder();
         private final RowLocation.Builder location = RowLocation.builder();
+        private boolean active = true;
 
         private static class LruCache<A, B> extends LinkedHashMap<A, B> {
             private static final long serialVersionUID = 1L;
@@ -329,9 +331,9 @@ public class PoiSaxSheetParser implements SheetParser {
             }
         }
 
-        private void publishRow() throws SAXException {
+        private Evaluation publishRow() throws SAXException {
             try {
-                TableHandler.processRow(handler, r.build(), location.build());
+                return TableHandler.processRow(handler, r.build(), location.build());
             } catch (final Exception e) {
                 throw new SAXException(e);
             }
@@ -353,17 +355,17 @@ public class PoiSaxSheetParser implements SheetParser {
                 final int rowIndex = addr.getRow();
                 final int columnIndex = addr.getColumn();
                 if (previousRowIndex != rowIndex) {
-                    if (location.getGlobalNumber() >= 0) {
-                        publishRow();
+                    if (active && location.getGlobalNumber() >= 0) {
+                        active = publishRow().isContinue();
                     }
                     location.incrementNumbers(headers);
                     r.clear();
                     this.previousColumnIndex = -1;
                 }
-                for (int index = previousRowIndex; index < rowIndex - 1; index++) {
+                for (int index = previousRowIndex; active && index < rowIndex - 1; index++) {
                     LOGGER.debug("Added missing row");
                     location.incrementNumbers(headers);
-                    publishRow();
+                    active = publishRow().isContinue();
                 }
 
                 if (previousRowIndex != rowIndex && previousRowIndex % 10000 == 0) {
@@ -446,8 +448,8 @@ public class PoiSaxSheetParser implements SheetParser {
         @Override
         public void endDocument() throws SAXException {
             // Publish last row
-            if (previousRowIndex >= 0) {
-                publishRow();
+            if (active && previousRowIndex >= 0) {
+                active = publishRow().isContinue();
             }
         }
     }

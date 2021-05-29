@@ -174,7 +174,8 @@ public class OdsSheetParser implements SheetParser {
         final RowLocation.Builder location = RowLocation.builder();
 
         final Iterator<org.odftoolkit.simple.table.Row> rowIterator = table.getRowIterator();
-        while (rowIterator.hasNext()) {
+        boolean active = true;
+        while (active && rowIterator.hasNext()) {
             final org.odftoolkit.simple.table.Row row = rowIterator.next();
             final int cellsCount = OdsUtils.getColumnsCount(row);
             location.incrementNumbers(headers);
@@ -183,7 +184,7 @@ public class OdsSheetParser implements SheetParser {
                 final Cell cell = row.getCellByIndex(index);
                 r.addValue(toString(cell));
             }
-            TableHandler.processRow(handler, r.build(), location.build());
+            active = TableHandler.processRow(handler, r.build(), location.build()).isContinue();
         }
         handler.processEnd();
     }

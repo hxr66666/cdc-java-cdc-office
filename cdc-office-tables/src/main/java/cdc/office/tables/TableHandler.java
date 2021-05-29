@@ -60,13 +60,13 @@ public interface TableHandler {
         // Ignore
     }
 
-    public static void processRow(TableHandler handler,
-                                  Row row,
-                                  RowLocation location) {
+    public static Evaluation processRow(TableHandler handler,
+                                        Row row,
+                                        RowLocation location) {
         if (location.isHeader()) {
-            handler.processHeader(row, location);
+            return handler.processHeader(row, location);
         } else {
-            handler.processData(row, location);
+            return handler.processData(row, location);
         }
     }
 }

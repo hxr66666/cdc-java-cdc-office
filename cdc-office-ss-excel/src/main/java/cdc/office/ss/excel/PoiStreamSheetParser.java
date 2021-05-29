@@ -254,6 +254,7 @@ public class PoiStreamSheetParser implements SheetParser {
             private final RowLocation.Builder location = RowLocation.builder();
             private int previousRowIndex = -1;
             private int currentCol = -1;
+            private boolean active = true;
 
             public ExcelSheetHandler(int headers,
                                      TableHandler handler) {
@@ -265,9 +266,9 @@ public class PoiStreamSheetParser implements SheetParser {
             public void startRow(int rowNum) {
                 row.clear();
 
-                for (int index = previousRowIndex; index < rowNum - 1; index++) {
+                for (int index = previousRowIndex; active && index < rowNum - 1; index++) {
                     location.incrementNumbers(headers);
-                    TableHandler.processRow(handler, row.build(), location.build());
+                    active = TableHandler.processRow(handler, row.build(), location.build()).isContinue();
                 }
                 location.incrementNumbers(headers);
                 previousRowIndex = rowNum;
@@ -277,7 +278,9 @@ public class PoiStreamSheetParser implements SheetParser {
 
             @Override
             public void endRow(int rowNum) {
-                TableHandler.processRow(handler, row.build(), location.build());
+                if (active) {
+                    active = TableHandler.processRow(handler, row.build(), location.build()).isContinue();
+                }
             }
 
             @Override
