@@ -81,7 +81,7 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
 
         this.styleText = workbook.createCellStyle();
         this.styleText.setDataFormat(format.getFormat("@"));
-        this.styleText.setWrapText(true);
+        // this.styleText.setWrapText(true);
 
         this.styleInt = workbook.createCellStyle();
         if (this.features.isEnabled(WorkbookWriterFeatures.Feature.USE_THOUSANDS_SEPARATOR)) {
