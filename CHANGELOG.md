@@ -5,10 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased]
-### Added
-### Changed
+## [0.10.1] - 2021-06-05
 ### Fixed
+- Interrupt office loading when asked by application. #1
+- Do not force line wrap in ExcelWorkbookWriter.
 
 
 ## [0.10.0] - 2021-05-03
