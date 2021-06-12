@@ -22,10 +22,10 @@ public class VerboseTableHandler implements TableHandler {
     }
 
     @Override
-    public void processBegin(String name,
-                             int numberOfRows) {
-        LOGGER.log(level, "processBegin({}, {})", name, numberOfRows);
-        delegate.processBegin(name, numberOfRows);
+    public void processBeginTable(String name,
+                                  int numberOfRows) {
+        LOGGER.log(level, "processBeginTable({}, {})", name, numberOfRows);
+        delegate.processBeginTable(name, numberOfRows);
     }
 
     @Override
@@ -43,8 +43,8 @@ public class VerboseTableHandler implements TableHandler {
     }
 
     @Override
-    public void processEnd() {
-        LOGGER.log(level, "processEnd()");
-        delegate.processEnd();
+    public void processEndTable(String name) {
+        LOGGER.log(level, "processEndTable({})", name);
+        delegate.processEndTable(name);
     }
 }

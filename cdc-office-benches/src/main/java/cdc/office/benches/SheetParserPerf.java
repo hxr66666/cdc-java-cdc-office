@@ -123,8 +123,8 @@ public class SheetParserPerf {
         }
 
         @Override
-        public void processBegin(String name,
-                                 int numberOfRows) {
+        public void processBeginTable(String name,
+                                      int numberOfRows) {
             // Ignore
         }
 
@@ -143,7 +143,7 @@ public class SheetParserPerf {
         }
 
         @Override
-        public void processEnd() {
+        public void processEndTable(String name) {
             // Ignore
         }
     }

@@ -16,7 +16,7 @@ class CsvUtilsTest {
     void test() throws IOException {
         assertSame(4,
                    CsvUtils.getNumberOfCsvRows(new File("src/test/resources/data01.csv"),
-                                               StandardCharsets.UTF_8.name(),
+                                               StandardCharsets.UTF_8,
                                                ';'));
     }
 

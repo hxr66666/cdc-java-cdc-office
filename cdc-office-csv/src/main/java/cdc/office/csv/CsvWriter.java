@@ -58,11 +58,11 @@ public class CsvWriter implements Flushable, Closeable {
      * @param charset The charset name.
      */
     public CsvWriter(PrintStream s,
-                     String charset) {
+                     Charset charset) {
         if (charset == null) {
             this.writer = new BufferedWriter(new OutputStreamWriter(s));
         } else {
-            this.writer = new BufferedWriter(new OutputStreamWriter(s, Charset.forName(charset)));
+            this.writer = new BufferedWriter(new OutputStreamWriter(s, charset));
         }
     }
 
@@ -88,7 +88,7 @@ public class CsvWriter implements Flushable, Closeable {
      * @throws IOException When an IO error occurs.
      */
     public CsvWriter(String filename,
-                     String charset,
+                     Charset charset,
                      boolean append)
             throws IOException {
         if (charset == null) {
@@ -99,7 +99,7 @@ public class CsvWriter implements Flushable, Closeable {
     }
 
     public CsvWriter(String filename,
-                     String charset)
+                     Charset charset)
             throws IOException {
         this(filename, charset, false);
     }
@@ -125,14 +125,14 @@ public class CsvWriter implements Flushable, Closeable {
      * @throws IOException When an IO error occurs.
      */
     public CsvWriter(File file,
-                     String charset,
+                     Charset charset,
                      boolean append)
             throws IOException {
         this(file.getPath(), charset, append);
     }
 
     public CsvWriter(File file,
-                     String charset)
+                     Charset charset)
             throws IOException {
         this(file, charset, false);
     }

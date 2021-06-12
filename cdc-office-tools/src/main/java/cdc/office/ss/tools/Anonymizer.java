@@ -1,6 +1,7 @@
 package cdc.office.ss.tools;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -107,8 +108,8 @@ public final class Anonymizer extends AbstractFilter<Anonymizer.MainArgs> {
         }
 
         @Override
-        public void processBegin(String name,
-                                 int numberOfRows) {
+        public void processBeginTable(String name,
+                                      int numberOfRows) {
             // Ignore
         }
 
@@ -143,7 +144,7 @@ public final class Anonymizer extends AbstractFilter<Anonymizer.MainArgs> {
         }
 
         @Override
-        public void processEnd() {
+        public void processEndTable(String name) {
             try {
                 writer.close();
             } catch (final IOException e) {
@@ -163,7 +164,9 @@ public final class Anonymizer extends AbstractFilter<Anonymizer.MainArgs> {
             LOGGER.info("Load '{}' (charset: {})", margs.input, margs.getInputCharset());
         }
         parser.parse(margs.input,
-                     margs.inputCharset,
+                     margs.inputCharset == null
+                             ? Charset.defaultCharset()
+                             : margs.inputCharset,
                      handler,
                      margs.isEnabled(BaseFeature.HAS_HEADER) ? 1 : 0);
     }

@@ -17,6 +17,7 @@ import cdc.office.ss.WorkbookKind;
 import cdc.office.tables.Row;
 import cdc.office.tables.RowLocation;
 import cdc.office.tables.TableHandler;
+import cdc.office.tables.TablesHandler;
 import cdc.util.lang.ExceptionWrapper;
 
 /**
@@ -43,10 +44,10 @@ public class OdsSheetParser implements SheetParser {
     public void parse(File file,
                       String password,
                       int headers,
-                      TableHandler handler) throws IOException {
+                      TablesHandler handler) throws IOException {
         // TODO use password ?
         try (final SpreadsheetDocument doc = SpreadsheetDocument.loadDocument(file)) {
-            parse(doc, headers, handler);
+            parse(file.getPath(), doc, headers, handler);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -56,13 +57,14 @@ public class OdsSheetParser implements SheetParser {
 
     @Override
     public void parse(InputStream in,
+                      String systemId,
                       WorkbookKind kind,
                       String password,
                       int headers,
-                      TableHandler handler) throws IOException {
+                      TablesHandler handler) throws IOException {
         // TODO use password ?
         try (final SpreadsheetDocument doc = SpreadsheetDocument.loadDocument(in)) {
-            parse(doc, headers, handler);
+            parse(systemId, doc, headers, handler);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -78,7 +80,7 @@ public class OdsSheetParser implements SheetParser {
                       TableHandler handler) throws IOException {
         // TODO use password ?
         try (final SpreadsheetDocument doc = SpreadsheetDocument.loadDocument(file)) {
-            parse(doc, sheetName, headers, handler);
+            parse(file.getPath(), doc, sheetName, headers, handler);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -94,7 +96,7 @@ public class OdsSheetParser implements SheetParser {
                       TableHandler handler) throws IOException {
         // TODO use password ?
         try (final SpreadsheetDocument doc = SpreadsheetDocument.loadDocument(file)) {
-            parse(doc, sheetIndex, headers, handler);
+            parse(file.getPath(), doc, sheetIndex, headers, handler);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -104,6 +106,7 @@ public class OdsSheetParser implements SheetParser {
 
     @Override
     public void parse(InputStream in,
+                      String systemId,
                       WorkbookKind kind,
                       String sheetName,
                       String password,
@@ -111,7 +114,7 @@ public class OdsSheetParser implements SheetParser {
                       TableHandler handler) throws IOException {
         // TODO use password ?
         try (final SpreadsheetDocument doc = SpreadsheetDocument.loadDocument(in)) {
-            parse(doc, sheetName, headers, handler);
+            parse(systemId, doc, sheetName, headers, handler);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -121,6 +124,7 @@ public class OdsSheetParser implements SheetParser {
 
     @Override
     public void parse(InputStream in,
+                      String systemId,
                       WorkbookKind kind,
                       String password,
                       int sheetIndex,
@@ -128,7 +132,7 @@ public class OdsSheetParser implements SheetParser {
                       TableHandler handler) throws IOException {
         // TODO use password ?
         try (final SpreadsheetDocument doc = SpreadsheetDocument.loadDocument(in)) {
-            parse(doc, sheetIndex, headers, handler);
+            parse(systemId, doc, sheetIndex, headers, handler);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -136,15 +140,19 @@ public class OdsSheetParser implements SheetParser {
         }
     }
 
-    private static void parse(SpreadsheetDocument doc,
+    private static void parse(String systemId,
+                              SpreadsheetDocument doc,
                               int headers,
-                              TableHandler handler) throws IOException {
+                              TablesHandler handler) throws IOException {
+        handler.processBeginTables(systemId);
         for (final Table table : doc.getTableList()) {
             parse(table, headers, handler);
         }
+        handler.processEndTables(systemId);
     }
 
-    private static void parse(SpreadsheetDocument doc,
+    private static void parse(String systemId,
+                              SpreadsheetDocument doc,
                               String sheetName,
                               int headers,
                               TableHandler handler) throws IOException {
@@ -155,21 +163,26 @@ public class OdsSheetParser implements SheetParser {
             table = doc.getTableByName(sheetName);
         }
 
+        TablesHandler.processBeginTables(handler, systemId);
         parse(table, headers, handler);
+        TablesHandler.processEndTables(handler, systemId);
     }
 
-    private static void parse(SpreadsheetDocument doc,
+    private static void parse(String systemId,
+                              SpreadsheetDocument doc,
                               int sheetIndex,
                               int headers,
                               TableHandler handler) throws IOException {
         final Table table = doc.getTableList().get(sheetIndex);
+        TablesHandler.processBeginTables(handler, systemId);
         parse(table, headers, handler);
+        TablesHandler.processEndTables(handler, systemId);
     }
 
     private static void parse(Table table,
                               int headers,
                               TableHandler handler) throws IOException {
-        handler.processBegin(table.getTableName(), -1); // TODO
+        handler.processBeginTable(table.getTableName(), -1); // TODO
         final Row.Builder r = Row.builder();
         final RowLocation.Builder location = RowLocation.builder();
 
@@ -186,7 +199,7 @@ public class OdsSheetParser implements SheetParser {
             }
             active = TableHandler.processRow(handler, r.build(), location.build()).isContinue();
         }
-        handler.processEnd();
+        handler.processEndTable(table.getTableName());
     }
 
     private static String toString(Cell cell) {

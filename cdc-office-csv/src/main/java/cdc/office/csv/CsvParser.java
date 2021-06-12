@@ -15,6 +15,7 @@ import cdc.office.tables.Row;
 import cdc.office.tables.RowLocation;
 import cdc.office.tables.TableHandler;
 import cdc.office.tables.TableSection;
+import cdc.office.tables.TablesHandler;
 import cdc.util.function.Evaluation;
 import cdc.util.lang.Checks;
 import cdc.util.lang.ImplementationException;
@@ -135,20 +136,22 @@ public class CsvParser {
      * Parses an InputStream.
      *
      * @param in The input stream.
+     * @param systemId The system id.
      * @param charset The charset to use.
      * @param handler The table handler to use.
      * @param headers The number of header lines.
      * @throws IOException When an IO exception occurs.
      */
     public void parse(InputStream in,
-                      String charset,
+                      String systemId,
+                      Charset charset,
                       TableHandler handler,
                       int headers) throws IOException {
         final int numberOfRows;
         if (countRows) {
             if (in.markSupported()) {
                 in.mark(Integer.MAX_VALUE);
-                numberOfRows = CsvUtils.getNumberOfCsvRows(in, charset, separator);
+                numberOfRows = CsvUtils.getNumberOfCsvRows(in, systemId, charset, separator);
                 in.reset();
             } else {
                 LOGGER.warn("Cannot count rows, stream does not support marks.");
@@ -157,18 +160,23 @@ public class CsvParser {
         } else {
             numberOfRows = -1;
         }
-        LineParser.parse(in, charset, createLinesHandler(handler, headers, numberOfRows));
+        LineParser.parse(in,
+                         systemId,
+                         charset,
+                         createLinesHandler(handler, headers, numberOfRows));
     }
 
     /**
      * Parses an InputStream using default charset.
      *
      * @param in The input stream.
+     * @param systemId The system id.
      * @param handler The table handler to use.
      * @param headers The number of header lines.
      * @throws IOException When an IO exception occurs.
      */
     public void parse(InputStream in,
+                      String systemId,
                       TableHandler handler,
                       int headers) throws IOException {
         parse(in, Charset.defaultCharset().name(), handler, headers);
@@ -184,7 +192,7 @@ public class CsvParser {
      * @throws IOException When an IO exception occurs.
      */
     public void parse(File file,
-                      String charset,
+                      Charset charset,
                       TableHandler handler,
                       int headers) throws IOException {
         traceBegin(file);
@@ -194,7 +202,9 @@ public class CsvParser {
         } else {
             numberORows = -1;
         }
+        TablesHandler.processBeginTables(handler, file.getPath());
         LineParser.parse(file, charset, createLinesHandler(handler, headers, numberORows));
+        TablesHandler.processEndTables(handler, file.getPath());
         traceEnd();
     }
 
@@ -260,7 +270,7 @@ public class CsvParser {
         @Override
         public void processBegin() {
             row.clear();
-            tableHandler.processBegin(null, numberOfRows);
+            tableHandler.processBeginTable(null, numberOfRows);
         }
 
         @Override
@@ -279,7 +289,7 @@ public class CsvParser {
                 implementationError();
                 break;
             }
-            tableHandler.processEnd();
+            tableHandler.processEndTable(null);
         }
 
         @Override
@@ -442,7 +452,7 @@ public class CsvParser {
 
         @Override
         public void processBegin() {
-            tableHandler.processBegin(null, numberOfRows);
+            tableHandler.processBeginTable(null, numberOfRows);
         }
 
         @Override
@@ -461,7 +471,7 @@ public class CsvParser {
                 implementationError();
                 break;
             }
-            tableHandler.processEnd();
+            tableHandler.processEndTable(null);
         }
 
         @Override

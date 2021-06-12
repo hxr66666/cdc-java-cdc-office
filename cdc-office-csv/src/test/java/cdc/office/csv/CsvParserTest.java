@@ -73,10 +73,10 @@ class CsvParserTest {
         }
 
         @Override
-        public void processBegin(String name,
-                                 int numberOfRows) {
+        public void processBeginTable(String name,
+                                      int numberOfRows) {
             // Ignore
-            LOGGER.debug("processBegin({}, {})", name, numberOfRows);
+            LOGGER.debug("processBeginTable({}, {})", name, numberOfRows);
         }
 
         @Override
@@ -98,14 +98,14 @@ class CsvParserTest {
         }
 
         @Override
-        public void processEnd() {
+        public void processEndTable(String name) {
             // Ignore
-            LOGGER.debug("processEnd()");
+            LOGGER.debug("processEndTable({})", (Object) null);
         }
     }
 
     private void testParseFile(File file,
-                               String charset) throws Exception {
+                               Charset charset) throws Exception {
         LOGGER.debug("testParseFile({}, {})", file, charset);
 
         final Handler handler = new Handler();
@@ -119,7 +119,7 @@ class CsvParserTest {
 
     @Test
     void testParseFile() throws Exception {
-        testParseFile(filePlatform, Charset.defaultCharset().name());
+        testParseFile(filePlatform, Charset.defaultCharset());
         // testParseFile(fileUtf8, "UTF-8");
         // testParseFile(fileUtf16, "UTF-16");
     }

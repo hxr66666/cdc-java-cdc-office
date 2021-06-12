@@ -2,6 +2,7 @@ package cdc.office.ss.tools;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class SheetExtractor {
         public File outputFile;
         public List<String> sheetNames = new ArrayList<>();
         /** charset. */
-        public String charset;
+        public Charset charset;
         /** separator. */
         public char separator = ';';
 
@@ -200,9 +201,7 @@ public class SheetExtractor {
             for (final String s : cl.getOptionValues(SHEET)) {
                 margs.sheetNames.add(s);
             }
-            if (cl.hasOption(CHARSET)) {
-                margs.charset = cl.getOptionValue(CHARSET);
-            }
+            margs.charset = getValueAsCharset(cl, CHARSET);
             margs.separator = AbstractMainSupport.getValueAsChar(cl, SEPARATOR, ';');
             AbstractMainSupport.setMask(cl, MainArgs.Feature.class, margs.features::setEnabled);
             return margs;

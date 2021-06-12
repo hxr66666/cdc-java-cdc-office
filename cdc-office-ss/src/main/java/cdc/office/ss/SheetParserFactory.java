@@ -1,6 +1,7 @@
 package cdc.office.ss;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -19,7 +20,7 @@ public class SheetParserFactory {
     /** CSV separator. */
     private char separator = ';';
     /** CSV charset. */
-    private String charset = null;
+    private Charset charset = null;
     // TODO Locale
 
     public enum Feature {
@@ -94,7 +95,7 @@ public class SheetParserFactory {
      * @return The CSV charset to use. Default to {@code null}.<br>
      *         Used for {@link WorkbookKind#CSV}.
      */
-    public String getCharset() {
+    public Charset getCharset() {
         return charset;
     }
 
@@ -104,7 +105,7 @@ public class SheetParserFactory {
      * @param charset The charset.
      * @return This factory.
      */
-    public SheetParserFactory setCharset(String charset) {
+    public SheetParserFactory setCharset(Charset charset) {
         this.charset = charset;
         return this;
     }

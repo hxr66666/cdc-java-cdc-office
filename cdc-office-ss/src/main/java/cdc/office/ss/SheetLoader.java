@@ -90,6 +90,7 @@ public class SheetLoader {
      *
      *
      * @param in The InoutStream to load.
+     * @param systemId The system id.
      * @param kind The sheet kind.
      * @param password The password protecting {@code file}.
      * @param sheetName The sheet name. Used if file is a multi-sheet file.
@@ -97,13 +98,14 @@ public class SheetLoader {
      * @throws IOException When a IO error occurs.
      */
     public List<Row> load(InputStream in,
+                          String systemId,
                           WorkbookKind kind,
                           String password,
                           String sheetName) throws IOException {
         final SheetParser parser = factory.create(kind);
         final MemoryTableHandler handler = new MemoryTableHandler();
         try {
-            parser.parse(in, kind, password, sheetName, 0, handler);
+            parser.parse(in, systemId, kind, password, sheetName, 0, handler);
             return handler.getRows();
         } catch (final IOException e) {
             throw e;
@@ -121,6 +123,7 @@ public class SheetLoader {
      *
      *
      * @param in The InoutStream to load.
+     * @param systemId The system id.
      * @param kind The sheet kind.
      * @param password The password protecting {@code file}.
      * @param sheetIndex The 0-based index of the sheet. Used if file is a multi-sheet file.
@@ -128,13 +131,14 @@ public class SheetLoader {
      * @throws IOException When a IO error occurs.
      */
     public List<Row> load(InputStream in,
+                          String systemId,
                           WorkbookKind kind,
                           String password,
                           int sheetIndex) throws IOException {
         final SheetParser parser = factory.create(kind);
         final MemoryTableHandler handler = new MemoryTableHandler();
         try {
-            parser.parse(in, kind, password, sheetIndex, 0, handler);
+            parser.parse(in, systemId, kind, password, sheetIndex, 0, handler);
             return handler.getRows();
         } catch (final IOException e) {
             throw e;

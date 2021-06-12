@@ -14,7 +14,7 @@ class TableRowsFilterTest {
                                                            (r,
                                                             l) -> l.isHeader() || l.getSectionNumber() % 2 == 0);
 
-        filter.processBegin(null, -1);
+        filter.processBeginTable(null, -1);
         assertFalse(handler.hasHeaders());
 
         final RowLocation.Builder location = RowLocation.builder();
@@ -36,7 +36,7 @@ class TableRowsFilterTest {
         filter.processData(d5, location.incrementNumbers(TableSection.DATA).build());
         filter.processData(d6, location.incrementNumbers(TableSection.DATA).build());
         filter.processData(d7, location.incrementNumbers(TableSection.DATA).build());
-        filter.processEnd();
+        filter.processEndTable(null);
 
         assertTrue(handler.hasHeaders());
         assertEquals(4, handler.getRowsCount());
@@ -53,7 +53,7 @@ class TableRowsFilterTest {
                                                            (r,
                                                             l) -> l.getSectionNumber() % 2 == 0);
 
-        filter.processBegin(null, -1);
+        filter.processBeginTable(null, -1);
         assertFalse(handler.hasHeaders());
 
         final RowLocation.Builder location = RowLocation.builder();
@@ -73,7 +73,7 @@ class TableRowsFilterTest {
         filter.processData(d5, location.incrementNumbers(TableSection.DATA).build());
         filter.processData(d6, location.incrementNumbers(TableSection.DATA).build());
         filter.processData(d7, location.incrementNumbers(TableSection.DATA).build());
-        filter.processEnd();
+        filter.processEndTable(null);
 
         assertFalse(handler.hasHeaders());
         assertEquals(3, handler.getRowsCount());

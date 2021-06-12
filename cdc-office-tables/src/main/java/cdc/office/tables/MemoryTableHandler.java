@@ -38,9 +38,9 @@ public class MemoryTableHandler implements TableHandler {
     }
 
     @Override
-    public void processBegin(String name,
-                             int numberOfRows) {
-        LOGGER.trace("processBegin({}, {})", name, numberOfRows);
+    public void processBeginTable(String name,
+                                  int numberOfRows) {
+        LOGGER.trace("processBeginTable({}, {})", name, numberOfRows);
         headers = 0;
         rows.clear();
     }
@@ -63,8 +63,8 @@ public class MemoryTableHandler implements TableHandler {
     }
 
     @Override
-    public void processEnd() {
-        LOGGER.trace("processEnd()");
+    public void processEndTable(String name) {
+        LOGGER.trace("processEndTable({})", name);
         // Ignore
     }
 }

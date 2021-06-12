@@ -68,23 +68,23 @@ public abstract class AbstractFilter<M extends AbstractFilter.BaseMainArgs> {
         /** Input file. */
         public File input;
         /** Input charset. */
-        public String inputCharset;
+        public Charset inputCharset;
         /** Input separator. */
         public char inputSeparator = ';';
         /** Output file. */
         public File output;
         /** Output charset. */
-        public String outputCharset;
+        public Charset outputCharset;
         /** Output separator. */
         public char outputSeparator = ';';
 
         protected final FeatureMask<BaseFeature> baseFeatures = new FeatureMask<>();
 
-        public String getInputCharset() {
-            return inputCharset == null ? Charset.defaultCharset().name() : inputCharset;
+        public Charset getInputCharset() {
+            return inputCharset == null ? Charset.defaultCharset() : inputCharset;
         }
 
-        public String getOutputCharset() {
+        public Charset getOutputCharset() {
             return outputCharset == null ? getInputCharset() : outputCharset;
         }
 
@@ -157,15 +157,9 @@ public abstract class AbstractFilter<M extends AbstractFilter.BaseMainArgs> {
     protected static void analyze(CommandLine cl,
                                   BaseMainArgs margs) throws ParseException {
         margs.input = AbstractMainSupport.getValueAsNullOrExistingFile(cl, AbstractMainSupport.INPUT, null);
-        if (cl.hasOption(INPUT_CHARSET)) {
-            margs.inputCharset = cl.getOptionValue(INPUT_CHARSET);
-        }
+        margs.inputCharset = AbstractMainSupport.getValueAsCharset(cl, INPUT_CHARSET);
         margs.output = AbstractMainSupport.getValueAsFile(cl, AbstractMainSupport.OUTPUT, null);
-        if (cl.hasOption(OUTPUT_CHARSET)) {
-            margs.outputCharset = cl.getOptionValue(OUTPUT_CHARSET);
-        } else {
-            margs.outputCharset = margs.inputCharset;
-        }
+        margs.outputCharset = AbstractMainSupport.getValueAsCharset(cl, OUTPUT_CHARSET, margs.inputCharset);
         margs.inputSeparator = AbstractMainSupport.getValueAsChar(cl, INPUT_SEPARATOR, ';');
         margs.outputSeparator = AbstractMainSupport.getValueAsChar(cl, OUTPUT_SEPARATOR, margs.inputSeparator);
         AbstractMainSupport.setMask(cl, BaseMainArgs.BaseFeature.class, margs.baseFeatures::setEnabled);

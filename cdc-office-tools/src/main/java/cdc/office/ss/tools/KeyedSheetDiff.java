@@ -2,6 +2,7 @@ package cdc.office.ss.tools;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -98,7 +99,7 @@ public final class KeyedSheetDiff {
         public String sheet;
         public final List<String> keys = new ArrayList<>();
         /** charset. */
-        public String charset;
+        public Charset charset;
         /** separator. */
         public char separator = ';';
         public String addedMark = DEFAULT_ADDED_MARK;
@@ -718,9 +719,7 @@ public final class KeyedSheetDiff {
             margs.sheet2 = getValueAsString(cl, SHEET2, null);
             margs.output = getValueAsFile(cl, OUTPUT, null);
             margs.sheet = getValueAsString(cl, SHEET, null);
-            if (cl.hasOption(CHARSET)) {
-                margs.charset = cl.getOptionValue(CHARSET);
-            }
+            margs.charset = getValueAsCharset(cl, CHARSET);
             margs.separator = AbstractMainSupport.getValueAsChar(cl, SEPARATOR, ';');
             margs.addedMark = AbstractMainSupport.getValueAsString(cl, ADDED_MARK, MainArgs.DEFAULT_ADDED_MARK);
             margs.removedMark = AbstractMainSupport.getValueAsString(cl, REMOVED_MARK, MainArgs.DEFAULT_REMOVED_MARK);

@@ -32,6 +32,7 @@ import cdc.office.ss.WorkbookKind;
 import cdc.office.tables.Row;
 import cdc.office.tables.RowLocation;
 import cdc.office.tables.TableHandler;
+import cdc.office.tables.TablesHandler;
 import cdc.util.lang.ExceptionWrapper;
 
 /**
@@ -58,10 +59,10 @@ public class PoiStreamSheetParser implements SheetParser {
     public void parse(File file,
                       String password,
                       int headers,
-                      TableHandler handler) throws IOException {
+                      TablesHandler handler) throws IOException {
         try (OPCPackage opcPackage = OPCPackage.open(file.getPath(), PackageAccess.READ)) {
             final StreamParser parser = new StreamParser(opcPackage);
-            parser.process(headers, handler);
+            parser.process(file.getPath(), headers, handler);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -71,13 +72,14 @@ public class PoiStreamSheetParser implements SheetParser {
 
     @Override
     public void parse(InputStream in,
+                      String systemId,
                       WorkbookKind kind,
                       String password,
                       int headers,
-                      TableHandler handler) throws IOException {
+                      TablesHandler handler) throws IOException {
         try (OPCPackage opcPackage = OPCPackage.open(in)) {
             final StreamParser parser = new StreamParser(opcPackage);
-            parser.process(headers, handler);
+            parser.process(systemId, headers, handler);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -93,7 +95,7 @@ public class PoiStreamSheetParser implements SheetParser {
                       TableHandler handler) throws IOException {
         try (OPCPackage opcPackage = OPCPackage.open(file.getPath(), PackageAccess.READ)) {
             final StreamParser parser = new StreamParser(opcPackage);
-            parser.process(sheetName, headers, handler);
+            parser.process(file.getPath(), sheetName, headers, handler);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -109,7 +111,7 @@ public class PoiStreamSheetParser implements SheetParser {
                       TableHandler handler) throws IOException {
         try (OPCPackage opcPackage = OPCPackage.open(file.getPath(), PackageAccess.READ)) {
             final StreamParser parser = new StreamParser(opcPackage);
-            parser.process(sheetIndex, headers, handler);
+            parser.process(file.getPath(), sheetIndex, headers, handler);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -119,6 +121,7 @@ public class PoiStreamSheetParser implements SheetParser {
 
     @Override
     public void parse(InputStream in,
+                      String systemId,
                       WorkbookKind kind,
                       String password,
                       String sheetName,
@@ -126,7 +129,7 @@ public class PoiStreamSheetParser implements SheetParser {
                       TableHandler handler) throws IOException {
         try (OPCPackage opcPackage = OPCPackage.open(in)) {
             final StreamParser parser = new StreamParser(opcPackage);
-            parser.process(sheetName, headers, handler);
+            parser.process(systemId, sheetName, headers, handler);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -136,6 +139,7 @@ public class PoiStreamSheetParser implements SheetParser {
 
     @Override
     public void parse(InputStream in,
+                      String systemId,
                       WorkbookKind kind,
                       String password,
                       int sheetIndex,
@@ -143,7 +147,7 @@ public class PoiStreamSheetParser implements SheetParser {
                       TableHandler handler) throws IOException {
         try (OPCPackage opcPackage = OPCPackage.open(in)) {
             final StreamParser parser = new StreamParser(opcPackage);
-            parser.process(sheetIndex, headers, handler);
+            parser.process(systemId, sheetIndex, headers, handler);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -159,27 +163,33 @@ public class PoiStreamSheetParser implements SheetParser {
             LOGGER.warn("Cannot estimate number of rows");
         }
 
-        public void process(int headers,
-                            TableHandler handler) throws Exception {
+        public void process(String systemId,
+                            int headers,
+                            TablesHandler handler) throws Exception {
+            handler.processBeginTables(systemId);
+
             final ReadOnlySharedStringsTable strings = new ReadOnlySharedStringsTable(this.opcPackage);
             final XSSFReader xssfReader = new XSSFReader(this.opcPackage);
             final StylesTable styles = xssfReader.getStylesTable();
             final XSSFReader.SheetIterator iter = (XSSFReader.SheetIterator) xssfReader.getSheetsData();
             while (iter.hasNext()) {
                 try (final InputStream stream = iter.next()) {
-                    handler.processBegin(iter.getSheetName(), -1);
+                    handler.processBeginTable(iter.getSheetName(), -1);
                     processSheet(styles,
                                  strings,
                                  new ExcelSheetHandler(headers, handler),
                                  stream);
-                    handler.processEnd();
+                    handler.processEndTable(iter.getSheetName());
                 }
             }
+            handler.processEndTables(systemId);
         }
 
-        public void process(String sheetName,
+        public void process(String systemId,
+                            String sheetName,
                             int headers,
                             TableHandler handler) throws Exception {
+            TablesHandler.processBeginTables(handler, systemId);
             final ReadOnlySharedStringsTable strings = new ReadOnlySharedStringsTable(this.opcPackage);
             final XSSFReader xssfReader = new XSSFReader(this.opcPackage);
             final StylesTable styles = xssfReader.getStylesTable();
@@ -189,20 +199,23 @@ public class PoiStreamSheetParser implements SheetParser {
                 try (final InputStream stream = iter.next()) {
                     if (sheetName.equals(iter.getSheetName())) {
                         found = true;
-                        handler.processBegin(iter.getSheetName(), -1);
+                        handler.processBeginTable(iter.getSheetName(), -1);
                         processSheet(styles,
                                      strings,
                                      new ExcelSheetHandler(headers, handler),
                                      stream);
-                        handler.processEnd();
+                        handler.processEndTable(iter.getSheetName());
                     }
                 }
             }
+            TablesHandler.processEndTables(handler, systemId);
         }
 
-        public void process(int sheetIndex,
+        public void process(String systemId,
+                            int sheetIndex,
                             int headers,
                             TableHandler handler) throws Exception {
+            TablesHandler.processBeginTables(handler, systemId);
             final ReadOnlySharedStringsTable strings = new ReadOnlySharedStringsTable(this.opcPackage);
             final XSSFReader xssfReader = new XSSFReader(this.opcPackage);
             final StylesTable styles = xssfReader.getStylesTable();
@@ -213,16 +226,17 @@ public class PoiStreamSheetParser implements SheetParser {
                 try (final InputStream stream = iter.next()) {
                     if (sheetIndex == index) {
                         found = true;
-                        handler.processBegin(iter.getSheetName(), -1);
+                        handler.processBeginTable(iter.getSheetName(), -1);
                         processSheet(styles,
                                      strings,
                                      new ExcelSheetHandler(headers, handler),
                                      stream);
-                        handler.processEnd();
+                        handler.processEndTable(iter.getSheetName());
                     }
                 }
                 index++;
             }
+            TablesHandler.processEndTables(handler, systemId);
         }
 
         private static void processSheet(Styles styles,

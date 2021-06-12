@@ -32,6 +32,7 @@ import cdc.office.ss.WorkbookKind;
 import cdc.office.tables.Row;
 import cdc.office.tables.RowLocation;
 import cdc.office.tables.TableHandler;
+import cdc.office.tables.TablesHandler;
 import cdc.util.function.Evaluation;
 import cdc.util.lang.ExceptionWrapper;
 
@@ -52,9 +53,9 @@ public class PoiSaxSheetParser implements SheetParser {
     public void parse(File file,
                       String password,
                       int headers,
-                      TableHandler handler) throws IOException {
+                      TablesHandler handler) throws IOException {
         try (OPCPackage pkg = OPCPackage.open(file.getPath(), PackageAccess.READ)) {
-            parse(pkg, headers, handler);
+            parse(file.getPath(), pkg, headers, handler);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -64,12 +65,13 @@ public class PoiSaxSheetParser implements SheetParser {
 
     @Override
     public void parse(InputStream in,
+                      String systemId,
                       WorkbookKind kind,
                       String password,
                       int headers,
-                      TableHandler handler) throws IOException {
+                      TablesHandler handler) throws IOException {
         try (OPCPackage pkg = OPCPackage.open(in)) {
-            parse(pkg, headers, handler);
+            parse(systemId, pkg, headers, handler);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -84,7 +86,7 @@ public class PoiSaxSheetParser implements SheetParser {
                       int headers,
                       TableHandler handler) throws IOException {
         try (OPCPackage pkg = OPCPackage.open(file.getPath(), PackageAccess.READ)) {
-            parse(pkg, sheetName, headers, handler);
+            parse(file.getPath(), pkg, sheetName, headers, handler);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -99,7 +101,7 @@ public class PoiSaxSheetParser implements SheetParser {
                       int headers,
                       TableHandler handler) throws IOException {
         try (OPCPackage pkg = OPCPackage.open(file.getPath(), PackageAccess.READ)) {
-            parse(pkg, sheetIndex, headers, handler);
+            parse(file.getPath(), pkg, sheetIndex, headers, handler);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -109,13 +111,14 @@ public class PoiSaxSheetParser implements SheetParser {
 
     @Override
     public void parse(InputStream in,
+                      String systemId,
                       WorkbookKind kind,
                       String password,
                       String sheetName,
                       int headers,
                       TableHandler handler) throws IOException {
         try (OPCPackage pkg = OPCPackage.open(in)) {
-            parse(pkg, sheetName, headers, handler);
+            parse(systemId, pkg, sheetName, headers, handler);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -125,13 +128,14 @@ public class PoiSaxSheetParser implements SheetParser {
 
     @Override
     public void parse(InputStream in,
+                      String systemId,
                       WorkbookKind kind,
                       String password,
                       int sheetIndex,
                       int headers,
                       TableHandler handler) throws IOException {
         try (OPCPackage pkg = OPCPackage.open(in)) {
-            parse(pkg, sheetIndex, headers, handler);
+            parse(systemId, pkg, sheetIndex, headers, handler);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -139,9 +143,10 @@ public class PoiSaxSheetParser implements SheetParser {
         }
     }
 
-    private static void parse(OPCPackage pkg,
+    private static void parse(String systemId,
+                              OPCPackage pkg,
                               int headers,
-                              TableHandler handler) throws IOException {
+                              TablesHandler handler) throws IOException {
         try {
             final XSSFReader r = new XSSFReader(pkg);
             final SharedStringsTable sst = r.getSharedStringsTable();
@@ -156,6 +161,8 @@ public class PoiSaxSheetParser implements SheetParser {
                 }
             }
 
+            handler.processBeginTables(systemId);
+
             final XMLReader parser = fetchSheetParser(headers, handler, sst, styles);
 
             final XSSFReader.SheetIterator sheets = (XSSFReader.SheetIterator) r.getSheetsData();
@@ -163,12 +170,15 @@ public class PoiSaxSheetParser implements SheetParser {
                 LOGGER.debug("Processing new sheet");
                 try (InputStream sheet = sheets.next()) {
                     final InputSource sheetSource = new InputSource(sheet);
-                    handler.processBegin(sheets.getSheetName(), -1);
+                    handler.processBeginTable(sheets.getSheetName(), -1);
                     parser.parse(sheetSource);
-                    handler.processEnd();
+                    handler.processEndTable(sheets.getSheetName());
                 }
                 LOGGER.debug("Processed sheet");
             }
+
+            handler.processEndTables(systemId);
+
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -176,11 +186,14 @@ public class PoiSaxSheetParser implements SheetParser {
         }
     }
 
-    private static void parse(OPCPackage pkg,
+    private static void parse(String systemId,
+                              OPCPackage pkg,
                               String sheetName,
                               int headers,
                               TableHandler handler) throws IOException {
         try {
+            TablesHandler.processBeginTables(handler, systemId);
+
             final XSSFReader r = new XSSFReader(pkg);
             final SharedStringsTable sst = r.getSharedStringsTable();
             final StylesTable styles = r.getStylesTable();
@@ -206,13 +219,15 @@ public class PoiSaxSheetParser implements SheetParser {
                             found = true;
                         }
                         final InputSource sheetSource = new InputSource(sheet);
-                        handler.processBegin(sheets.getSheetName(), -1);
+                        handler.processBeginTable(sheets.getSheetName(), -1);
                         parser.parse(sheetSource);
-                        handler.processEnd();
+                        handler.processEndTable(sheets.getSheetName());
                     }
                 }
                 LOGGER.debug("Processed sheet");
             }
+
+            TablesHandler.processEndTables(handler, systemId);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -220,11 +235,14 @@ public class PoiSaxSheetParser implements SheetParser {
         }
     }
 
-    private static void parse(OPCPackage pkg,
+    private static void parse(String systemId,
+                              OPCPackage pkg,
                               int sheetIndex,
                               int headers,
                               TableHandler handler) throws IOException {
         try {
+            TablesHandler.processBeginTables(handler, systemId);
+
             final XSSFReader r = new XSSFReader(pkg);
             final SharedStringsTable sst = r.getSharedStringsTable();
             final StylesTable styles = r.getStylesTable();
@@ -248,13 +266,15 @@ public class PoiSaxSheetParser implements SheetParser {
                 try (InputStream sheet = sheets.next()) {
                     if (index == sheetIndex) {
                         final InputSource sheetSource = new InputSource(sheet);
-                        handler.processBegin(sheets.getSheetName(), -1);
+                        handler.processBeginTable(sheets.getSheetName(), -1);
                         parser.parse(sheetSource);
-                        handler.processEnd();
+                        handler.processEndTable(sheets.getSheetName());
                     }
                 }
                 LOGGER.debug("Processed sheet");
             }
+
+            TablesHandler.processEndTables(handler, systemId);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {

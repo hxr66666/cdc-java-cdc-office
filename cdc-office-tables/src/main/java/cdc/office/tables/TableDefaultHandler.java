@@ -9,9 +9,9 @@ public class TableDefaultHandler implements TableHandler {
     private static final Logger LOGGER = LogManager.getLogger(TableDefaultHandler.class);
 
     @Override
-    public void processBegin(String name,
-                             int numberOfRows) {
-        LOGGER.debug("processBegin({})", name);
+    public void processBeginTable(String name,
+                                  int numberOfRows) {
+        LOGGER.debug("processBeginTable({})", name);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class TableDefaultHandler implements TableHandler {
     }
 
     @Override
-    public void processEnd() {
-        LOGGER.debug("processEnd()");
+    public void processEndTable(String name) {
+        LOGGER.debug("processEndTable({})", name);
     }
 }

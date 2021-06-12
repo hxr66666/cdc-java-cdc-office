@@ -1,5 +1,6 @@
 package cdc.office.ss;
 
+import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,14 +26,14 @@ public class WorkbookWriterFeatures {
     private final char separator;
 
     /** CSV charset. */
-    private final String charset;
+    private final Charset charset;
     // TODO Locale
 
     private final int maxLineLength;
 
     private WorkbookWriterFeatures(Set<Feature> features,
                                    char separator,
-                                   String charset,
+                                   Charset charset,
                                    int maxLineLength) {
         this.features.addAll(features);
         this.separator = separator;
@@ -123,10 +124,10 @@ public class WorkbookWriterFeatures {
     }
 
     /**
-     * @return The CSV charset to use. Default to {@code null}.<br>
+     * @return The CSV charset to use.<br>
      *         Used for {@link WorkbookKind#CSV}.
      */
-    public String getCharset() {
+    public Charset getCharset() {
         return charset;
     }
 
@@ -141,7 +142,7 @@ public class WorkbookWriterFeatures {
     public static class Builder {
         private final Set<Feature> features = new HashSet<>();
         private char separator = ';';
-        private String charset = null;
+        private Charset charset = Charset.defaultCharset();
         private int maxLineLength = 255;
 
         protected Builder() {
@@ -169,7 +170,7 @@ public class WorkbookWriterFeatures {
             return this;
         }
 
-        public Builder charset(String charset) {
+        public Builder charset(Charset charset) {
             this.charset = charset;
             return this;
         }

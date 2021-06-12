@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.nio.charset.Charset;
 
 import cdc.office.tables.TableRowsCounter;
 
@@ -121,16 +122,17 @@ public final class CsvUtils {
     }
 
     public static int getNumberOfCsvRows(InputStream in,
-                                         String charset,
+                                         String systemId,
+                                         Charset charset,
                                          char separator) throws IOException {
         final CsvParser parser = new CsvParser(separator).setVoidHandler();
         final TableRowsCounter counter = new TableRowsCounter();
-        parser.parse(in, charset, counter, 0);
+        parser.parse(in, systemId, charset, counter, 0);
         return counter.getNumberOfRows();
     }
 
     public static int getNumberOfCsvRows(File file,
-                                         String charset,
+                                         Charset charset,
                                          char separator) throws IOException {
         final CsvParser parser = new CsvParser(separator).setVoidHandler();
         final TableRowsCounter counter = new TableRowsCounter();

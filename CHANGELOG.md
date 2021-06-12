@@ -7,7 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Created TablesHandler.
+
 ### Changed
+- Updated dependencies.
+- Changed processBegin to ProcessBeginTable and poropcessEnd to ProcessEndTablek in TableHandler.
+- Replaced String by Charset in several places.
+- Added systemId parameter and used TablesHandler in SheetParser.
+
 ### Fixed
 
 

@@ -132,11 +132,11 @@ public class SheetTestSupport {
         }
 
         @Override
-        public void processBegin(String name,
-                                 int numberOfRows) {
-            LOGGER.info("processBegin({}, {})", name, numberOfRows);
+        public void processBeginTable(String name,
+                                      int numberOfRows) {
+            LOGGER.info("processBeginTable({}, {})", name, numberOfRows);
             processBeginCount++;
-            super.processBegin(name, numberOfRows);
+            super.processBeginTable(name, numberOfRows);
         }
 
         @Override
@@ -156,10 +156,10 @@ public class SheetTestSupport {
         }
 
         @Override
-        public void processEnd() {
-            LOGGER.info("processEnd()");
+        public void processEndTable(String name) {
+            LOGGER.info("processEndTable({})", name);
             processEndCount++;
-            super.processEnd();
+            super.processEndTable(name);
         }
 
     }

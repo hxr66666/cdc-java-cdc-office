@@ -13,7 +13,7 @@ class TableColumnsFilterTest {
         final TableColumnsFilter filter = new TableColumnsFilter(handler,
                                                                  c -> c < 2);
 
-        filter.processBegin(null, -1);
+        filter.processBeginTable(null, -1);
         assertFalse(handler.hasHeaders());
         final RowLocation.Builder location = RowLocation.builder();
 
@@ -34,7 +34,7 @@ class TableColumnsFilterTest {
         filter.processData(d5, location.incrementNumbers(TableSection.DATA).build());
         filter.processData(d6, location.incrementNumbers(TableSection.DATA).build());
         filter.processData(d7, location.incrementNumbers(TableSection.DATA).build());
-        filter.processEnd();
+        filter.processEndTable(null);
 
         assertTrue(handler.hasHeaders());
         assertEquals(8, handler.getRowsCount());

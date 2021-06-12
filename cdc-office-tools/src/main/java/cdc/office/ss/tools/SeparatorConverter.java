@@ -38,8 +38,8 @@ public final class SeparatorConverter extends AbstractFilter<SeparatorConverter.
         }
 
         @Override
-        public void processBegin(String name,
-                                 int numberOfRows) {
+        public void processBeginTable(String name,
+                                      int numberOfRows) {
             // Ignore
         }
 
@@ -66,7 +66,7 @@ public final class SeparatorConverter extends AbstractFilter<SeparatorConverter.
         }
 
         @Override
-        public void processEnd() {
+        public void processEndTable(String name) {
             try {
                 writer.close();
             } catch (final IOException e) {

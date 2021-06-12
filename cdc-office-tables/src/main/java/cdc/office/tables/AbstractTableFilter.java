@@ -15,13 +15,13 @@ public abstract class AbstractTableFilter implements TableHandler {
     }
 
     @Override
-    public void processBegin(String name,
-                             int numberOfRows) {
-        delegate.processBegin(name, numberOfRows);
+    public void processBeginTable(String name,
+                                  int numberOfRows) {
+        delegate.processBeginTable(name, numberOfRows);
     }
 
     @Override
-    public void processEnd() {
-        delegate.processEnd();
+    public void processEndTable(String name) {
+        delegate.processEndTable(name);
     }
 }

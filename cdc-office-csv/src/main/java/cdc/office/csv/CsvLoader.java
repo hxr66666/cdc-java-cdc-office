@@ -3,6 +3,7 @@ package cdc.office.csv;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -19,7 +20,7 @@ public final class CsvLoader {
     }
 
     public static List<Row> load(File file,
-                                 String charset,
+                                 Charset charset,
                                  char separator) throws IOException {
         LOGGER.debug("load({}, {}, {})", file, charset, separator);
         final CsvParser parser = new CsvParser(separator);
@@ -38,13 +39,15 @@ public final class CsvLoader {
     }
 
     public static List<Row> load(InputStream in,
-                                 String charset,
+                                 String systemId,
+                                 Charset charset,
                                  char separator) throws IOException {
         LOGGER.debug("load({}, {})", charset, separator);
         final CsvParser parser = new CsvParser(separator);
         final MemoryTableHandler handler = new MemoryTableHandler();
         try {
             parser.parse(in,
+                         systemId,
                          charset,
                          handler,
                          0);

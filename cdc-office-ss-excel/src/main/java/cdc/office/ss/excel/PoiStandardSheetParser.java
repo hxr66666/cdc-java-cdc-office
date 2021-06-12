@@ -18,6 +18,7 @@ import cdc.office.ss.WorkbookKind;
 import cdc.office.tables.Row;
 import cdc.office.tables.RowLocation;
 import cdc.office.tables.TableHandler;
+import cdc.office.tables.TablesHandler;
 import cdc.util.lang.BlackHole;
 
 /**
@@ -47,21 +48,22 @@ public class PoiStandardSheetParser implements SheetParser {
     public void parse(File file,
                       String password,
                       int headers,
-                      TableHandler handler) throws IOException {
+                      TablesHandler handler) throws IOException {
         // Open the file in read only mode
         try (final Workbook workbook = WorkbookFactory.create(file, password, true)) {
-            parse(workbook, headers, handler);
+            parse(file.getPath(), workbook, headers, handler);
         }
     }
 
     @Override
     public void parse(InputStream in,
+                      String systemId,
                       WorkbookKind kind,
                       String password,
                       int headers,
-                      TableHandler handler) throws IOException {
+                      TablesHandler handler) throws IOException {
         try (final Workbook workbook = WorkbookFactory.create(in, password)) {
-            parse(workbook, headers, handler);
+            parse(systemId, workbook, headers, handler);
         }
     }
 
@@ -73,7 +75,7 @@ public class PoiStandardSheetParser implements SheetParser {
                       TableHandler handler) throws IOException {
         // Open the file in read only mode
         try (final Workbook workbook = WorkbookFactory.create(file, password, true)) {
-            parse(workbook, sheetName, headers, handler);
+            parse(file.getPath(), workbook, sheetName, headers, handler);
         }
     }
 
@@ -85,44 +87,50 @@ public class PoiStandardSheetParser implements SheetParser {
                       TableHandler handler) throws IOException {
         // Open the file in read only mode
         try (final Workbook workbook = WorkbookFactory.create(file, password, true)) {
-            parse(workbook, sheetIndex, headers, handler);
+            parse(file.getPath(), workbook, sheetIndex, headers, handler);
         }
     }
 
     @Override
     public void parse(InputStream in,
+                      String systemId,
                       WorkbookKind kind,
                       String password,
                       String sheetName,
                       int headers,
                       TableHandler handler) throws IOException {
         try (final Workbook workbook = WorkbookFactory.create(in, password)) {
-            parse(workbook, sheetName, headers, handler);
+            parse(systemId, workbook, sheetName, headers, handler);
         }
     }
 
     @Override
     public void parse(InputStream in,
+                      String systemId,
                       WorkbookKind kind,
                       String password,
                       int sheetIndex,
                       int headers,
                       TableHandler handler) throws IOException {
         try (final Workbook workbook = WorkbookFactory.create(in, password)) {
-            parse(workbook, sheetIndex, headers, handler);
+            parse(systemId, workbook, sheetIndex, headers, handler);
         }
     }
 
-    private void parse(Workbook workbook,
+    private void parse(String systemId,
+                       Workbook workbook,
                        int headers,
-                       TableHandler handler) {
+                       TablesHandler handler) {
+        handler.processBeginTables(systemId);
         for (int index = 0; index < workbook.getNumberOfSheets(); index++) {
             final Sheet sheet = workbook.getSheetAt(index);
-            parse(sheet, headers, handler);
+            parse(systemId, sheet, headers, handler);
         }
+        handler.processEndTables(systemId);
     }
 
-    private void parse(Workbook workbook,
+    private void parse(String systemId,
+                       Workbook workbook,
                        String sheetName,
                        int headers,
                        TableHandler handler) {
@@ -130,15 +138,16 @@ public class PoiStandardSheetParser implements SheetParser {
         if (sheet == null) {
             throw new IllegalArgumentException("Invalid sheet name: " + sheetName);
         }
-        parse(sheet, headers, handler);
+        parse(systemId, sheet, headers, handler);
     }
 
-    private void parse(Workbook workbook,
+    private void parse(String systemId,
+                       Workbook workbook,
                        int sheetIndex,
                        int headers,
                        TableHandler handler) {
         final Sheet sheet = workbook.getSheetAt(sheetIndex);
-        parse(sheet, headers, handler);
+        parse(systemId, sheet, headers, handler);
     }
 
     private static int getNumberOfRows(Sheet sheet) {
@@ -146,10 +155,12 @@ public class PoiStandardSheetParser implements SheetParser {
         return last < 0 ? -1 : last + 1;// TODO check
     }
 
-    private void parse(Sheet sheet,
+    private void parse(String systemId,
+                       Sheet sheet,
                        int headers,
                        TableHandler handler) {
-        handler.processBegin(sheet.getSheetName(), getNumberOfRows(sheet));
+        TablesHandler.processBeginTables(handler, systemId);
+        handler.processBeginTable(sheet.getSheetName(), getNumberOfRows(sheet));
         final Row.Builder r = Row.builder();
         final RowLocation.Builder location = RowLocation.builder();
         int previousRowIndex = -1;
@@ -178,7 +189,8 @@ public class PoiStandardSheetParser implements SheetParser {
                 active = TableHandler.processRow(handler, r.build(), location.build()).isContinue();
             }
         }
-        handler.processEnd();
+        handler.processEndTable(sheet.getSheetName());
+        TablesHandler.processEndTables(handler, systemId);
     }
 
     private String toString(Cell cell) {
