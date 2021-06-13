@@ -3,15 +3,14 @@ package cdc.office.tables;
 import cdc.util.function.Evaluation;
 
 /**
- * Set of operations that must be implemented by a text table (csv, xml or
- * others) handler.
+ * Interface implemented by classes that can handle table-like parsing events for one table.
  * <p>
  * The caller <b>MUST</b> proceed in this order:
  * <ol>
- * <li>{@code processBegin}
- * <li>{@code procesHeader?}
- * <li>{@code processData*}
- * <li>{@code processEnd}
+ * <li>{@link #processBeginTable(String, int)}
+ * <li>{@link #processHeader(Row, RowLocation)}*
+ * <li>{@link #processData(Row, RowLocation)}*
+ * <li>{@link #processEndTable(String)}
  * </ol>
  *
  * @author D. Carbonne
@@ -28,23 +27,23 @@ public interface TableHandler {
      */
     public default void processBeginTable(String name,
                                           int numberOfRows) {
-        // processBegin(name, numberOfRows);
+        processBegin(name, numberOfRows);
     }
 
-    // /**
-    // * Called when the parsing of a table starts.<br>
-    // * Default implementation does nothing.
-    // *
-    // * @param name The table/sheet name may be {@code null}.
-    // * @param numberOfRows The number of rows of the table,
-    // * or a negative number if that can not be determined.
-    // * @deprecated Use {@link #processBeginTable(String, int)}.
-    // */
-    // @Deprecated
-    // public default void processBegin(String name,
-    // int numberOfRows) {
-    // // Ignore
-    // }
+    /**
+     * Called when the parsing of a table starts.<br>
+     * Default implementation does nothing.
+     *
+     * @param name The table/sheet name may be {@code null}.
+     * @param numberOfRows The number of rows of the table,
+     *            or a negative number if that can not be determined.
+     * @deprecated Use {@link #processBeginTable(String, int)}.
+     */
+    @Deprecated
+    public default void processBegin(String name,
+                                     int numberOfRows) {
+        // Ignore
+    }
 
     /**
      * Called when a header row is read.
@@ -75,21 +74,21 @@ public interface TableHandler {
      * @param name The table/sheet name may be {@code null}.
      */
     public default void processEndTable(String name) {
-        // processEnd();
+        processEnd();
     }
 
-    // /**
-    // * Called when the table has been fully read.
-    // * <p>
-    // * This is called even when parsing has been interrupted.<br>
-    // * Default implementation does nothing.
-    // *
-    // * @deprecated Use {@link #processEndTable(String)}.
-    // */
-    // @Deprecated
-    // public default void processEnd() {
-    // // Ignore
-    // }
+    /**
+     * Called when the table has been fully read.
+     * <p>
+     * This is called even when parsing has been interrupted.<br>
+     * Default implementation does nothing.
+     *
+     * @deprecated Use {@link #processEndTable(String)}.
+     */
+    @Deprecated
+    public default void processEnd() {
+        // Ignore
+    }
 
     public static Evaluation processRow(TableHandler handler,
                                         Row row,
