@@ -96,13 +96,13 @@ public interface Row {
         final List<String> values = getValues();
         if (column >= 0 && column < values.size()) {
             final String value = values.get(column);
-            if (value == null) {
+            if (value == null || value.isEmpty()) {
                 return def;
             } else {
                 try {
                     return converter.apply(value);
                 } catch (final Exception e) {
-                    return FailureReaction.onError("Failed to convert " + value,
+                    return FailureReaction.onError("Failed to convert '" + value + "'",
                                                    LOGGER,
                                                    reaction,
                                                    def,
