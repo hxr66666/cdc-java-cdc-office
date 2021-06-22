@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added systemId parameter and used TablesHandler in SheetParser.
 
 ### Fixed
+- Now, when cell value is empty, returns def, in Row.getValue. #2
 
 
 ## [0.10.1] - 2021-06-05
