@@ -2,46 +2,30 @@ package cdc.office.ss.tools;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.odftoolkit.odfdom.dom.style.OdfStyleFamily;
-import org.odftoolkit.odfdom.incubator.doc.office.OdfOfficeStyles;
-import org.odftoolkit.odfdom.incubator.doc.style.OdfStyle;
-import org.odftoolkit.simple.SpreadsheetDocument;
+import org.apache.logging.log4j.io.IoBuilder;
 
 import cdc.office.ss.SheetLoader;
-import cdc.office.ss.WorkbookKind;
-import cdc.office.ss.WorkbookWriter;
 import cdc.office.ss.WorkbookWriterFeatures;
-import cdc.office.ss.csv.CsvWorkbookWriter;
-import cdc.office.ss.excel.ExcelWorkbookWriter;
-import cdc.office.ss.odf.SimpleOdsWorkbookWriter;
+import cdc.office.ss.tools.KeyedSheetDiff.MainArgs.Feature;
 import cdc.office.tables.Header;
 import cdc.office.tables.HeaderMapper;
 import cdc.office.tables.Row;
-import cdc.office.tables.TableSection;
-import cdc.office.tables.diff.CellDiff;
-import cdc.office.tables.diff.DiffKind;
 import cdc.office.tables.diff.KeyedTableDiff;
-import cdc.office.tables.diff.RowDiff;
-import cdc.tuples.CTupleN;
 import cdc.util.cli.AbstractMainSupport;
 import cdc.util.cli.FeatureMask;
 import cdc.util.cli.OptionEnum;
-import cdc.util.lang.UnexpectedValueException;
 
 /**
  * Utility used to compare 2 csv files whose lines are identified by key columns.
@@ -50,8 +34,9 @@ import cdc.util.lang.UnexpectedValueException;
  *
  */
 public final class KeyedSheetDiff {
-    protected static final Logger LOGGER = LogManager.getLogger(KeyedSheetDiff.class);
-    protected final MainArgs margs;
+    static final Logger LOGGER = LogManager.getLogger(KeyedSheetDiff.class);
+    static final PrintStream OUT = IoBuilder.forLogger(LOGGER).setLevel(Level.INFO).buildPrintStream();
+    final MainArgs margs;
 
     private KeyedSheetDiff(MainArgs margs) {
         this.margs = margs;
@@ -120,7 +105,7 @@ public final class KeyedSheetDiff {
         }
     }
 
-    protected void execute() throws IOException {
+    void execute() throws IOException {
         // Load input files as rows
         final SheetLoader loader = new SheetLoader();
         loader.getFactory().setCharset(margs.charset);
@@ -158,410 +143,38 @@ public final class KeyedSheetDiff {
                                                        rows2,
                                                        margs.keys);
 
-        // Now generate the output
-        LOGGER.info("Generate {}", margs.output);
-        final WorkbookKind outputKind = WorkbookKind.from(margs.output);
-
-        if (outputKind == null) {
-            throw new IOException("Unrecognized output format for " + margs.output);
-        }
-
         if (margs.isEnabled(MainArgs.Feature.SYNTHESIS)) {
-            printSynthesis(diff);
+            diff.printSynthesis(OUT);
         }
 
-        switch (outputKind) {
-        case CSV:
-            new CsvGenerator().generate(header2, diff);
-            break;
-        case XLS:
-        case XLSX:
-        case XLSM:
-            new ExcelGenerator().generate(header2, diff);
-            break;
-        case ODS:
-            new OdsGenerator().generate(header2, diff);
-            break;
-        default:
-            throw new UnexpectedValueException(outputKind);
-        }
+        final KeyedTableDiffExporter exporter = new KeyedTableDiffExporter();
+        exporter.setAddedMark(margs.addedMark)
+                .setChangedMark(margs.changedMark)
+                .setUnchangedMark(margs.unchangedMark)
+                .setRemovedMark(margs.removedMark)
+                .setLineMarkColumn(getLineMarkColumn())
+                .setShowColors(!margs.isEnabled(Feature.NO_COLORS))
+                .setShowUnchangedLines(!margs.isEnabled(Feature.NO_UNCHANGED_LINES))
+                .setSortLines(margs.isEnabled(Feature.SORT_LINES))
+                .setSheetName(margs.sheet == null ? "Delta" : margs.sheet)
+                .setFeatures(WorkbookWriterFeatures.builder()
+                                                   .separator(margs.separator)
+                                                   .charset(margs.charset)
+                                                   .maxLineLength(-1)
+                                                   .build());
+
+        exporter.save(diff, margs.output);
+
         LOGGER.info("Done");
     }
 
-    private static void printSynthesis(KeyedTableDiff diff) {
-        int addedLines = 0;
-        int removedLines = 0;
-        int unchangedLines = 0;
-        int changedLines = 0;
-        int addedCells = 0;
-        int removedCells = 0;
-        int unchangedCells = 0;
-        int changedCells = 0;
-
-        for (final RowDiff rdiff : diff.getDiffs()) {
-            switch (rdiff.getKind()) {
-            case ADDED:
-                addedLines++;
-                break;
-            case CHANGED:
-                changedLines++;
-                for (final CellDiff cdiff : rdiff.getDiffs()) {
-                    switch (cdiff.getKind()) {
-                    case ADDED:
-                        addedCells++;
-                        break;
-                    case CHANGED:
-                        changedCells++;
-                        break;
-                    case REMOVED:
-                        removedCells++;
-                        break;
-                    case SAME:
-                        unchangedCells++;
-                        break;
-                    default:
-                        throw new UnexpectedValueException(cdiff.getKind());
-                    }
-                }
-                break;
-            case REMOVED:
-                removedLines++;
-                break;
-            case SAME:
-                unchangedLines++;
-                break;
-            default:
-                throw new UnexpectedValueException(rdiff.getKind());
-            }
-        }
-        LOGGER.info("Lines");
-        LOGGER.info("   Added:     {}", addedLines);
-        LOGGER.info("   Removed:   {}", removedLines);
-        LOGGER.info("   Changed:   {}", changedLines);
-        LOGGER.info("   Unchanged: {}", unchangedLines);
-        LOGGER.info("Cells");
-        LOGGER.info("   Added:     {}", addedCells);
-        LOGGER.info("   Removed:   {}", removedCells);
-        LOGGER.info("   Changed:   {}", changedCells);
-        LOGGER.info("   Unchanged: {}", unchangedCells);
-    }
-
-    protected String getLineMarkColumn() {
+    String getLineMarkColumn() {
         if (margs.lineMarkColumn != null) {
             return margs.lineMarkColumn;
         } else if (margs.isEnabled(MainArgs.Feature.NO_ADDED_OR_REMOVED_MARKS)) {
             return "Line Diff";
         } else {
             return null;
-        }
-    }
-
-    /**
-     * Base Generator.
-     *
-     * @author Damien Carbonne
-     */
-    private abstract class Generator {
-        protected final String lineMarkColumn = getLineMarkColumn();
-        protected final boolean insertLineMarkColumn = lineMarkColumn != null;
-        protected final String changedMark = margs.changedMark;
-        protected final String addedMark = margs.isEnabled(MainArgs.Feature.NO_ADDED_OR_REMOVED_MARKS) ? "" : margs.addedMark;
-        protected final String removedMark = margs.isEnabled(MainArgs.Feature.NO_ADDED_OR_REMOVED_MARKS) ? "" : margs.removedMark;
-        protected final String unchangedMark = margs.unchangedMark;
-
-        Generator() {
-            super();
-        }
-
-        protected String getMark(DiffKind kind) {
-            switch (kind) {
-            case ADDED:
-                return addedMark;
-            case CHANGED:
-                return changedMark;
-            case REMOVED:
-                return removedMark;
-            case SAME:
-                return unchangedMark;
-            default:
-                throw new UnexpectedValueException(kind);
-            }
-        }
-
-        protected abstract void generate(Header header,
-                                         KeyedTableDiff diff) throws IOException;
-    }
-
-    /**
-     * Csv Generator.
-     *
-     * @author Damien Carbonne
-     */
-    private final class CsvGenerator extends Generator {
-        public CsvGenerator() {
-            super();
-        }
-
-        @Override
-        public void generate(Header header,
-                             KeyedTableDiff diff) throws IOException {
-            final WorkbookWriterFeatures features = WorkbookWriterFeatures.builder()
-                                                                          .charset(margs.charset)
-                                                                          .separator(margs.separator)
-                                                                          .build();
-            try (final WorkbookWriter<?> writer = new CsvWorkbookWriter(margs.output, features)) {
-                writer.beginSheet(null);
-
-                // Header
-                writer.beginRow(TableSection.HEADER);
-                if (insertLineMarkColumn) {
-                    writer.addCell(lineMarkColumn);
-                }
-                writer.addCells(header.getNames());
-
-                // Data
-                final List<CTupleN<String>> keys = diff.getKeys();
-                if (margs.isEnabled(MainArgs.Feature.SORT_LINES)) {
-                    Collections.sort(keys);
-                }
-                for (final CTupleN<String> key : keys) {
-                    final RowDiff rdiff = diff.getDiff(key);
-                    if (rdiff.getKind() != DiffKind.SAME || !margs.isEnabled(MainArgs.Feature.NO_UNCHANGED_LINES)) {
-                        writer.beginRow(TableSection.DATA);
-                        if (insertLineMarkColumn) {
-                            writer.addCell(rdiff.getKind());
-                        }
-                        for (final CellDiff cdiff : rdiff.getDiffs()) {
-                            switch (cdiff.getKind()) {
-                            case ADDED:
-                            case CHANGED:
-                            case SAME:
-                                writer.addCell(getMark(cdiff.getKind()) + cdiff.getRight());
-                                break;
-                            case REMOVED:
-                                writer.addCell(getMark(cdiff.getKind()) + cdiff.getLeft());
-                                break;
-                            default:
-                                throw new UnexpectedValueException(cdiff.getKind());
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    static CellStyle createStyle(Workbook workbook,
-                                 IndexedColors color) {
-        final CellStyle style = workbook.createCellStyle();
-        final Font font = workbook.createFont();
-        font.setColor(color.index);
-        style.setFont(font);
-        return style;
-    }
-
-    /**
-     * Excel Generator.
-     *
-     * @author Damien Carbonne
-     */
-    private final class ExcelGenerator extends Generator {
-        private CellStyle addedStyle;
-        private CellStyle removedStyle;
-        private CellStyle changedStyle;
-        private CellStyle unchangedStyle;
-        private CellStyle headerStyle;
-
-        public ExcelGenerator() {
-            super();
-        }
-
-        private void createStyles(Workbook workbook) {
-            if (margs.isEnabled(MainArgs.Feature.NO_COLORS)) {
-                addedStyle = null;
-                removedStyle = null;
-                changedStyle = null;
-                unchangedStyle = null;
-            } else {
-                addedStyle = createStyle(workbook, IndexedColors.BLUE);
-                removedStyle = createStyle(workbook, IndexedColors.RED);
-                changedStyle = createStyle(workbook, IndexedColors.PINK);
-                unchangedStyle = createStyle(workbook, IndexedColors.BLACK);
-            }
-            headerStyle = createStyle(workbook, IndexedColors.BLACK);
-        }
-
-        private CellStyle getStyle(DiffKind kind) {
-            switch (kind) {
-            case ADDED:
-                return addedStyle;
-            case CHANGED:
-                return changedStyle;
-            case REMOVED:
-                return removedStyle;
-            case SAME:
-                return unchangedStyle;
-            default:
-                throw new UnexpectedValueException(kind);
-            }
-        }
-
-        @Override
-        public void generate(Header header,
-                             KeyedTableDiff diff) throws IOException {
-            final WorkbookWriterFeatures features = WorkbookWriterFeatures.builder()
-                                                                          .maxLineLength(-1)
-                                                                          .build();
-            try (final ExcelWorkbookWriter writer = new ExcelWorkbookWriter(margs.output,
-                                                                            features,
-                                                                            true)) {
-                createStyles(writer.getWorkbook());
-
-                if (margs.sheet == null) {
-                    writer.beginSheet("Delta");
-                } else {
-                    writer.beginSheet(margs.sheet);
-                }
-
-                // Header
-                writer.beginRow(TableSection.HEADER);
-                if (insertLineMarkColumn) {
-                    writer.addCell(lineMarkColumn);
-                    writer.getCell().setCellStyle(headerStyle);
-                }
-                for (final String name : header.getNames()) {
-                    writer.addCell(name);
-                    writer.getCell().setCellStyle(headerStyle);
-                }
-
-                // Data
-                final List<CTupleN<String>> keys = diff.getKeys();
-                if (margs.isEnabled(MainArgs.Feature.SORT_LINES)) {
-                    Collections.sort(keys);
-                }
-
-                for (final CTupleN<String> key : keys) {
-                    final RowDiff rdiff = diff.getDiff(key);
-                    if (rdiff.getKind() != DiffKind.SAME || !margs.isEnabled(MainArgs.Feature.NO_UNCHANGED_LINES)) {
-                        writer.beginRow(TableSection.DATA);
-                        if (insertLineMarkColumn) {
-                            writer.addCell(rdiff.getKind().toString());
-                            writer.getCell().setCellStyle(getStyle(rdiff.getKind()));
-                        }
-                        for (final CellDiff cdiff : rdiff.getDiffs()) {
-                            switch (cdiff.getKind()) {
-                            case ADDED:
-                            case CHANGED:
-                            case SAME:
-                                if (margs.isEnabled(MainArgs.Feature.NO_COLORS)) {
-                                    writer.addCell(getMark(cdiff.getKind()) + cdiff.getRight());
-                                } else {
-                                    writer.addCell(cdiff.getRight());
-                                    writer.getCell().setCellStyle(getStyle(cdiff.getKind()));
-                                }
-                                break;
-                            case REMOVED:
-                                if (margs.isEnabled(MainArgs.Feature.NO_COLORS)) {
-                                    writer.addCell(getMark(cdiff.getKind()) + cdiff.getLeft());
-                                } else {
-                                    writer.addCell(cdiff.getLeft());
-                                    writer.getCell().setCellStyle(getStyle(cdiff.getKind()));
-                                }
-                                break;
-                            default:
-                                throw new UnexpectedValueException(cdiff.getKind());
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Ods Generator.
-     *
-     * @author Damien Carbonne
-     */
-    private final class OdsGenerator extends Generator {
-        public OdsGenerator() {
-            super();
-        }
-
-        private void createStyle(SpreadsheetDocument doc) {
-            final OdfOfficeStyles styles = doc.getOrCreateDocumentStyles();
-            final OdfStyle style = styles.newStyle("xxx", OdfStyleFamily.Text);
-
-        }
-
-        @Override
-        public void generate(Header header,
-                             KeyedTableDiff diff) throws IOException {
-            try (WorkbookWriter<?> writer = new SimpleOdsWorkbookWriter(margs.output, WorkbookWriterFeatures.DEFAULT)) {
-                if (margs.sheet == null) {
-                    writer.beginSheet("Delta");
-                } else {
-                    writer.beginSheet(margs.sheet);
-                }
-
-                // Header
-                writer.beginRow(TableSection.HEADER);
-                if (insertLineMarkColumn) {
-                    writer.addCell(lineMarkColumn);
-                    // TODO style
-                }
-                for (final String name : header.getNames()) {
-                    writer.addCell(name);
-                    // TODO style
-                }
-
-                // Data
-                final List<CTupleN<String>> keys = diff.getKeys();
-                if (margs.isEnabled(MainArgs.Feature.SORT_LINES)) {
-                    Collections.sort(keys);
-                }
-
-                for (final CTupleN<String> key : keys) {
-                    final RowDiff rdiff = diff.getDiff(key);
-                    if (rdiff.getKind() != DiffKind.SAME || !margs.isEnabled(MainArgs.Feature.NO_UNCHANGED_LINES)) {
-                        writer.beginRow(TableSection.DATA);
-                        if (insertLineMarkColumn) {
-                            writer.addCell(rdiff.getKind().toString());
-                            // TODO style
-                        }
-
-                        for (final CellDiff cdiff : rdiff.getDiffs()) {
-                            switch (cdiff.getKind()) {
-                            case ADDED:
-                            case CHANGED:
-                            case SAME:
-                                if (margs.isEnabled(MainArgs.Feature.NO_COLORS)) {
-                                    writer.addCell(getMark(cdiff.getKind()) + cdiff.getRight());
-                                } else {
-                                    writer.addCell(cdiff.getRight());
-                                    // TODO style
-                                }
-                                break;
-                            case REMOVED:
-                                if (margs.isEnabled(MainArgs.Feature.NO_COLORS)) {
-                                    writer.addCell(getMark(cdiff.getKind()) + cdiff.getLeft());
-                                } else {
-                                    writer.addCell(cdiff.getLeft());
-                                    // TODO style
-                                }
-                                break;
-                            default:
-                                throw new UnexpectedValueException(cdiff.getKind());
-                            }
-                        }
-
-                    }
-                }
-            } catch (final IOException e) {
-                throw e;
-            } catch (final Exception e) {
-                throw new IOException(e);
-            }
         }
     }
 

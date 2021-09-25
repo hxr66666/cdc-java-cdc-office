@@ -7,13 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Created `KeyedTableDiffExporter`. cdc-java/cdc-applic#84
+
 ### Changed
 ### Fixed
 
 
 ## [0.11.0] - 2021-07-23
 ### Added
-- Created TablesHandler.
+- Created `TablesHandler`.
 
 ### Changed
 - Updated dependencies.

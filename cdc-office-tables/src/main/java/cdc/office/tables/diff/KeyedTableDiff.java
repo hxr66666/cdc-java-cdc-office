@@ -1,5 +1,6 @@
 package cdc.office.tables.diff;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -13,6 +14,7 @@ import cdc.tuples.CTupleN;
 import cdc.tuples.TupleN;
 import cdc.util.lang.Checks;
 import cdc.util.lang.InvalidDataException;
+import cdc.util.lang.UnexpectedValueException;
 
 /**
  * Class used to compare two lists of rows identified by a key set.
@@ -172,5 +174,68 @@ public class KeyedTableDiff {
 
     public Collection<RowDiff> getDiffs() {
         return diffs.values();
+    }
+
+    /**
+     * Prints a synthesis of this diff.
+     *
+     * @param out The PrintStream.
+     */
+    public void printSynthesis(PrintStream out) {
+        int addedLines = 0;
+        int removedLines = 0;
+        int unchangedLines = 0;
+        int changedLines = 0;
+        int addedCells = 0;
+        int removedCells = 0;
+        int unchangedCells = 0;
+        int changedCells = 0;
+
+        for (final RowDiff rdiff : getDiffs()) {
+            switch (rdiff.getKind()) {
+            case ADDED:
+                addedLines++;
+                break;
+            case CHANGED:
+                changedLines++;
+                for (final CellDiff cdiff : rdiff.getDiffs()) {
+                    switch (cdiff.getKind()) {
+                    case ADDED:
+                        addedCells++;
+                        break;
+                    case CHANGED:
+                        changedCells++;
+                        break;
+                    case REMOVED:
+                        removedCells++;
+                        break;
+                    case SAME:
+                        unchangedCells++;
+                        break;
+                    default:
+                        throw new UnexpectedValueException(cdiff.getKind());
+                    }
+                }
+                break;
+            case REMOVED:
+                removedLines++;
+                break;
+            case SAME:
+                unchangedLines++;
+                break;
+            default:
+                throw new UnexpectedValueException(rdiff.getKind());
+            }
+        }
+        out.println("Lines");
+        out.println("   Added:     " + addedLines);
+        out.println("   Removed:   " + removedLines);
+        out.println("   Changed:   " + changedLines);
+        out.println("   Unchanged: " + unchangedLines);
+        out.println("Cells");
+        out.println("   Added:     " + addedCells);
+        out.println("   Removed:   " + removedCells);
+        out.println("   Changed:   " + changedCells);
+        out.println("   Unchanged: " + unchangedCells);
     }
 }
