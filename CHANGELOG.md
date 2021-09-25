@@ -8,8 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Created `KeyedTableDiffExporter`. cdc-java/cdc-applic#84
+- Added `Row.LEXICOGRAPHIC_COMPARATOR`.
 
 ### Changed
+- `Rows.toExtract` handles negative numbers.
+
 ### Fixed
 
 

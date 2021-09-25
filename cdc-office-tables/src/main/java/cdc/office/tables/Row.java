@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
@@ -16,6 +17,7 @@ import cdc.converters.defaults.StringToLocalDate;
 import cdc.converters.defaults.StringToLocalDateTime;
 import cdc.converters.defaults.StringToLocalTime;
 import cdc.util.encoding.Encoders;
+import cdc.util.lang.CollectionUtils;
 import cdc.util.lang.FailureReaction;
 
 /**
@@ -29,6 +31,11 @@ import cdc.util.lang.FailureReaction;
  */
 public interface Row {
     public static final Logger LOGGER = LogManager.getLogger(Row.class);
+
+    public static final Comparator<Row> LEXICOGRAPHIC_COMPARATOR =
+            (r1,
+             r2) -> CollectionUtils.compareLexicographic(r1.getValues(),
+                                                         r2.getValues());
     /**
      * An empty Row.
      */
