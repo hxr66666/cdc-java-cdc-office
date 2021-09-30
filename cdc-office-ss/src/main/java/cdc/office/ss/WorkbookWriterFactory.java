@@ -3,7 +3,7 @@ package cdc.office.ss;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
@@ -20,7 +20,7 @@ import cdc.util.lang.UnexpectedValueException;
  *
  */
 public class WorkbookWriterFactory {
-    private final Set<Hint> hints = new HashSet<>();
+    private final Set<Hint> hints = EnumSet.noneOf(Hint.class);
 
     /**
      * Enumeration of hints that can be used to control factory.

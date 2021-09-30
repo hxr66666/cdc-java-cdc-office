@@ -1,7 +1,7 @@
 package cdc.office.ss;
 
 import java.nio.charset.Charset;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
 
 import cdc.util.lang.Checks;
@@ -20,7 +20,7 @@ public class WorkbookWriterFeatures {
                                                                         .enable(Feature.CSV_WRITE_SHEET_NAMES)
                                                                         .build();
 
-    private final Set<Feature> features = new HashSet<>();
+    private final Set<Feature> features = EnumSet.noneOf(Feature.class);
 
     /** CSV separator. */
     private final char separator;
@@ -31,10 +31,10 @@ public class WorkbookWriterFeatures {
 
     private final int maxLineLength;
 
-    private WorkbookWriterFeatures(Set<Feature> features,
-                                   char separator,
-                                   Charset charset,
-                                   int maxLineLength) {
+    protected WorkbookWriterFeatures(Set<Feature> features,
+                                     char separator,
+                                     Charset charset,
+                                     int maxLineLength) {
         this.features.addAll(features);
         this.separator = separator;
         this.charset = charset;
@@ -140,7 +140,7 @@ public class WorkbookWriterFeatures {
     }
 
     public static class Builder {
-        private final Set<Feature> features = new HashSet<>();
+        private final Set<Feature> features = EnumSet.noneOf(Feature.class);
         private char separator = ';';
         private Charset charset = Charset.defaultCharset();
         private int maxLineLength = 255;
