@@ -9,11 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Created `KeyedTableDiffExporter`. cdc-java/cdc-applic#84
 - Added `Row.LEXICOGRAPHIC_COMPARATOR`.
+- Added `SheetParserFactory.Feature.EVALUATE_FORMULA`to force fresh evaluation
+  of formula.  
+  This is disabled by default. It can consume more CPU and memory.
+  At the moment, it is only used in StandardPOI.  
+  It should used with care.
+  When not used, formatting of result may be incorrect. #3
 
 ### Changed
 - `Rows.toExtract` handles negative numbers.
 
 ### Fixed
+- When parsing sheets, returns value instead of formula when reading XLS
+  or using STANDARD_POI. #3
 
 
 ## [0.11.0] - 2021-07-23

@@ -7,13 +7,17 @@ import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import cdc.office.ss.SheetParser;
 import cdc.office.ss.SheetParserFactory;
+import cdc.office.ss.SheetParserFactory.Feature;
 import cdc.office.ss.WorkbookKind;
 import cdc.office.tables.Row;
 import cdc.office.tables.RowLocation;
@@ -32,15 +36,15 @@ import cdc.util.lang.BlackHole;
 public class PoiStandardSheetParser implements SheetParser {
     protected static final Logger LOGGER = LogManager.getLogger(PoiStandardSheetParser.class);
     private final DataFormatter df = new DataFormatter();
+    private final boolean evaluateFormula;
 
     public PoiStandardSheetParser() {
-        super();
+        this.evaluateFormula = false;
     }
 
     public PoiStandardSheetParser(SheetParserFactory factory,
                                   WorkbookKind kind) {
-        this();
-        BlackHole.discard(factory);
+        this.evaluateFormula = factory.isEnabled(Feature.EVALUATE_FORMULA);
         BlackHole.discard(kind);
     }
 
@@ -161,6 +165,9 @@ public class PoiStandardSheetParser implements SheetParser {
                        TableHandler handler) {
         TablesHandler.processBeginTables(handler, systemId);
         handler.processBeginTable(sheet.getSheetName(), getNumberOfRows(sheet));
+
+        final FormulaEvaluator evaluator = sheet.getWorkbook().getCreationHelper().createFormulaEvaluator();
+
         final Row.Builder r = Row.builder();
         final RowLocation.Builder location = RowLocation.builder();
         int previousRowIndex = -1;
@@ -182,7 +189,7 @@ public class PoiStandardSheetParser implements SheetParser {
                 for (int index = previousColumnIndex; index < columnIndex - 1; index++) {
                     r.addValue(null);
                 }
-                r.addValue(toString(cell));
+                r.addValue(toString(cell, evaluator));
                 previousColumnIndex = columnIndex;
             }
             if (active) {
@@ -193,11 +200,38 @@ public class PoiStandardSheetParser implements SheetParser {
         TablesHandler.processEndTables(handler, systemId);
     }
 
-    private String toString(Cell cell) {
+    /**
+     * Formats the cell content.
+     *
+     * @param cell The cell.
+     * @param evaluator The evaluator. Used when cell contains a formula.
+     * @return The cell content as a string. Formula calls are evaluated.
+     */
+    private String toString(Cell cell,
+                            FormulaEvaluator evaluator) {
         if (cell == null) {
             return null;
         } else {
-            return df.formatCellValue(cell);
+            if (evaluateFormula && cell.getCellType() == CellType.FORMULA) {
+                // Retrieve cached value
+                // We could also evaluate formula
+                switch (cell.getCachedFormulaResultType()) {
+                case BOOLEAN:
+                    return cell.getBooleanCellValue() ? "TRUE" : "FALSE";
+                case NUMERIC:
+                    if (DateUtil.isCellDateFormatted(cell, null)) {
+                        return cell.getDateCellValue().toString();
+                    } else {
+                        return Double.toString(cell.getNumericCellValue());
+                    }
+                case STRING:
+                    return cell.getRichStringCellValue().getString();
+                default:
+                    return "";
+                }
+            } else {
+                return df.formatCellValue(cell, evaluator);
+            }
         }
     }
 }

@@ -89,7 +89,7 @@ public class SheetLoader {
      * If necessary, set SheetFactory parameters.
      *
      *
-     * @param in The InoutStream to load.
+     * @param in The InputStream to load.
      * @param systemId The system id.
      * @param kind The sheet kind.
      * @param password The password protecting {@code file}.
@@ -122,7 +122,7 @@ public class SheetLoader {
      * If necessary, set SheetFactory parameters.
      *
      *
-     * @param in The InoutStream to load.
+     * @param in The InputStream to load.
      * @param systemId The system id.
      * @param kind The sheet kind.
      * @param password The password protecting {@code file}.

@@ -3,7 +3,7 @@ package cdc.office.ss;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
@@ -16,7 +16,7 @@ import cdc.util.lang.UnexpectedValueException;
 
 public class SheetParserFactory {
     private static final Logger LOGGER = LogManager.getLogger(SheetParserFactory.class);
-    private final Set<Feature> features = new HashSet<>();
+    private final Set<Feature> features = EnumSet.noneOf(Feature.class);
     /** CSV separator. */
     private char separator = ';';
     /** CSV charset. */
@@ -46,7 +46,13 @@ public class SheetParserFactory {
          * <p>
          * <b>WARNING:</b> This is incomplete, experimental. Do not use yet.
          */
-        POI_SAX
+        POI_SAX,
+
+        /**
+         * If enabled, and a formula is found, evaluate it.
+         * Otherwise, cached value is used.
+         */
+        EVALUATE_FORMULA
     }
 
     public SheetParserFactory() {
