@@ -3,7 +3,7 @@
    <parent>
       <groupId>com.gitlab.cdc-java.office</groupId>
       <artifactId>cdc-office</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.0</version>
       <relativePath>../pom.xml</relativePath>
    </parent>
 
@@ -66,6 +66,11 @@
       <dependency>
          <groupId>org.junit.jupiter</groupId>
          <artifactId>junit-jupiter-engine</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.junit.jupiter</groupId>
+         <artifactId>junit-jupiter-params</artifactId>
          <scope>test</scope>
       </dependency>
    </dependencies>
