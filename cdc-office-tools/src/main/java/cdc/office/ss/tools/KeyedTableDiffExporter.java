@@ -30,6 +30,11 @@ import cdc.office.tables.diff.Side;
 import cdc.tuples.CTupleN;
 import cdc.util.lang.UnexpectedValueException;
 
+/**
+ * Class used to export a KeyedTableDiff to an Office file.
+ *
+ * @author Damien Carbonne
+ */
 public class KeyedTableDiffExporter {
     private String lineMarkColumn;
     private String changedMark;
@@ -140,13 +145,14 @@ public class KeyedTableDiffExporter {
         }
     }
 
-    private abstract class Generator {
+    @FunctionalInterface
+    private interface Generator {
         public abstract void generate(File file,
                                       Header header,
                                       KeyedTableDiff diff) throws IOException;
     }
 
-    private final class CsvGenerator extends Generator {
+    private final class CsvGenerator implements Generator {
         public CsvGenerator() {
             super();
         }
@@ -211,7 +217,7 @@ public class KeyedTableDiffExporter {
      *
      * @author Damien Carbonne
      */
-    private final class ExcelGenerator extends Generator {
+    private final class ExcelGenerator implements Generator {
         private CellStyle addedStyle;
         private CellStyle removedStyle;
         private CellStyle changedStyle;
@@ -224,15 +230,15 @@ public class KeyedTableDiffExporter {
 
         private void createStyles(Workbook workbook) {
             if (showColors) {
-                addedStyle = null;
-                removedStyle = null;
-                changedStyle = null;
-                unchangedStyle = null;
-            } else {
                 addedStyle = createStyle(workbook, IndexedColors.BLUE);
                 removedStyle = createStyle(workbook, IndexedColors.RED);
                 changedStyle = createStyle(workbook, IndexedColors.PINK);
                 unchangedStyle = createStyle(workbook, IndexedColors.BLACK);
+            } else {
+                addedStyle = null;
+                removedStyle = null;
+                changedStyle = null;
+                unchangedStyle = null;
             }
             headerStyle = createStyle(workbook, IndexedColors.BLACK);
         }
@@ -323,7 +329,7 @@ public class KeyedTableDiffExporter {
      *
      * @author Damien Carbonne
      */
-    private final class OdsGenerator extends Generator {
+    private final class OdsGenerator implements Generator {
         public OdsGenerator() {
             super();
         }
