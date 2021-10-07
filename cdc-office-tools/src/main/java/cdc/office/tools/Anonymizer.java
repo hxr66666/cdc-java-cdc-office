@@ -1,4 +1,4 @@
-package cdc.office.ss.tools;
+package cdc.office.tools;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -14,10 +14,10 @@ import org.apache.logging.log4j.Logger;
 
 import cdc.office.csv.CsvParser;
 import cdc.office.csv.CsvWriter;
-import cdc.office.ss.tools.AbstractFilter.BaseMainArgs.BaseFeature;
 import cdc.office.tables.Row;
 import cdc.office.tables.RowLocation;
 import cdc.office.tables.TableHandler;
+import cdc.office.tools.AbstractFilter.BaseMainArgs.BaseFeature;
 import cdc.util.cli.AbstractMainSupport;
 import cdc.util.cli.FeatureMask;
 import cdc.util.cli.OptionEnum;

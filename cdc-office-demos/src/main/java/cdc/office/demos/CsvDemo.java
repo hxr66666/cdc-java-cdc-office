@@ -3,8 +3,8 @@ package cdc.office.demos;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 
-import cdc.office.ss.tools.AbstractFilter.BaseMainArgs.BaseFeature;
-import cdc.office.ss.tools.SeparatorConverter;
+import cdc.office.tools.SeparatorConverter;
+import cdc.office.tools.AbstractFilter.BaseMainArgs.BaseFeature;
 
 public final class CsvDemo {
     private CsvDemo() {

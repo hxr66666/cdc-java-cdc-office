@@ -1,4 +1,4 @@
-package cdc.office.ss.tools;
+package cdc.office.tools;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,11 +18,11 @@ import org.apache.logging.log4j.io.IoBuilder;
 
 import cdc.office.ss.SheetLoader;
 import cdc.office.ss.WorkbookWriterFeatures;
-import cdc.office.ss.tools.KeyedSheetDiff.MainArgs.Feature;
 import cdc.office.tables.Header;
 import cdc.office.tables.HeaderMapper;
 import cdc.office.tables.Row;
 import cdc.office.tables.diff.KeyedTableDiff;
+import cdc.office.tools.KeyedSheetDiff.MainArgs.Feature;
 import cdc.util.cli.AbstractMainSupport;
 import cdc.util.cli.FeatureMask;
 import cdc.util.cli.OptionEnum;

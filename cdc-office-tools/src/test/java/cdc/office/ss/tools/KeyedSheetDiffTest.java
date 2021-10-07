@@ -5,7 +5,8 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
-import cdc.office.ss.tools.KeyedSheetDiff.MainArgs.Feature;
+import cdc.office.tools.KeyedSheetDiff;
+import cdc.office.tools.KeyedSheetDiff.MainArgs.Feature;
 import cdc.util.files.Files;
 
 class KeyedSheetDiffTest {

@@ -1,4 +1,4 @@
-package cdc.office.ss.tools;
+package cdc.office.tools;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
