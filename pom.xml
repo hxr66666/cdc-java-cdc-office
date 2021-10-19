@@ -2,7 +2,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>com.gitlab.cdc-java.office</groupId>
    <artifactId>cdc-office</artifactId>
-   <version>0.13.0-SNAPSHOT</version>
+   <version>0.12.2</version>
    <packaging>pom</packaging>
 
    <name>CDC - Office</name>
@@ -66,7 +66,7 @@
       <cdc.io.version>0.12.0</cdc.io.version>
       <cdc.kernel.version>0.13.1</cdc.kernel.version>
       <cdc.tuples.version>1.0.0</cdc.tuples.version>
-      <cdc.util.version>0.12.0</cdc.util.version>
+      <cdc.util.version>0.13.1</cdc.util.version>
       <fastods.version>0.7.4</fastods.version>
       <htmlflow.version>3.8</htmlflow.version>
       <junit.version>5.8.1</junit.version>

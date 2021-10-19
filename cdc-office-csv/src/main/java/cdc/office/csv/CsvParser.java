@@ -179,7 +179,11 @@ public class CsvParser {
                       String systemId,
                       TableHandler handler,
                       int headers) throws IOException {
-        parse(in, Charset.defaultCharset().name(), handler, headers);
+        parse(in,
+              systemId,
+              Charset.defaultCharset(),
+              handler,
+              headers);
     }
 
     /**
