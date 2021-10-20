@@ -5,12 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [0.12.3] - 2021-10-15
+## [0.12.3] - 2021-10-20
 ### Fixed
-- Deployment issue with version 0.12.2
+- Deployment issue with version 0.12.2.
+  Replication to Maven Central took almost 20h.
 
 
-## [0.12.2] - 2021-10-14 [YANKED]
+## [0.12.2] - 2021-10-19
 ### Changed
 - Renamed package `cdc.office.ss.tools` to `cdc.office.tools`. #5
 
