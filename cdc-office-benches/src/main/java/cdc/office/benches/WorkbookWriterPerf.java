@@ -26,10 +26,12 @@ public final class WorkbookWriterPerf {
     private static void test(File file,
                              int sheetsCount,
                              int rowsCount) throws IOException {
+        LOGGER.info("Generate {}", file);
         final Chronometer chrono = new Chronometer();
         chrono.start();
         final WorkbookWriterFactory factory = new WorkbookWriterFactory();
-        try (final WorkbookWriter<?> writer = factory.create(file, WorkbookWriterFeatures.DEFAULT)) {
+        factory.setEnabled(WorkbookWriterFactory.Hint.POI_STREAMING, true);
+        try (final WorkbookWriter<?> writer = factory.create(file, WorkbookWriterFeatures.STANDARD_FAST)) {
             for (int sheetIndex = 0; sheetIndex < sheetsCount; sheetIndex++) {
                 writer.beginSheet("Sheet " + sheetIndex);
 
@@ -75,15 +77,16 @@ public final class WorkbookWriterPerf {
     public static void main(String[] args) throws IOException {
         final int[] rowsCounts = { 0, 1, 10, 100, 1000, 10000, 100000, 1000000 };
 
-        for (final WorkbookKind kind : WorkbookKind.values()) {
-            if (kind != WorkbookKind.ODS) {
-                for (final int rowsCount : rowsCounts) {
+        for (final int rowsCount : rowsCounts) {
+            for (final WorkbookKind kind : WorkbookKind.values()) {
+                if (kind != WorkbookKind.ODS) {
                     final File file =
                             new File("target",
                                      WorkbookWriterPerf.class.getSimpleName() + "-" + rowsCount + "." + kind.getExtension());
                     try {
                         test(file, 1, rowsCount);
                     } catch (final IllegalArgumentException e) {
+                        LOGGER.error("Failed to generate {}", file);
                         LOGGER.catching(e);
                     }
                 }

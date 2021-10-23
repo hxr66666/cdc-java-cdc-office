@@ -157,6 +157,12 @@ public interface WorkbookWriter<W extends WorkbookWriter<W>> extends Closeable, 
     }
 
     public default W addRow(TableSection section,
+                            List<String> values) throws IOException {
+        beginRow(section);
+        return addCells(values);
+    }
+
+    public default W addRow(TableSection section,
                             Row row) throws IOException {
         beginRow(section);
         return addCells(row.getValues());

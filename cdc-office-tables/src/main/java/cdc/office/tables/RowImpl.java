@@ -48,11 +48,19 @@ final class RowImpl implements Row {
         final StringBuilder builder = new StringBuilder();
 
         builder.append('[');
-        for (int column = 0; column < getColumnsCount(); column++) {
+        for (int column = 0; column < size(); column++) {
             if (column > 0) {
                 builder.append(';');
             }
-            builder.append(getValue(column, ""));
+            final String value = getValue(column, null);
+            if (value == null) {
+                builder.append("null");
+            } else {
+                builder.append("'")
+                       .append(value)
+                       .append("'");
+
+            }
         }
         builder.append(']');
 

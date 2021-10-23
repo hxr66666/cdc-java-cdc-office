@@ -39,7 +39,7 @@ class TableColumnsFilterTest {
         assertTrue(handler.hasHeaders());
         assertEquals(8, handler.getRowsCount());
         for (int index = 0; index < handler.getRowsCount(); index++) {
-            assertEquals(2, handler.getRow(index).getColumnsCount(), index + ":" + handler.getRow(index));
+            assertEquals(2, handler.getRow(index).size(), index + ":" + handler.getRow(index));
         }
     }
 }

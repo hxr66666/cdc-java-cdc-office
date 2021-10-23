@@ -23,9 +23,10 @@ import cdc.office.ss.odf.SimpleOdsWorkbookWriter;
 import cdc.office.tables.Header;
 import cdc.office.tables.TableSection;
 import cdc.office.tables.diff.CellDiff;
-import cdc.office.tables.diff.DiffKind;
+import cdc.office.tables.diff.CellDiffKind;
 import cdc.office.tables.diff.KeyedTableDiff;
 import cdc.office.tables.diff.RowDiff;
+import cdc.office.tables.diff.RowDiffKind;
 import cdc.office.tables.diff.Side;
 import cdc.tuples.CTupleN;
 import cdc.util.lang.UnexpectedValueException;
@@ -36,13 +37,15 @@ import cdc.util.lang.UnexpectedValueException;
  * @author Damien Carbonne
  */
 public class KeyedTableDiffExporter {
+    // private static final Logger LOGGER = LogManager.getLogger(KeyedTableDiffExporter.class);
+
     private String lineMarkColumn;
     private String changedMark;
     private String addedMark;
     private String removedMark;
     private String unchangedMark;
     private String sheetName = "Delta";
-    private WorkbookWriterFeatures features = WorkbookWriterFeatures.DEFAULT;
+    private WorkbookWriterFeatures features = WorkbookWriterFeatures.STANDARD_FAST;
     private boolean insertLineMarkColumn = false;
     private boolean sortLines = false;
     private boolean showUnchangedLines = true;
@@ -79,7 +82,10 @@ public class KeyedTableDiffExporter {
     }
 
     public KeyedTableDiffExporter setFeatures(WorkbookWriterFeatures features) {
-        this.features = features;
+        this.features = WorkbookWriterFeatures.builder()
+                                              .set(features)
+                                              .enable(WorkbookWriterFeatures.Feature.NO_CELL_STYLES)
+                                              .build();
         return this;
     }
 
@@ -130,7 +136,7 @@ public class KeyedTableDiffExporter {
         }
     }
 
-    protected String getMark(DiffKind kind) {
+    protected String getMark(CellDiffKind kind) {
         switch (kind) {
         case ADDED:
             return addedMark;
@@ -139,20 +145,24 @@ public class KeyedTableDiffExporter {
         case REMOVED:
             return removedMark;
         case SAME:
+        case NULL:
             return unchangedMark;
         default:
             throw new UnexpectedValueException(kind);
         }
     }
 
-    @FunctionalInterface
-    private interface Generator {
+    private abstract class Generator {
         public abstract void generate(File file,
                                       Header header,
                                       KeyedTableDiff diff) throws IOException;
+
+        protected String wrap(String s) {
+            return s == null ? "" : s;
+        }
     }
 
-    private final class CsvGenerator implements Generator {
+    private final class CsvGenerator extends Generator {
         public CsvGenerator() {
             super();
         }
@@ -178,7 +188,7 @@ public class KeyedTableDiffExporter {
                 }
                 for (final CTupleN<String> key : keys) {
                     final RowDiff rdiff = diff.getDiff(key);
-                    if (rdiff.getKind() != DiffKind.SAME || showUnchangedLines) {
+                    if (rdiff.getKind() != RowDiffKind.SAME || showUnchangedLines) {
                         writer.beginRow(TableSection.DATA);
                         if (insertLineMarkColumn) {
                             writer.addCell(rdiff.getKind());
@@ -188,10 +198,10 @@ public class KeyedTableDiffExporter {
                             case ADDED:
                             case CHANGED:
                             case SAME:
-                                writer.addCell(getMark(cdiff.getKind()) + cdiff.getRight());
+                                writer.addCell(getMark(cdiff.getKind()) + wrap(cdiff.getRight()));
                                 break;
                             case REMOVED:
-                                writer.addCell(getMark(cdiff.getKind()) + cdiff.getLeft());
+                                writer.addCell(getMark(cdiff.getKind()) + wrap(cdiff.getLeft()));
                                 break;
                             default:
                                 throw new UnexpectedValueException(cdiff.getKind());
@@ -217,7 +227,7 @@ public class KeyedTableDiffExporter {
      *
      * @author Damien Carbonne
      */
-    private final class ExcelGenerator implements Generator {
+    private final class ExcelGenerator extends Generator {
         private CellStyle addedStyle;
         private CellStyle removedStyle;
         private CellStyle changedStyle;
@@ -243,7 +253,23 @@ public class KeyedTableDiffExporter {
             headerStyle = createStyle(workbook, IndexedColors.BLACK);
         }
 
-        private CellStyle getStyle(DiffKind kind) {
+        private CellStyle getStyle(CellDiffKind kind) {
+            switch (kind) {
+            case ADDED:
+                return addedStyle;
+            case CHANGED:
+                return changedStyle;
+            case REMOVED:
+                return removedStyle;
+            case SAME:
+            case NULL:
+                return unchangedStyle;
+            default:
+                throw new UnexpectedValueException(kind);
+            }
+        }
+
+        private CellStyle getStyle(RowDiffKind kind) {
             switch (kind) {
             case ADDED:
                 return addedStyle;
@@ -288,7 +314,8 @@ public class KeyedTableDiffExporter {
 
                 for (final CTupleN<String> key : keys) {
                     final RowDiff rdiff = diff.getDiff(key);
-                    if (rdiff.getKind() != DiffKind.SAME || showUnchangedLines) {
+                    // LOGGER.info("Row diff: {}", rdiff);
+                    if (rdiff.getKind() != RowDiffKind.SAME || showUnchangedLines) {
                         writer.beginRow(TableSection.DATA);
                         if (insertLineMarkColumn) {
                             writer.addCell(rdiff.getKind().toString());
@@ -299,19 +326,21 @@ public class KeyedTableDiffExporter {
                             case ADDED:
                             case CHANGED:
                             case SAME:
+                            case NULL:
                                 if (showColors) {
-                                    writer.addCell(cdiff.getRight());
+                                    // LOGGER.info("{} {}", cdiff, getStyle(cdiff.getKind()).getIndex());
+                                    writer.addCell(wrap(cdiff.getRight()));
                                     writer.getCell().setCellStyle(getStyle(cdiff.getKind()));
                                 } else {
-                                    writer.addCell(getMark(cdiff.getKind()) + cdiff.getRight());
+                                    writer.addCell(getMark(cdiff.getKind()) + wrap(cdiff.getRight()));
                                 }
                                 break;
                             case REMOVED:
                                 if (showColors) {
-                                    writer.addCell(cdiff.getLeft());
+                                    writer.addCell(wrap(cdiff.getLeft()));
                                     writer.getCell().setCellStyle(getStyle(cdiff.getKind()));
                                 } else {
-                                    writer.addCell(getMark(cdiff.getKind()) + cdiff.getLeft());
+                                    writer.addCell(getMark(cdiff.getKind()) + wrap(cdiff.getLeft()));
                                 }
                                 break;
                             default:
@@ -329,7 +358,7 @@ public class KeyedTableDiffExporter {
      *
      * @author Damien Carbonne
      */
-    private final class OdsGenerator implements Generator {
+    private final class OdsGenerator extends Generator {
         public OdsGenerator() {
             super();
         }
@@ -366,7 +395,7 @@ public class KeyedTableDiffExporter {
 
                 for (final CTupleN<String> key : keys) {
                     final RowDiff rdiff = diff.getDiff(key);
-                    if (rdiff.getKind() != DiffKind.SAME || showUnchangedLines) {
+                    if (rdiff.getKind() != RowDiffKind.SAME || showUnchangedLines) {
                         writer.beginRow(TableSection.DATA);
                         if (insertLineMarkColumn) {
                             writer.addCell(rdiff.getKind().toString());
@@ -382,7 +411,7 @@ public class KeyedTableDiffExporter {
                                     writer.addCell(cdiff.getRight());
                                     // TODO style
                                 } else {
-                                    writer.addCell(getMark(cdiff.getKind()) + cdiff.getRight());
+                                    writer.addCell(getMark(cdiff.getKind()) + wrap(cdiff.getRight()));
                                 }
                                 break;
                             case REMOVED:
@@ -390,7 +419,7 @@ public class KeyedTableDiffExporter {
                                     writer.addCell(cdiff.getLeft());
                                     // TODO style
                                 } else {
-                                    writer.addCell(getMark(cdiff.getKind()) + cdiff.getLeft());
+                                    writer.addCell(getMark(cdiff.getKind()) + wrap(cdiff.getLeft()));
                                 }
                                 break;
                             default:

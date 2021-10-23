@@ -40,7 +40,7 @@ public class TableColumnsFilter extends AbstractTableFilter {
 
     private void setBuffer(Row row) {
         buffer.clear();
-        for (int index = 0; index < row.getColumnsCount(); index++) {
+        for (int index = 0; index < row.size(); index++) {
             if (predicate.test(index)) {
                 buffer.addValue(row.getValue(index));
             }

@@ -102,6 +102,13 @@ public class WorkbookWriterFeatures {
         TRUNCATE_CELLS_LINES,
 
         /**
+         * If enabled, do not set cell style.
+         * <p>
+         * With POI, setting styles several times seem to have unexpected results.
+         */
+        NO_CELL_STYLES,
+
+        /**
          * Support feature.
          */
         COMMENTS;
@@ -146,6 +153,15 @@ public class WorkbookWriterFeatures {
         private int maxLineLength = 255;
 
         protected Builder() {
+        }
+
+        public Builder set(WorkbookWriterFeatures other) {
+            this.features.clear();
+            this.features.addAll(other.features);
+            this.separator = other.separator;
+            this.charset = other.charset;
+            this.maxLineLength = other.maxLineLength;
+            return this;
         }
 
         public Builder enable(Feature feature) {

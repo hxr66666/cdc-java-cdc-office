@@ -5,6 +5,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [Unreleased]
+### Added
+- A new `NO_CELL_STYLES` feature was added to `WorkbookWriterFeatures`.  
+  With POI, setting a style twice seems to be an issue.
+  This new features may be used to let the user set styles. #7
+
+## Removed
+- `DiffKind` has been removed and replaced by `CellDiffKind` and `RowDiffKind`. #7
+
+### Fixed
+- Colors were not working correctly in some cases with `KeyedSheetDiff`. #7 
+- Computation of differences has been fixed. #7
+
+
 ## [0.12.3] - 2021-10-20
 ### Fixed
 - Deployment issue with version 0.12.2.

@@ -5,7 +5,7 @@ package cdc.office.tables.diff;
  *
  * @author Damien Carbonne
  */
-public enum DiffKind {
+public enum RowDiffKind {
     /** Contents are the same. */
     SAME,
     /** Content was added. */

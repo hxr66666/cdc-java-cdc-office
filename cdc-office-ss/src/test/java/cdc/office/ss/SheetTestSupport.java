@@ -217,11 +217,11 @@ public class SheetTestSupport {
             final String[] exp = expected[index];
             final Row found = handler.getRow(index);
             if (exp == null) {
-                assertSame(0, found.getColumnsCount());
+                assertSame(0, found.size());
             } else if (exp == HEADER) {
                 assertArrayEquals(HEADER, found.getValues().toArray());
             } else {
-                assertEquals(DATA_OUT.length, found.getColumnsCount());
+                assertEquals(DATA_OUT.length, found.size());
                 for (int colIndex = 0; colIndex < DATA_IN.length; colIndex++) {
                     if (DATA_IN[colIndex] == null) {
                         assertTrue(StringUtils.isNullOrEmpty(found.getValue(colIndex)));

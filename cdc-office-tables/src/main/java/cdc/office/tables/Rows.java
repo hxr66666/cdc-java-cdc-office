@@ -21,12 +21,12 @@ public final class Rows {
     public static String toExtract(Row row,
                                    int maxColumns) {
         final StringBuilder builder = new StringBuilder();
-        for (int column = 0; (maxColumns < 0 || column < maxColumns) && column < row.getColumnsCount(); column++) {
+        for (int column = 0; (maxColumns < 0 || column < maxColumns) && column < row.size(); column++) {
             builder.append(" '");
             builder.append(row.getValue(column));
             builder.append('\'');
         }
-        if (row.getColumnsCount() > maxColumns) {
+        if (row.size() > maxColumns) {
             builder.append(" ...");
         }
         return builder.toString();

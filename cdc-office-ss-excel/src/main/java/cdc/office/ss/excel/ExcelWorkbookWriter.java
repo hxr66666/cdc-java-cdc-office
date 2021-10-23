@@ -98,6 +98,7 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
 
         this.styleTime = workbook.createCellStyle();
         this.styleTime.setDataFormat(format.getFormat("hh:mm:ss"));
+
     }
 
     public ExcelWorkbookWriter(File file,
@@ -130,6 +131,7 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
                 || feature == WorkbookWriterFeatures.Feature.USE_THOUSANDS_SEPARATOR
                 || feature == WorkbookWriterFeatures.Feature.TRUNCATE_CELLS
                 || feature == WorkbookWriterFeatures.Feature.TRUNCATE_CELLS_LINES
+                || feature == WorkbookWriterFeatures.Feature.NO_CELL_STYLES
                 || feature == WorkbookWriterFeatures.Feature.COMMENTS;
     }
 
@@ -230,6 +232,13 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
         }
     }
 
+    private void setCellStyle(Cell cell,
+                              CellStyle style) {
+        if (!features.isEnabled(WorkbookWriterFeatures.Feature.NO_CELL_STYLES)) {
+            cell.setCellStyle(style);
+        }
+    }
+
     @Override
     public ExcelWorkbookWriter addCellComment(String comment) {
         final Drawing<?> drawingPatriarch = sheet.createDrawingPatriarch();
@@ -279,7 +288,7 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
             } else {
                 cell.setCellValue(value);
             }
-            cell.setCellStyle(styleText);
+            setCellStyle(cell, styleText);
         }
         return this;
     }
@@ -295,7 +304,7 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
     public ExcelWorkbookWriter addCell(long value) throws IOException {
         addCell();
         cell.setCellValue(value);
-        cell.setCellStyle(styleInt);
+        setCellStyle(cell, styleInt);
         return this;
     }
 
@@ -306,7 +315,7 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
         } else {
             addCell();
             cell.setCellValue(value);
-            cell.setCellStyle(styleDateTime);
+            setCellStyle(cell, styleDateTime);
         }
         return this;
     }
@@ -318,7 +327,7 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
         } else {
             addCell();
             cell.setCellValue(DateUtils.asDate(value));
-            cell.setCellStyle(styleDateTime);
+            setCellStyle(cell, styleDateTime);
         }
         return this;
     }
@@ -330,7 +339,7 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
         } else {
             addCell();
             cell.setCellValue(DateUtils.asDate(value));
-            cell.setCellStyle(styleDate);
+            setCellStyle(cell, styleDate);
         }
         return this;
     }
@@ -342,7 +351,7 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
         } else {
             addCell();
             cell.setCellValue(DateUtils.asDate(value));
-            cell.setCellStyle(styleTime);
+            setCellStyle(cell, styleTime);
         }
         return this;
     }

@@ -1,0 +1,25 @@
+--file1
+src/test/resources/ksd-left.xlsx
+--file2
+src/test/resources/ksd-right.xlsx
+--output
+target/delta.xlsx
+--key
+DMC
+LOGTYPE
+REFID
+INTERNALID
+LOGAPPLIC
+--sheet
+DELTALOG
+--sheet1
+Data
+--sheet2
+Data
+--sort-lines
+--synthesis
+--line-mark-column
+Line Diff
+--no-unchanged-lines
+--auto-size-columns
+#--no-colors

@@ -54,6 +54,7 @@ public final class KeyedSheetDiff {
                                       "Do not print added or removed marks. This forces insertion of the line mark column."),
             NO_COLORS("no-colors", "Do not use colors with xsl, xlsx or ods output format."),
             SORT_LINES("sort-lines", "Sort lines using keys. Order of key columns declaration matters."),
+            AUTO_SIZE_COLUMNS("auto-size-columns", "Auto size columns. This may take longer time."),
             SYNTHESIS("synthesis", "Prints a synthesis of differences.");
 
             private final String name;
@@ -161,10 +162,13 @@ public final class KeyedSheetDiff {
                                                    .separator(margs.separator)
                                                    .charset(margs.charset)
                                                    .maxLineLength(-1)
+                                                   .enable(WorkbookWriterFeatures.Feature.AUTO_FILTER_COLUMNS)
+                                                   .setEnabled(WorkbookWriterFeatures.Feature.AUTO_SIZE_COLUMNS,
+                                                               margs.features.contains(Feature.AUTO_SIZE_COLUMNS))
                                                    .build());
 
+        LOGGER.info("Generate {}", margs.output);
         exporter.save(diff, margs.output);
-
         LOGGER.info("Done");
     }
 

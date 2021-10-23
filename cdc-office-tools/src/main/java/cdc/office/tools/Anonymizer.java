@@ -128,7 +128,7 @@ public final class Anonymizer extends AbstractFilter<Anonymizer.MainArgs> {
         public Evaluation processData(Row data,
                                       RowLocation location) {
             try {
-                for (int column = 0; column < data.getColumnsCount(); column++) {
+                for (int column = 0; column < data.size(); column++) {
                     final String value = data.getValue(column);
                     if (margs.columns.contains(column + 1)) {
                         writer.write(anonymizer.anonymize(value));

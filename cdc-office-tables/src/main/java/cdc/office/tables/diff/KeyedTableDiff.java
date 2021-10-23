@@ -23,6 +23,7 @@ import cdc.util.lang.UnexpectedValueException;
  *
  */
 public class KeyedTableDiff {
+    // private static final Logger LOGGER = LogManager.getLogger(KeyedTableDiff.class);
     private final Header leftHeader;
     private final Header rightHeader;
     private final List<String> keyNames;
@@ -69,7 +70,9 @@ public class KeyedTableDiff {
                 throw new InvalidDataException("Duplicate key " + key + locate(Side.RIGHT, right, number));
             }
 
-            diffs.put(key, new RowDiff(leftHeader, left, rightHeader, right));
+            final RowDiff diff = new RowDiff(leftHeader, left, rightHeader, right);
+            // LOGGER.info("{} -> {}", key, diff);
+            diffs.put(key, diff);
             keys.add(key);
         }
 
@@ -210,6 +213,7 @@ public class KeyedTableDiff {
                         removedCells++;
                         break;
                     case SAME:
+                    case NULL:
                         unchangedCells++;
                         break;
                     default:

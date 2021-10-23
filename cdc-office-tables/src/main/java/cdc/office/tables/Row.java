@@ -49,8 +49,17 @@ public interface Row {
     /**
      * @return The number of columns in the row.
      */
+    @Deprecated
     public default int getColumnsCount() {
+        return size();
+    }
+
+    public default int size() {
         return getValues().size();
+    }
+
+    public default boolean isEmpty() {
+        return getValues().isEmpty();
     }
 
     /**
