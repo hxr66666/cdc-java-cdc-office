@@ -55,6 +55,9 @@ public final class KeyedSheetDiff {
             NO_COLORS("no-colors", "Do not use colors with xsl, xlsx or ods output format."),
             SORT_LINES("sort-lines", "Sort lines using keys. Order of key columns declaration matters."),
             AUTO_SIZE_COLUMNS("auto-size-columns", "Auto size columns. This may take longer time."),
+            SHOW_CHANGE_DETAILS("show-change-details",
+                                "If enabled, show value 1 (with removed mark or color) and value 2 (with added markj or color).\n"
+                                        + " Otherwise, show value 2 (with changed mark)."),
             SYNTHESIS("synthesis", "Prints a synthesis of differences.");
 
             private final String name;
@@ -157,6 +160,7 @@ public final class KeyedSheetDiff {
                 .setShowColors(!margs.isEnabled(Feature.NO_COLORS))
                 .setShowUnchangedLines(!margs.isEnabled(Feature.NO_UNCHANGED_LINES))
                 .setSortLines(margs.isEnabled(Feature.SORT_LINES))
+                .setShowChangeDetails(margs.isEnabled(Feature.SHOW_CHANGE_DETAILS))
                 .setSheetName(margs.sheet == null ? "Delta" : margs.sheet)
                 .setFeatures(WorkbookWriterFeatures.builder()
                                                    .separator(margs.separator)

@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A new `NO_CELL_STYLES` feature was added to `WorkbookWriterFeatures`.  
   With POI, setting a style twice seems to be an issue.
   This new features may be used to let the user set styles. #7
+- A new `SHOW_CHANGE_DETAILS` option was added to `KeyedSheetDiff`.  
+  It is now possible to show both values on CHANGED cells.  #8
 
 ## Removed
 - `DiffKind` has been removed and replaced by `CellDiffKind` and `RowDiffKind`. #7

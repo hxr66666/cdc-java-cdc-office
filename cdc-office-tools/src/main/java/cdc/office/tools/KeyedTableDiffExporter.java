@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.odftoolkit.odfdom.dom.style.OdfStyleFamily;
 import org.odftoolkit.odfdom.incubator.doc.office.OdfOfficeStyles;
@@ -37,8 +38,6 @@ import cdc.util.lang.UnexpectedValueException;
  * @author Damien Carbonne
  */
 public class KeyedTableDiffExporter {
-    // private static final Logger LOGGER = LogManager.getLogger(KeyedTableDiffExporter.class);
-
     private String lineMarkColumn;
     private String changedMark;
     private String addedMark;
@@ -50,6 +49,7 @@ public class KeyedTableDiffExporter {
     private boolean sortLines = false;
     private boolean showUnchangedLines = true;
     private boolean showColors = false;
+    private boolean showChangeDetails = false;
 
     public KeyedTableDiffExporter() {
         super();
@@ -101,6 +101,11 @@ public class KeyedTableDiffExporter {
 
     public KeyedTableDiffExporter setShowColors(boolean showColors) {
         this.showColors = showColors;
+        return this;
+    }
+
+    public KeyedTableDiffExporter setShowChangeDetails(boolean showChangeDetails) {
+        this.showChangeDetails = showChangeDetails;
         return this;
     }
 
@@ -196,9 +201,18 @@ public class KeyedTableDiffExporter {
                         for (final CellDiff cdiff : rdiff.getDiffs()) {
                             switch (cdiff.getKind()) {
                             case ADDED:
-                            case CHANGED:
                             case SAME:
+                            case NULL:
                                 writer.addCell(getMark(cdiff.getKind()) + wrap(cdiff.getRight()));
+                                break;
+                            case CHANGED:
+                                if (showChangeDetails) {
+                                    writer.addCell(getMark(CellDiffKind.REMOVED) + wrap(cdiff.getLeft())
+                                            + "\n"
+                                            + getMark(CellDiffKind.ADDED) + wrap(cdiff.getRight()));
+                                } else {
+                                    writer.addCell(getMark(CellDiffKind.CHANGED) + wrap(cdiff.getRight()));
+                                }
                                 break;
                             case REMOVED:
                                 writer.addCell(getMark(cdiff.getKind()) + wrap(cdiff.getLeft()));
@@ -222,6 +236,13 @@ public class KeyedTableDiffExporter {
         return style;
     }
 
+    static Font createFont(Workbook workbook,
+                           IndexedColors color) {
+        final Font font = workbook.createFont();
+        font.setColor(color.index);
+        return font;
+    }
+
     /**
      * Excel Generator.
      *
@@ -233,6 +254,8 @@ public class KeyedTableDiffExporter {
         private CellStyle changedStyle;
         private CellStyle unchangedStyle;
         private CellStyle headerStyle;
+        private Font removedFont;
+        private Font addedFont;
 
         public ExcelGenerator() {
             super();
@@ -244,13 +267,18 @@ public class KeyedTableDiffExporter {
                 removedStyle = createStyle(workbook, IndexedColors.RED);
                 changedStyle = createStyle(workbook, IndexedColors.PINK);
                 unchangedStyle = createStyle(workbook, IndexedColors.BLACK);
+                removedFont = createFont(workbook, IndexedColors.RED);
+                addedFont = createFont(workbook, IndexedColors.BLUE);
             } else {
                 addedStyle = null;
                 removedStyle = null;
                 changedStyle = null;
                 unchangedStyle = null;
+                removedFont = null;
+                addedFont = null;
             }
             headerStyle = createStyle(workbook, IndexedColors.BLACK);
+
         }
 
         private CellStyle getStyle(CellDiffKind kind) {
@@ -290,7 +318,7 @@ public class KeyedTableDiffExporter {
                              KeyedTableDiff diff) throws IOException {
             try (final ExcelWorkbookWriter writer = new ExcelWorkbookWriter(file,
                                                                             features,
-                                                                            true)) {
+                                                                            !showChangeDetails)) {
                 createStyles(writer.getWorkbook());
 
                 writer.beginSheet(sheetName);
@@ -314,7 +342,6 @@ public class KeyedTableDiffExporter {
 
                 for (final CTupleN<String> key : keys) {
                     final RowDiff rdiff = diff.getDiff(key);
-                    // LOGGER.info("Row diff: {}", rdiff);
                     if (rdiff.getKind() != RowDiffKind.SAME || showUnchangedLines) {
                         writer.beginRow(TableSection.DATA);
                         if (insertLineMarkColumn) {
@@ -327,12 +354,31 @@ public class KeyedTableDiffExporter {
                             case CHANGED:
                             case SAME:
                             case NULL:
-                                if (showColors) {
-                                    // LOGGER.info("{} {}", cdiff, getStyle(cdiff.getKind()).getIndex());
-                                    writer.addCell(wrap(cdiff.getRight()));
-                                    writer.getCell().setCellStyle(getStyle(cdiff.getKind()));
+                                if (cdiff.getKind() == CellDiffKind.CHANGED && showChangeDetails) {
+                                    if (showColors) {
+                                        // Set default style to removed and set font for added.
+                                        // Otherwise, it seems some issues may arise with large files.
+                                        final int leftLength = cdiff.getLeft().length();
+                                        final String s = wrap(cdiff.getLeft()) + "\n" + wrap(cdiff.getRight());
+                                        final RichTextString text =
+                                                writer.getWorkbook().getCreationHelper().createRichTextString(s);
+                                        // text.applyFont(0, leftLength, removedFont);
+                                        text.applyFont(leftLength, s.length(), addedFont);
+                                        writer.addCell("");
+                                        writer.getCell().setCellStyle(removedStyle);
+                                        writer.getCell().setCellValue(text);
+                                    } else {
+                                        writer.addCell(getMark(CellDiffKind.REMOVED) + wrap(cdiff.getLeft())
+                                                + "\n"
+                                                + getMark(CellDiffKind.ADDED) + wrap(cdiff.getRight()));
+                                    }
                                 } else {
-                                    writer.addCell(getMark(cdiff.getKind()) + wrap(cdiff.getRight()));
+                                    if (showColors) {
+                                        writer.addCell(wrap(cdiff.getRight()));
+                                        writer.getCell().setCellStyle(getStyle(cdiff.getKind()));
+                                    } else {
+                                        writer.addCell(getMark(cdiff.getKind()) + wrap(cdiff.getRight()));
+                                    }
                                 }
                                 break;
                             case REMOVED:
@@ -407,6 +453,7 @@ public class KeyedTableDiffExporter {
                             case ADDED:
                             case CHANGED:
                             case SAME:
+                            case NULL:
                                 if (showColors) {
                                     writer.addCell(cdiff.getRight());
                                     // TODO style

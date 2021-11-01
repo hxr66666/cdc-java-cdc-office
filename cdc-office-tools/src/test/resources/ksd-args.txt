@@ -22,4 +22,5 @@ Data
 Line Diff
 --no-unchanged-lines
 --auto-size-columns
+--show-change-details
 #--no-colors
