@@ -52,12 +52,12 @@ public final class KeyedSheetDiff {
             NO_UNCHANGED_LINES("no-unchanged-lines", "Do not output unchanged lines."),
             NO_ADDED_OR_REMOVED_MARKS("no-added-or-removed-marks",
                                       "Do not print added or removed marks. This forces insertion of the line mark column."),
-            NO_COLORS("no-colors", "Do not use colors with xsl, xlsx or ods output format."),
+            NO_COLORS("no-colors", "Do not use colors with output formats that support colors."),
             SORT_LINES("sort-lines", "Sort lines using keys. Order of key columns declaration matters."),
             AUTO_SIZE_COLUMNS("auto-size-columns", "Auto size columns. This may take longer time."),
             SHOW_CHANGE_DETAILS("show-change-details",
-                                "If enabled, show value 1 (with removed mark or color) and value 2 (with added markj or color).\n"
-                                        + " Otherwise, show value 2 (with changed mark)."),
+                                "If enabled, show value 1 (with removed mark or color) and value 2 (with added mark or color).\n"
+                                        + " Otherwise, show value 2 (with changed mark or color)."),
             SYNTHESIS("synthesis", "Prints a synthesis of differences.");
 
             private final String name;
