@@ -2,7 +2,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>com.gitlab.cdc-java.office</groupId>
    <artifactId>cdc-office</artifactId>
-   <version>0.14.0-SNAPSHOT</version>
+   <version>0.13.1</version>
    <packaging>pom</packaging>
 
    <name>CDC - Office</name>
@@ -88,7 +88,7 @@
       <maven.versions.version>2.7</maven.versions.version>
       <nexus.staging.maven.version>1.6.8</nexus.staging.maven.version>
       <odftoolkit.version>0.9.0-RC1</odftoolkit.version>
-      <poi.version>5.0.0</poi.version>
+      <poi.version>5.1.0</poi.version>
       <xml.apis.version>1.4.01</xml.apis.version> <!-- newer that 2.x and contains org.w3c.dom.ElementTraversal -->
    </properties>
 
