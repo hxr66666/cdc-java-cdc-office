@@ -151,9 +151,6 @@ public class KeyedTableDiff {
         for (int index = 0; index < keyColumns.length; index++) {
             final int column = keyColumns[index];
             final String value = row.getValue(column);
-            if (value == null) {
-                throw new InvalidDataException("Missing " + keyNames.get(column) + " cell" + locate(side, row, number));
-            }
             values[index] = value;
         }
         return new CTupleN<>(values);
