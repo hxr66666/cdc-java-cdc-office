@@ -230,6 +230,7 @@ public class KeyedTableDiffExporter {
     static CellStyle createStyle(Workbook workbook,
                                  IndexedColors color) {
         final CellStyle style = workbook.createCellStyle();
+        // style.setWrapText(true);
         final Font font = workbook.createFont();
         font.setColor(color.index);
         style.setFont(font);
