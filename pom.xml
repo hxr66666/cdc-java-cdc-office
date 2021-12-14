@@ -63,15 +63,15 @@
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-      <cdc.io.version>0.12.0</cdc.io.version>
-      <cdc.kernel.version>0.13.1</cdc.kernel.version>
+      <cdc.io.version>0.13.0</cdc.io.version>
+      <cdc.kernel.version>0.14.0</cdc.kernel.version>
       <cdc.tuples.version>1.0.0</cdc.tuples.version>
-      <cdc.util.version>0.13.2</cdc.util.version>
+      <cdc.util.version>0.14.0</cdc.util.version>
       <fastods.version>0.7.4</fastods.version>
       <htmlflow.version>3.8</htmlflow.version>
-      <junit.version>5.8.1</junit.version>
+      <junit.version>5.8.2</junit.version>
       <j2html.version>1.5.0</j2html.version>
-      <log4j.version>2.14.1</log4j.version>
+      <log4j.version>2.16.0</log4j.version>
       <maven.checkstyle.version>3.1.0</maven.checkstyle.version>
       <maven.compiler.version>3.8.1</maven.compiler.version>
       <maven.dependency.version>3.1.1</maven.dependency.version>
@@ -391,6 +391,7 @@
                   <serverId>ossrh</serverId>
                   <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                   <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                  <skipStagingRepositoryClose>true</skipStagingRepositoryClose>
                </configuration>
             </plugin>
          </plugins>
