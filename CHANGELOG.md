@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.14.1] - 2021-12-28
+### Changed
+- Updated dependencies:
+    - cdc-util-0.14.1
+    - cdc-io-0.13.1
+    - cdc-kernel-0.14.1
+    - fastods-0.8.1
+    - odftoolkit-0.9.0
+    - org.apache.log4j-2.17.0. #10
+
+
 ## [0.14.0] - 2021-12-14
 ### Changed
 - Updated dependencies:
