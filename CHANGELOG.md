@@ -5,8 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [Unreleased]
+### Security
+- Updated dependencies:
+    - cdc-util-0.14.2
+    - cdc-io-0.13.2
+    - cdc-kernel-0.14.2
+    - org.apache.log4j-2.17.1. #10
+
+
 ## [0.14.1] - 2021-12-28
-### Changed
+### Security
 - Updated dependencies:
     - cdc-util-0.14.1
     - cdc-io-0.13.1
@@ -17,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [0.14.0] - 2021-12-14
-### Changed
+### Security
 - Updated dependencies:
     - cdc-util-0.14.0
     - cdc-io-0.13.0
