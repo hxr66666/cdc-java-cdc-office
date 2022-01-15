@@ -6,12 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Added
+- Added `WorkbookWriter.addCellAndComment()`.
+
 ### Security
 - Updated dependencies:
     - cdc-util-0.14.2
     - cdc-io-0.13.2
     - cdc-kernel-0.14.2
     - org.apache.log4j-2.17.1. #10
+    - org.apache.poi-5.2.0 #10
 
 
 ## [0.14.1] - 2021-12-28

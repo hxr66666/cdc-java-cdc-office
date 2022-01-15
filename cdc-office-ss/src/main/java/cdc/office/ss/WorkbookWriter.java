@@ -70,6 +70,23 @@ public interface WorkbookWriter<W extends WorkbookWriter<W>> extends Closeable, 
     public W addCellComment(String comment) throws IOException;
 
     /**
+     * Adds a cell with a comment.
+     *
+     * @param value The value.
+     * @param comment The comment.
+     * @return This WorkbookWriter.
+     * @throws IOException When an IO error occurs.
+     */
+    public default W addCellAndComment(Object value,
+                                       String comment) throws IOException {
+        addCell(value);
+        if (comment != null) {
+            addCellComment(comment);
+        }
+        return self();
+    }
+
+    /**
      * Adds an empty cell to current row.
      *
      * @return This WorkbookWriter.

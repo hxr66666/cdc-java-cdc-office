@@ -16,7 +16,7 @@ import org.apache.poi.ss.usermodel.BuiltinFormats;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.util.XMLHelper;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
-import org.apache.poi.xssf.model.SharedStringsTable;
+import org.apache.poi.xssf.model.SharedStrings;
 import org.apache.poi.xssf.model.Styles;
 import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -149,7 +149,7 @@ public class PoiSaxSheetParser implements SheetParser {
                               TablesHandler handler) throws IOException {
         try {
             final XSSFReader r = new XSSFReader(pkg);
-            final SharedStringsTable sst = r.getSharedStringsTable();
+            final SharedStrings sst = r.getSharedStringsTable();
             final StylesTable styles = r.getStylesTable();
 
             if (LOGGER.isDebugEnabled()) {
@@ -195,7 +195,7 @@ public class PoiSaxSheetParser implements SheetParser {
             TablesHandler.processBeginTables(handler, systemId);
 
             final XSSFReader r = new XSSFReader(pkg);
-            final SharedStringsTable sst = r.getSharedStringsTable();
+            final SharedStrings sst = r.getSharedStringsTable();
             final StylesTable styles = r.getStylesTable();
 
             if (LOGGER.isDebugEnabled()) {
@@ -244,7 +244,7 @@ public class PoiSaxSheetParser implements SheetParser {
             TablesHandler.processBeginTables(handler, systemId);
 
             final XSSFReader r = new XSSFReader(pkg);
-            final SharedStringsTable sst = r.getSharedStringsTable();
+            final SharedStrings sst = r.getSharedStringsTable();
             final StylesTable styles = r.getStylesTable();
 
             if (LOGGER.isDebugEnabled()) {
@@ -284,7 +284,7 @@ public class PoiSaxSheetParser implements SheetParser {
 
     private static XMLReader fetchSheetParser(int headers,
                                               TableHandler handler,
-                                              SharedStringsTable sst,
+                                              SharedStrings sst,
                                               Styles styles) throws SAXException, ParserConfigurationException {
         final XMLReader parser = XMLHelper.newXMLReader();
         final SheetHandler sheetHandler = new SheetHandler(headers, handler, sst, styles);
@@ -295,7 +295,7 @@ public class PoiSaxSheetParser implements SheetParser {
     private static class SheetHandler extends DefaultHandler {
         private final int headers;
         private final TableHandler handler;
-        private final SharedStringsTable sst;
+        private final SharedStrings sst;
         private final Styles styles;
         private String lastContents; // TODO Use StringBuilder
         private boolean nextIsString;
@@ -334,7 +334,7 @@ public class PoiSaxSheetParser implements SheetParser {
 
         public SheetHandler(int headers,
                             TableHandler handler,
-                            SharedStringsTable sst,
+                            SharedStrings sst,
                             Styles styles) {
             this.headers = headers;
             this.handler = handler;

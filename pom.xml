@@ -88,7 +88,7 @@
       <maven.versions.version>2.7</maven.versions.version>
       <nexus.staging.maven.version>1.6.8</nexus.staging.maven.version>
       <odftoolkit.version>0.9.0</odftoolkit.version>
-      <poi.version>5.1.0</poi.version>
+      <poi.version>5.2.0</poi.version>
       <xml.apis.version>1.4.01</xml.apis.version> <!-- newer that 2.x and contains org.w3c.dom.ElementTraversal -->
    </properties>
 
