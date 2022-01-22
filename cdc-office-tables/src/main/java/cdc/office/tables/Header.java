@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -23,6 +24,8 @@ public class Header {
     private final List<String> names;
     private final Map<String, Integer> map = new HashMap<>();
     private final boolean valid;
+
+    public static final Header EMPTY = new Header();
 
     /**
      * Creates a TableHeader from a String array.
@@ -128,6 +131,16 @@ public class Header {
             throw new IllegalStateException("Invalid header");
         }
         return map.getOrDefault(name, -1);
+    }
+
+    public boolean intersects(Header other) {
+        final Set<String> set = new HashSet<>(getNames());
+        set.retainAll(other.getNames());
+        return !set.isEmpty();
+    }
+
+    public boolean contains(Header other) {
+        return getNamesSet().containsAll(other.getNames());
     }
 
     @Override

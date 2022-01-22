@@ -125,14 +125,14 @@ public final class KeyedSheetDiff {
 
         // Check that both headers contain the expected keys
         final Header expected = new Header(margs.keys);
-        final HeaderMapper mapper1 = new HeaderMapper(expected, header1);
-        final HeaderMapper mapper2 = new HeaderMapper(expected, header2);
+        final HeaderMapper mapper1 = HeaderMapper.builder().mandatory(expected).actual(header1).build();
+        final HeaderMapper mapper2 = HeaderMapper.builder().mandatory(expected).actual(header2).build();
 
-        if (!mapper1.hasAllExpectedNames()) {
+        if (!mapper1.hasAllMandatoryNames()) {
             throw new IllegalArgumentException("Invalid file1 header: " + header1);
         }
 
-        if (!mapper2.hasAllExpectedNames()) {
+        if (!mapper2.hasAllMandatoryNames()) {
             throw new IllegalArgumentException("Invalid file2 header: " + header2);
         }
 
