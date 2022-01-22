@@ -73,14 +73,14 @@
       <j2html.version>1.5.0</j2html.version>
       <log4j.version>2.17.1</log4j.version>
       <maven.checkstyle.version>3.1.2</maven.checkstyle.version>
-      <maven.compiler.version>3.8.1</maven.compiler.version>
+      <maven.compiler.version>3.9.0</maven.compiler.version>
       <maven.dependency.version>3.2.0</maven.dependency.version>
-      <maven.depgraph.version>3.3.0</maven.depgraph.version>
+      <maven.depgraph.version>3.3.1</maven.depgraph.version>
       <maven.deploy.version>3.0.0-M2</maven.deploy.version>
       <maven.gpg.version>3.0.1</maven.gpg.version>
       <maven.install.version>3.0.0-M1</maven.install.version>
       <maven.jacoco.version>0.8.7</maven.jacoco.version>
-      <maven.jar.version>3.2.0</maven.jar.version>
+      <maven.jar.version>3.2.2</maven.jar.version>
       <maven.javadoc.version>3.3.1</maven.javadoc.version>
       <maven.project.info.reports.version>3.0.0</maven.project.info.reports.version>
       <maven.source.version>3.2.1</maven.source.version>
