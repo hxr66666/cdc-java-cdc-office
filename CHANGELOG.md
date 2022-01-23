@@ -6,10 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Removed
+- Removed deprecated methods `Row.getColumnsCount()`, `TableHanlder.processBegin()`
+  and `TableHanlder.processEnd()`.
+
 ### Changed
 - Changed API of HeaderMapper. Now it can handler mandatory and optional names.  
   The constructor is now private and a Builder has been added.  #13
 - Updated maven plugins
+
+
 
 
 ## [0.14.2] - 2022-01-15

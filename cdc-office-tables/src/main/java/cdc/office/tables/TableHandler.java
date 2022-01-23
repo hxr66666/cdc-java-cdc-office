@@ -27,21 +27,6 @@ public interface TableHandler {
      */
     public default void processBeginTable(String name,
                                           int numberOfRows) {
-        processBegin(name, numberOfRows);
-    }
-
-    /**
-     * Called when the parsing of a table starts.<br>
-     * Default implementation does nothing.
-     *
-     * @param name The table/sheet name may be {@code null}.
-     * @param numberOfRows The number of rows of the table,
-     *            or a negative number if that can not be determined.
-     * @deprecated Use {@link #processBeginTable(String, int)}.
-     */
-    @Deprecated
-    public default void processBegin(String name,
-                                     int numberOfRows) {
         // Ignore
     }
 
@@ -74,19 +59,6 @@ public interface TableHandler {
      * @param name The table/sheet name may be {@code null}.
      */
     public default void processEndTable(String name) {
-        processEnd();
-    }
-
-    /**
-     * Called when the table has been fully read.
-     * <p>
-     * This is called even when parsing has been interrupted.<br>
-     * Default implementation does nothing.
-     *
-     * @deprecated Use {@link #processEndTable(String)}.
-     */
-    @Deprecated
-    public default void processEnd() {
         // Ignore
     }
 
