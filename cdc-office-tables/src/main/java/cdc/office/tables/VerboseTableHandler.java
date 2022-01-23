@@ -7,9 +7,9 @@ import org.apache.logging.log4j.Logger;
 import cdc.util.function.Evaluation;
 
 public class VerboseTableHandler implements TableHandler {
-    private static final Logger LOGGER = LogManager.getLogger(VerboseTableHandler.class);
+    protected final Logger logger = LogManager.getLogger(getClass());
     private final TableHandler delegate;
-    private final Level level;
+    protected final Level level;
 
     public VerboseTableHandler(TableHandler delegate,
                                Level level) {
@@ -24,27 +24,27 @@ public class VerboseTableHandler implements TableHandler {
     @Override
     public void processBeginTable(String name,
                                   int numberOfRows) {
-        LOGGER.log(level, "processBeginTable({}, {})", name, numberOfRows);
+        logger.log(level, "processBeginTable({}, {})", name, numberOfRows);
         delegate.processBeginTable(name, numberOfRows);
     }
 
     @Override
     public Evaluation processHeader(Row header,
                                     RowLocation location) {
-        LOGGER.log(level, "processHeader({}, {})", header, location);
+        logger.log(level, "processHeader({}, {})", header, location);
         return delegate.processHeader(header, location);
     }
 
     @Override
     public Evaluation processData(Row data,
                                   RowLocation location) {
-        LOGGER.log(level, "processData({}, {})", data, location);
+        logger.log(level, "processData({}, {})", data, location);
         return delegate.processData(data, location);
     }
 
     @Override
     public void processEndTable(String name) {
-        LOGGER.log(level, "processEndTable({})", name);
+        logger.log(level, "processEndTable({})", name);
         delegate.processEndTable(name);
     }
 }
