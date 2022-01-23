@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Created `VerboseTablesHandler`.
+- Created `Issue12Test`to analyze issue #11. No change to CDC code was identified. #11
 
 ### Removed
 - Removed deprecated methods `Row.getColumnsCount()`, `TableHanlder.processBegin()`
@@ -17,8 +18,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed API of HeaderMapper. Now it can handler mandatory and optional names.  
   The constructor is now private and a Builder has been added.  #13
 - Updated maven plugins
-
-
 
 
 ## [0.14.2] - 2022-01-15
