@@ -8,6 +8,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -63,6 +64,8 @@ public class PoiStreamSheetParser implements SheetParser {
         try (OPCPackage opcPackage = OPCPackage.open(file.getPath(), PackageAccess.READ)) {
             final StreamParser parser = new StreamParser(opcPackage);
             parser.process(file.getPath(), headers, handler);
+            // Do this to avoid POI to generate a warning message
+            opcPackage.revert();
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -96,6 +99,8 @@ public class PoiStreamSheetParser implements SheetParser {
         try (OPCPackage opcPackage = OPCPackage.open(file.getPath(), PackageAccess.READ)) {
             final StreamParser parser = new StreamParser(opcPackage);
             parser.process(file.getPath(), sheetName, headers, handler);
+            // Do this to avoid POI to generate a warning message
+            opcPackage.revert();
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -112,6 +117,8 @@ public class PoiStreamSheetParser implements SheetParser {
         try (OPCPackage opcPackage = OPCPackage.open(file.getPath(), PackageAccess.READ)) {
             final StreamParser parser = new StreamParser(opcPackage);
             parser.process(file.getPath(), sheetIndex, headers, handler);
+            // Do this to avoid POI to generate a warning message
+            opcPackage.revert();
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -165,7 +172,7 @@ public class PoiStreamSheetParser implements SheetParser {
 
         public void process(String systemId,
                             int headers,
-                            TablesHandler handler) throws Exception {
+                            TablesHandler handler) throws IOException, SAXException, OpenXML4JException {
             handler.processBeginTables(systemId);
 
             final ReadOnlySharedStringsTable strings = new ReadOnlySharedStringsTable(this.opcPackage);
@@ -188,7 +195,7 @@ public class PoiStreamSheetParser implements SheetParser {
         public void process(String systemId,
                             String sheetName,
                             int headers,
-                            TableHandler handler) throws Exception {
+                            TableHandler handler) throws IOException, SAXException, OpenXML4JException {
             TablesHandler.processBeginTables(handler, systemId);
             final ReadOnlySharedStringsTable strings = new ReadOnlySharedStringsTable(this.opcPackage);
             final XSSFReader xssfReader = new XSSFReader(this.opcPackage);
@@ -214,7 +221,7 @@ public class PoiStreamSheetParser implements SheetParser {
         public void process(String systemId,
                             int sheetIndex,
                             int headers,
-                            TableHandler handler) throws Exception {
+                            TableHandler handler) throws IOException, SAXException, OpenXML4JException {
             TablesHandler.processBeginTables(handler, systemId);
             final ReadOnlySharedStringsTable strings = new ReadOnlySharedStringsTable(this.opcPackage);
             final XSSFReader xssfReader = new XSSFReader(this.opcPackage);

@@ -19,6 +19,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   The constructor is now private and a Builder has been added.  #13
 - Updated maven plugins
 
+### Fixed
+- Fixed `PoiStreamSheetParser` and `PoiSaxSheetPrser` so that POI does not generate
+  any warning message when a READ OPCPackage is closed.
+  The following message:  
+  *WARN org.apache.poi.openxml4j.opc.OPCPackage - The close() method is intended to SAVE a package. This package is open in READ ONLY mode, use the revert() method instead!*  
+  should not happen anymore. #12
+
 
 ## [0.14.2] - 2022-01-15
 ### Added

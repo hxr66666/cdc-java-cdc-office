@@ -56,6 +56,8 @@ public class PoiSaxSheetParser implements SheetParser {
                       TablesHandler handler) throws IOException {
         try (OPCPackage pkg = OPCPackage.open(file.getPath(), PackageAccess.READ)) {
             parse(file.getPath(), pkg, headers, handler);
+            // Do this to avoid POI to generate a warning message
+            pkg.revert();
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -87,6 +89,8 @@ public class PoiSaxSheetParser implements SheetParser {
                       TableHandler handler) throws IOException {
         try (OPCPackage pkg = OPCPackage.open(file.getPath(), PackageAccess.READ)) {
             parse(file.getPath(), pkg, sheetName, headers, handler);
+            // Do this to avoid POI to generate a warning message
+            pkg.revert();
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
@@ -102,6 +106,8 @@ public class PoiSaxSheetParser implements SheetParser {
                       TableHandler handler) throws IOException {
         try (OPCPackage pkg = OPCPackage.open(file.getPath(), PackageAccess.READ)) {
             parse(file.getPath(), pkg, sheetIndex, headers, handler);
+            // Do this to avoid POI to generate a warning message
+            pkg.revert();
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
