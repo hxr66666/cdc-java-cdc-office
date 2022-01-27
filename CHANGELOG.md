@@ -11,8 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Created `Issue12Test`to analyze issue #11. No change to CDC code was identified. #11
 
 ### Removed
-- Removed deprecated methods `Row.getColumnsCount()`, `TableHanlder.processBegin()`
-  and `TableHanlder.processEnd()`.
+- Removed deprecated methods `Row.getColumnsCount()`, `TableHandler.processBegin()`
+  and `TableHandler.processEnd()`.
 
 ### Changed
 - Changed API of HeaderMapper. Now it can handler mandatory and optional names.  
