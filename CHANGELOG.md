@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Upgraded to Java 11
 
+### Removed
+- It is no more possible to read ODS files. That should be fixed with #14.
+
 
 ## [0.15.0] - 2022-01-28
 ### Added
