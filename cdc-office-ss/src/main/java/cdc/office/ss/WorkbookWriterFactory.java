@@ -40,6 +40,7 @@ public class WorkbookWriterFactory {
          * <p>
          * <b>WARNING:</b> This is very slow, but seems to work.
          */
+        @Deprecated
         ODS_SIMPLE,
 
         /**
@@ -108,11 +109,7 @@ public class WorkbookWriterFactory {
         case CSV:
             return create(file, features, "cdc.office.ss.csv.CsvWorkbookWriter");
         case ODS:
-            if (isEnabled(Hint.ODS_FAST)) {
-                return create(file, features, "cdc.office.ss.odf.FastOdsWorkbookWriter");
-            } else {
-                return create(file, features, "cdc.office.ss.odf.SimpleOdsWorkbookWriter");
-            }
+            return create(file, features, "cdc.office.ss.odf.FastOdsWorkbookWriter");
         case XLS:
         case XLSM:
         case XLSX:

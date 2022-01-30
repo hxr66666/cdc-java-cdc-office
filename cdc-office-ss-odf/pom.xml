@@ -40,21 +40,23 @@
          <artifactId>odfdom-java</artifactId>
       </dependency>
 
+<!--
       <dependency>
          <groupId>org.odftoolkit</groupId>
          <artifactId>simple-odf</artifactId>
       </dependency>
-
+-->
       <dependency>
          <groupId>com.github.jferard</groupId>
          <artifactId>fastods</artifactId>
       </dependency>
 
+<!--
       <dependency>
          <groupId>xml-apis</groupId>
          <artifactId>xml-apis</artifactId>
       </dependency>
-
+-->
       <dependency>
          <groupId>org.apache.logging.log4j</groupId>
          <artifactId>log4j-api</artifactId>

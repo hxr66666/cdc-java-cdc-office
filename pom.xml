@@ -87,7 +87,7 @@
       <maven.surefire.version>3.0.0-M5</maven.surefire.version>
       <maven.versions.version>2.7</maven.versions.version>
       <nexus.staging.maven.version>1.6.8</nexus.staging.maven.version>
-      <odftoolkit.version>0.9.0</odftoolkit.version>
+      <odftoolkit.version>0.10.0</odftoolkit.version>
       <poi.version>5.2.0</poi.version>
       <xml.apis.version>1.4.01</xml.apis.version> <!-- newer that 2.x and contains org.w3c.dom.ElementTraversal -->
    </properties>
@@ -221,8 +221,8 @@
                <artifactId>maven-compiler-plugin</artifactId>
                <version>${maven.compiler.version}</version>
                <configuration>
-                  <source>1.8</source>
-                  <target>1.8</target>
+                  <source>11</source>
+                  <target>11</target>
                </configuration>
             </plugin>
             <plugin>
@@ -316,7 +316,7 @@
                <configuration>
                   <show>package</show>
                   <quiet>true</quiet>
-                  <source>8</source>
+                  <source>11</source>
                </configuration>
                <executions>
                   <execution>

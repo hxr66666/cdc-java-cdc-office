@@ -51,12 +51,12 @@ public enum WorkbookKind {
         case CSV:
             return -1;
         case ODS:
-            return 1048576;
+            return 1_048_576;
         case XLS:
             return 65536;
         case XLSM:
         case XLSX:
-            return 1048576;
+            return 1_048_576;
         default:
             throw new UnexpectedValueException(this);
         }

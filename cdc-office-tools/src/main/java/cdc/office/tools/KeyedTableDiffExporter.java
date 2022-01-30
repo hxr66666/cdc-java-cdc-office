@@ -10,17 +10,12 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.odftoolkit.odfdom.dom.style.OdfStyleFamily;
-import org.odftoolkit.odfdom.incubator.doc.office.OdfOfficeStyles;
-import org.odftoolkit.odfdom.incubator.doc.style.OdfStyle;
-import org.odftoolkit.simple.SpreadsheetDocument;
 
 import cdc.office.ss.WorkbookKind;
 import cdc.office.ss.WorkbookWriter;
 import cdc.office.ss.WorkbookWriterFeatures;
 import cdc.office.ss.csv.CsvWorkbookWriter;
 import cdc.office.ss.excel.ExcelWorkbookWriter;
-import cdc.office.ss.odf.SimpleOdsWorkbookWriter;
 import cdc.office.tables.Header;
 import cdc.office.tables.TableSection;
 import cdc.office.tables.diff.CellDiff;
@@ -30,6 +25,7 @@ import cdc.office.tables.diff.RowDiff;
 import cdc.office.tables.diff.RowDiffKind;
 import cdc.office.tables.diff.Side;
 import cdc.tuples.CTupleN;
+import cdc.util.lang.NotYetImplementedException;
 import cdc.util.lang.UnexpectedValueException;
 
 /**
@@ -408,80 +404,82 @@ public class KeyedTableDiffExporter {
     private final class OdsGenerator extends Generator {
         public OdsGenerator() {
             super();
+            // TODO
+            throw new NotYetImplementedException("Not yet ported to Java 11");
         }
 
-        private void createStyle(SpreadsheetDocument doc) {
-            final OdfOfficeStyles styles = doc.getOrCreateDocumentStyles();
-            final OdfStyle style = styles.newStyle("xxx", OdfStyleFamily.Text);
-
-        }
+        // private void createStyle(SpreadsheetDocument doc) {
+        // final OdfOfficeStyles styles = doc.getOrCreateDocumentStyles();
+        // final OdfStyle style = styles.newStyle("xxx", OdfStyleFamily.Text);
+        //
+        // }
 
         @Override
         public void generate(File file,
                              Header header,
                              KeyedTableDiff diff) throws IOException {
-            try (WorkbookWriter<?> writer = new SimpleOdsWorkbookWriter(file, features)) {
-                writer.beginSheet(sheetName);
-
-                // Header
-                writer.beginRow(TableSection.HEADER);
-                if (insertLineMarkColumn) {
-                    writer.addCell(lineMarkColumn);
-                    // TODO style
-                }
-                for (final String name : header.getNames()) {
-                    writer.addCell(name);
-                    // TODO style
-                }
-
-                // Data
-                final List<CTupleN<String>> keys = diff.getKeys();
-                if (sortLines) {
-                    Collections.sort(keys);
-                }
-
-                for (final CTupleN<String> key : keys) {
-                    final RowDiff rdiff = diff.getDiff(key);
-                    if (rdiff.getKind() != RowDiffKind.SAME || showUnchangedLines) {
-                        writer.beginRow(TableSection.DATA);
-                        if (insertLineMarkColumn) {
-                            writer.addCell(rdiff.getKind().toString());
-                            // TODO style
-                        }
-
-                        for (final CellDiff cdiff : rdiff.getDiffs()) {
-                            switch (cdiff.getKind()) {
-                            case ADDED:
-                            case CHANGED:
-                            case SAME:
-                            case NULL:
-                                if (showColors) {
-                                    writer.addCell(cdiff.getRight());
-                                    // TODO style
-                                } else {
-                                    writer.addCell(getMark(cdiff.getKind()) + wrap(cdiff.getRight()));
-                                }
-                                break;
-                            case REMOVED:
-                                if (showColors) {
-                                    writer.addCell(cdiff.getLeft());
-                                    // TODO style
-                                } else {
-                                    writer.addCell(getMark(cdiff.getKind()) + wrap(cdiff.getLeft()));
-                                }
-                                break;
-                            default:
-                                throw new UnexpectedValueException(cdiff.getKind());
-                            }
-                        }
-
-                    }
-                }
-            } catch (final IOException e) {
-                throw e;
-            } catch (final Exception e) {
-                throw new IOException(e);
-            }
+            // try (WorkbookWriter<?> writer = new SimpleOdsWorkbookWriter(file, features)) {
+            // writer.beginSheet(sheetName);
+            //
+            // // Header
+            // writer.beginRow(TableSection.HEADER);
+            // if (insertLineMarkColumn) {
+            // writer.addCell(lineMarkColumn);
+            // // TODO style
+            // }
+            // for (final String name : header.getNames()) {
+            // writer.addCell(name);
+            // // TODO style
+            // }
+            //
+            // // Data
+            // final List<CTupleN<String>> keys = diff.getKeys();
+            // if (sortLines) {
+            // Collections.sort(keys);
+            // }
+            //
+            // for (final CTupleN<String> key : keys) {
+            // final RowDiff rdiff = diff.getDiff(key);
+            // if (rdiff.getKind() != RowDiffKind.SAME || showUnchangedLines) {
+            // writer.beginRow(TableSection.DATA);
+            // if (insertLineMarkColumn) {
+            // writer.addCell(rdiff.getKind().toString());
+            // // TODO style
+            // }
+            //
+            // for (final CellDiff cdiff : rdiff.getDiffs()) {
+            // switch (cdiff.getKind()) {
+            // case ADDED:
+            // case CHANGED:
+            // case SAME:
+            // case NULL:
+            // if (showColors) {
+            // writer.addCell(cdiff.getRight());
+            // // TODO style
+            // } else {
+            // writer.addCell(getMark(cdiff.getKind()) + wrap(cdiff.getRight()));
+            // }
+            // break;
+            // case REMOVED:
+            // if (showColors) {
+            // writer.addCell(cdiff.getLeft());
+            // // TODO style
+            // } else {
+            // writer.addCell(getMark(cdiff.getKind()) + wrap(cdiff.getLeft()));
+            // }
+            // break;
+            // default:
+            // throw new UnexpectedValueException(cdiff.getKind());
+            // }
+            // }
+            //
+            // }
+            // }
+            // } catch (final IOException e) {
+            // throw e;
+            // } catch (final Exception e) {
+            // throw new IOException(e);
+            // }
         }
     }
 }
