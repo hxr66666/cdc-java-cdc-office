@@ -1,5 +1,10 @@
 package cdc.office.ss.odf;
 
+import org.odftoolkit.odfdom.doc.table.OdfTableRow;
+import org.odftoolkit.odfdom.dom.element.table.TableTableCellElement;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 public final class OdsUtils {
     // private static final Logger LOGGER = LogManager.getLogger(OdsUtils.class);
 
@@ -50,24 +55,24 @@ public final class OdsUtils {
     // }
     // }
 
-    // public static int getColumnsCount(Row row) {
-    // int result = row.getTable().getColumnCount(); // This is costly
-    // final NodeList cells = row.getOdfElement().getChildNodes();
-    // if (cells != null && cells.getLength() > 0) {
-    // final int cellLen = cells.getLength();
-    // for (int i = cellLen - 1; i >= 0; i--) {
-    // final Node cell = cells.item(i);
-    // if (cell instanceof TableTableCellElement) {
-    // if (!cell.hasChildNodes()) {
-    // // last cell is empty - remove it from counter
-    // result -= ((TableTableCellElement) cell).getTableNumberColumnsRepeatedAttribute();
-    // } else {
-    // // get first non-empty cell from the end, break
-    // break;
-    // }
-    // }
-    // }
-    // }
-    // return result;
-    // }
+    public static int getColumnsCount(OdfTableRow row) {
+        int result = row.getTable().getColumnCount(); // This is costly
+        final NodeList cells = row.getOdfElement().getChildNodes();
+        if (cells != null && cells.getLength() > 0) {
+            final int cellLen = cells.getLength();
+            for (int i = cellLen - 1; i >= 0; i--) {
+                final Node cell = cells.item(i);
+                if (cell instanceof TableTableCellElement) {
+                    if (!cell.hasChildNodes()) {
+                        // last cell is empty - remove it from counter
+                        result -= ((TableTableCellElement) cell).getTableNumberColumnsRepeatedAttribute();
+                    } else {
+                        // get first non-empty cell from the end, break
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
+    }
 }

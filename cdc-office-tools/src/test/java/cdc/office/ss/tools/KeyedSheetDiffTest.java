@@ -170,11 +170,10 @@ class KeyedSheetDiffTest {
                  "xlsx");
     }
 
-    // TODO does not work any more
-    // @Test
-    // void testOdsOdsOds() throws IOException {
-    // checkAll("src/test/resources/file1.ods",
-    // "src/test/resources/file2.ods",
-    // "ods");
-    // }
+    @Test
+    void testOdsOdsOds() throws IOException {
+        checkAll("src/test/resources/file1.ods",
+                 "src/test/resources/file2.ods",
+                 "ods");
+    }
 }

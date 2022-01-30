@@ -8,15 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - Upgraded to Java 11
-
-### Removed
-- It is no more possible to read ODS files. That should be fixed with #14.
+- Updated dependencies
+    - odftoolkit-0.10.0. Support of ODS is far from perfect. It was not before. #14
 
 
 ## [0.15.0] - 2022-01-28
 ### Added
 - Created `VerboseTablesHandler`.
-- Created `Issue12Test`to analyze issue #11. No change to CDC code was identified. #11
+- Created `Issue12Test` to analyze issue #11. No change to CDC code was identified. #11
 
 ### Removed
 - Removed deprecated methods `Row.getColumnsCount()`, `TableHandler.processBegin()`

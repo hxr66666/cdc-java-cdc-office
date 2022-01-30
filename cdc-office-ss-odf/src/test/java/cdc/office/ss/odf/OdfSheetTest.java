@@ -8,7 +8,7 @@ import cdc.office.ss.SheetTestSupport;
  * @author Damien Carbonne
  *
  */
-public class OdfSheetTest extends SheetTestSupport {
+class OdfSheetTest extends SheetTestSupport {
     // // TODO Fix ODS parsing: int with .0, float don't use locale, date, local date time with time set to zero
     // // @Test
     // public void testOdsDefault() throws Exception {

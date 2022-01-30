@@ -36,12 +36,11 @@ public class WorkbookWriterFactory {
         ODS_FAST,
 
         /**
-         * Use ODF Toolkit simple API.
+         * Use ODF Toolkit.
          * <p>
          * <b>WARNING:</b> This is very slow, but seems to work.
          */
-        @Deprecated
-        ODS_SIMPLE,
+        ODF_TOOLKIT,
 
         /**
          * Use POI Streaming API.
@@ -109,7 +108,11 @@ public class WorkbookWriterFactory {
         case CSV:
             return create(file, features, "cdc.office.ss.csv.CsvWorkbookWriter");
         case ODS:
-            return create(file, features, "cdc.office.ss.odf.FastOdsWorkbookWriter");
+            if (isEnabled(Hint.ODS_FAST)) {
+                return create(file, features, "cdc.office.ss.odf.FastOdsWorkbookWriter");
+            } else {
+                return create(file, features, "cdc.office.ss.odf.OdsWorkbookWriter");
+            }
         case XLS:
         case XLSM:
         case XLSX:
