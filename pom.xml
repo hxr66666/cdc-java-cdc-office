@@ -68,7 +68,7 @@
       <cdc.tuples.version>1.0.0</cdc.tuples.version>
       <cdc.util.version>0.14.2</cdc.util.version>
       <fastods.version>0.8.1</fastods.version>
-      <htmlflow.version>3.8</htmlflow.version>
+      <htmlflow.version>3.9</htmlflow.version>
       <junit.version>5.8.2</junit.version>
       <j2html.version>1.5.0</j2html.version>
       <log4j.version>2.17.1</log4j.version>
