@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Upgraded to Java 11
 - Updated dependencies
+    - cdc-io-0.20.0
+    - cdc-kernel-0.20.0
     - odftoolkit-0.10.0. Support of ODS is far from perfect. It was not before. #14
     - htmlflow-3.9
 
