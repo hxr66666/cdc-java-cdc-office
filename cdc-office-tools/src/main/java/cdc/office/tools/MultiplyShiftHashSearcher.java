@@ -37,7 +37,7 @@ public final class MultiplyShiftHashSearcher {
     /** Maximum possible number of entries (values different from 0) in counts. */
     private final int countsMaxEntries;
 
-    /** Number of entries in count. */
+    /** Number of entries in counts. */
     private int countsEntries = 0;
 
     /** The set of characters for which a perfect hash function is searched. */
@@ -214,6 +214,8 @@ public final class MultiplyShiftHashSearcher {
                 builder.append("\\b");
             } else if (c == '\\') {
                 builder.append("\\\\");
+            } else if (c == '"') {
+                builder.append("\\\"");
             } else if (Character.isWhitespace(c) || Character.isISOControl(c)
                     || c == '\u202F' || c == '\u00A0' || c == '\u303F' || c == '\uFEFF'
                     || c == '\u180E' || ('\u2000' <= c && c <= '\u200B')) {
@@ -249,6 +251,9 @@ public final class MultiplyShiftHashSearcher {
                     index++;
                 } else if (next == 'b') {
                     builder.append('\b');
+                    index++;
+                } else if (next == '"') {
+                    builder.append('"');
                     index++;
                 } else if (next == 'u') {
                     // expect XXXX
