@@ -2,6 +2,7 @@ package cdc.office.ss;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -74,15 +75,69 @@ public class WorkbookWriterFactory {
         return tmp.toArray(new Hint[tmp.size()]);
     }
 
+    private WorkbookWriter<?> create(OutputStream out,
+                                     WorkbookKind kind,
+                                     WorkbookWriterFeatures features,
+                                     String className) {
+        final Class<? extends WorkbookWriter<?>> cls =
+                Introspection.uncheckedCast(Introspection.getClass(className,
+                                                                   WorkbookWriter.class,
+                                                                   FailureReaction.FAIL));
+        final Class<?>[] parameterTypes =
+                { OutputStream.class, WorkbookKind.class, WorkbookWriterFeatures.class, WorkbookWriterFactory.class };
+        return Introspection.newInstance(cls, parameterTypes, FailureReaction.FAIL, out, kind, features, this);
+    }
+
     private WorkbookWriter<?> create(File file,
                                      WorkbookWriterFeatures features,
-                                     String className) throws IOException {
+                                     String className) {
         final Class<? extends WorkbookWriter<?>> cls =
                 Introspection.uncheckedCast(Introspection.getClass(className,
                                                                    WorkbookWriter.class,
                                                                    FailureReaction.FAIL));
         final Class<?>[] parameterTypes = { File.class, WorkbookWriterFeatures.class, WorkbookWriterFactory.class };
         return Introspection.newInstance(cls, parameterTypes, FailureReaction.FAIL, file, features, this);
+    }
+
+    /**
+     * Creates a WorkbookWriter for an output stream.
+     *
+     * @param out The output stream.
+     * @param kind The workbook kind.
+     * @param features The features.
+     * @return An implementation of WorkbookWriter that supports the {@code kind}.
+     */
+    public WorkbookWriter<?> create(OutputStream out,
+                                    WorkbookKind kind,
+                                    WorkbookWriterFeatures features) {
+        switch (kind) {
+        case CSV:
+            return create(out, kind, features, "cdc.office.ss.csv.CsvWorkbookWriter");
+        case ODS:
+            if (isEnabled(Hint.ODS_FAST)) {
+                return create(out, kind, features, "cdc.office.ss.odf.FastOdsWorkbookWriter");
+            } else {
+                return create(out, kind, features, "cdc.office.ss.odf.OdsWorkbookWriter");
+            }
+        case XLS:
+        case XLSM:
+        case XLSX:
+            return create(out, kind, features, "cdc.office.ss.excel.ExcelWorkbookWriter");
+        default:
+            throw new UnexpectedValueException(kind);
+        }
+    }
+
+    /**
+     * Creates a WorkbookWriter for an output stream.
+     *
+     * @param out The output stream.
+     * @param kind The workbook kind.
+     * @return An implementation of WorkbookWriter that supports the {@code kind}.
+     */
+    public WorkbookWriter<?> create(OutputStream out,
+                                    WorkbookKind kind) {
+        return create(out, kind, WorkbookWriterFeatures.DEFAULT);
     }
 
     /**
@@ -145,6 +200,7 @@ public class WorkbookWriterFactory {
      * @throws IOException When an IO error occurs.
      * @throws IllegalArgumentException When {@code filename} kind is not recognized.
      */
+    @Deprecated
     public WorkbookWriter<?> create(String filename,
                                     WorkbookWriterFeatures features) throws IOException {
         return create(new File(filename), features);
@@ -158,8 +214,8 @@ public class WorkbookWriterFactory {
      * @throws IOException When an IO error occurs.
      * @throws IllegalArgumentException When {@code filename} kind is not recognized.
      */
+    @Deprecated
     public WorkbookWriter<?> create(String filename) throws IOException {
         return create(filename, WorkbookWriterFeatures.DEFAULT);
     }
-
 }

@@ -2,6 +2,7 @@ package cdc.office.ss.odf;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,6 +34,7 @@ import cdc.util.strings.StringUtils;
 public class OdsWorkbookWriter implements WorkbookWriter<OdsWorkbookWriter> {
     private static final Logger LOGGER = LogManager.getLogger(OdsWorkbookWriter.class);
     private final File file;
+    private final OutputStream out;
     private final WorkbookWriterFeatures features;
     private Section section = Section.WORKBOOK;
     private final OdfSpreadsheetDocument doc;
@@ -54,12 +56,14 @@ public class OdsWorkbookWriter implements WorkbookWriter<OdsWorkbookWriter> {
     private static final String FORMAT_DATE = "yyyy/MM/dd";
     private static final String FORMAT_TIME = "HH:mm:ss";
 
-    public OdsWorkbookWriter(File file,
-                             WorkbookWriterFeatures features)
+    private OdsWorkbookWriter(File file,
+                              OutputStream out,
+                              WorkbookKind kind,
+                              WorkbookWriterFeatures features)
             throws IOException {
         this.file = file;
+        this.out = out;
         this.features = features;
-        final WorkbookKind kind = WorkbookKind.from(file);
         if (kind != WorkbookKind.ODS) {
             throw new IllegalArgumentException();
         }
@@ -80,11 +84,31 @@ public class OdsWorkbookWriter implements WorkbookWriter<OdsWorkbookWriter> {
     }
 
     public OdsWorkbookWriter(File file,
+                             WorkbookWriterFeatures features)
+            throws IOException {
+        this(file, null, WorkbookKind.from(file), features);
+    }
+
+    public OdsWorkbookWriter(OutputStream out,
+                             WorkbookWriterFeatures features)
+            throws IOException {
+        this(null, out, WorkbookKind.ODS, features);
+    }
+
+    public OdsWorkbookWriter(File file,
                              WorkbookWriterFeatures features,
                              WorkbookWriterFactory factory)
             throws IOException {
         this(file,
              features);
+    }
+
+    public OdsWorkbookWriter(OutputStream out,
+                             WorkbookKind kind,
+                             WorkbookWriterFeatures features,
+                             WorkbookWriterFactory factory)
+            throws IOException {
+        this(null, out, kind, features);
     }
 
     @Override
@@ -318,7 +342,11 @@ public class OdsWorkbookWriter implements WorkbookWriter<OdsWorkbookWriter> {
     @Override
     public void close() throws IOException {
         try {
-            this.doc.save(file);
+            if (file == null) {
+                this.doc.save(out);
+            } else {
+                this.doc.save(file);
+            }
             this.doc.close();
         } catch (final Exception e) {
             throw new IOException(e);

@@ -1,5 +1,7 @@
 package cdc.office.ss.excel;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -10,24 +12,51 @@ import cdc.office.ss.WorkbookWriterTestSupport;
 
 class ExcelWorkbookWriterTest extends WorkbookWriterTestSupport {
     @Test
-    void testTypesXlsx() throws IOException {
-        testTypes(new File("target/" + getClass().getSimpleName() + "-types.xlsx"),
-                  10,
-                  100);
+    void testTypesFileXlsx() throws IOException {
+        testTypesFile(new File("target/" + getClass().getSimpleName() + "-types.xlsx"),
+                      10,
+                      100);
+        assertTrue(true);
     }
 
     @Test
-    void testTypesXls() throws IOException {
-        testTypes(new File("target/" + getClass().getSimpleName() + "-types.xls"),
-                  10,
-                  100);
+    void testTypesFileXls() throws IOException {
+        testTypesFile(new File("target/" + getClass().getSimpleName() + "-types.xls"),
+                      10,
+                      100);
+        assertTrue(true);
     }
 
     @Test
-    void testTypesXlsm() throws IOException {
-        testTypes(new File("target/" + getClass().getSimpleName() + "-types.xlsm"),
-                  10,
-                  100);
+    void testTypesFileXlsm() throws IOException {
+        testTypesFile(new File("target/" + getClass().getSimpleName() + "-types.xlsm"),
+                      10,
+                      100);
+        assertTrue(true);
+    }
+
+    @Test
+    void testTypesOutputStreamXlsx() throws IOException {
+        testTypesOutputStream(new File("target/" + getClass().getSimpleName() + "-os-types.xlsx"),
+                              10,
+                              100);
+        assertTrue(true);
+    }
+
+    @Test
+    void testTypesOutputStreamXls() throws IOException {
+        testTypesOutputStream(new File("target/" + getClass().getSimpleName() + "-os-types.xls"),
+                              10,
+                              100);
+        assertTrue(true);
+    }
+
+    @Test
+    void testTypesOutputStreamXlsm() throws IOException {
+        testTypesOutputStream(new File("target/" + getClass().getSimpleName() + "-os-types.xlsm"),
+                              10,
+                              100);
+        assertTrue(true);
     }
 
     @Test
@@ -39,6 +68,7 @@ class ExcelWorkbookWriterTest extends WorkbookWriterTestSupport {
                          // Ignore
                      },
                      WorkbookWriterFeatures.DEFAULT);
+        assertTrue(true);
     }
 
     @Test
@@ -50,6 +80,7 @@ class ExcelWorkbookWriterTest extends WorkbookWriterTestSupport {
                          // Ignore
                      },
                      WorkbookWriterFeatures.DEFAULT);
+        assertTrue(true);
     }
 
     @Test
@@ -61,6 +92,7 @@ class ExcelWorkbookWriterTest extends WorkbookWriterTestSupport {
                          // Ignore
                      },
                      WorkbookWriterFeatures.DEFAULT);
+        assertTrue(true);
     }
 
     @Test
@@ -72,6 +104,7 @@ class ExcelWorkbookWriterTest extends WorkbookWriterTestSupport {
                          // Ignore
                      },
                      WorkbookWriterFeatures.STANDARD_FAST);
+        assertTrue(true);
     }
 
     @Test
@@ -83,6 +116,7 @@ class ExcelWorkbookWriterTest extends WorkbookWriterTestSupport {
                          // Ignore
                      },
                      WorkbookWriterFeatures.STANDARD_FAST);
+        assertTrue(true);
     }
 
     @Test
@@ -94,5 +128,6 @@ class ExcelWorkbookWriterTest extends WorkbookWriterTestSupport {
                          // Ignore
                      },
                      WorkbookWriterFeatures.STANDARD_FAST);
+        assertTrue(true);
     }
 }

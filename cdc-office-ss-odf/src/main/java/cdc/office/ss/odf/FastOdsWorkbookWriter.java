@@ -2,6 +2,7 @@ package cdc.office.ss.odf;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.github.jferard.fastods.AnonymousOdsFileWriter;
 import com.github.jferard.fastods.NamedOdsFileWriter;
 import com.github.jferard.fastods.OdsDocument;
 import com.github.jferard.fastods.OdsFactory;
@@ -41,10 +43,12 @@ import cdc.util.strings.StringUtils;
 public class FastOdsWorkbookWriter implements WorkbookWriter<FastOdsWorkbookWriter> {
     private static final Logger LOGGER = LogManager.getLogger(FastOdsWorkbookWriter.class);
     private final File file;
+    private final OutputStream out;
     private final WorkbookWriterFeatures features;
     private Section section = Section.WORKBOOK;
     // private final AnonymousOdsFileWriter writer;
-    private final NamedOdsFileWriter writer;
+    private final NamedOdsFileWriter namedWriter;
+    private final AnonymousOdsFileWriter anonymousWriter;
     private final OdsDocument doc;
     /** Current table (sheet). */
     private Table table;
@@ -67,19 +71,28 @@ public class FastOdsWorkbookWriter implements WorkbookWriter<FastOdsWorkbookWrit
     private static final String PATTERN_TIME = "HH:mm:ss";
     private static final SimpleDateFormat FORMAT_TIME = new SimpleDateFormat(PATTERN_TIME);
 
-    public FastOdsWorkbookWriter(File file,
-                                 WorkbookWriterFeatures features)
+    private FastOdsWorkbookWriter(File file,
+                                  OutputStream out,
+                                  WorkbookKind kind,
+                                  WorkbookWriterFeatures features)
             throws IOException {
         this.file = file;
+        this.out = out;
         this.features = features;
-        final WorkbookKind kind = WorkbookKind.from(file);
         if (kind != WorkbookKind.ODS) {
             throw new IllegalArgumentException();
         }
         try {
             final OdsFactory odsFactory = OdsFactory.create();
-            this.writer = odsFactory.createWriter(file);
-            this.doc = writer.document();
+            if (file == null) {
+                this.anonymousWriter = odsFactory.createWriter();
+                this.namedWriter = null;
+                this.doc = anonymousWriter.document();
+            } else {
+                this.anonymousWriter = null;
+                this.namedWriter = odsFactory.createWriter(file);
+                this.doc = namedWriter.document();
+            }
         } catch (final Exception e) {
             throw new IOException(e);
         }
@@ -95,10 +108,41 @@ public class FastOdsWorkbookWriter implements WorkbookWriter<FastOdsWorkbookWrit
     }
 
     public FastOdsWorkbookWriter(File file,
+                                 WorkbookWriterFeatures features)
+            throws IOException {
+        this(file,
+             null,
+             WorkbookKind.from(file),
+             features);
+    }
+
+    public FastOdsWorkbookWriter(OutputStream out,
+                                 WorkbookWriterFeatures features)
+            throws IOException {
+        this(null,
+             out,
+             WorkbookKind.ODS,
+             features);
+    }
+
+    public FastOdsWorkbookWriter(File file,
                                  WorkbookWriterFeatures features,
                                  WorkbookWriterFactory factory)
             throws IOException {
         this(file,
+             null,
+             WorkbookKind.from(file),
+             features);
+    }
+
+    public FastOdsWorkbookWriter(OutputStream out,
+                                 WorkbookKind kind,
+                                 WorkbookWriterFeatures features,
+                                 WorkbookWriterFactory factory)
+            throws IOException {
+        this(null,
+             out,
+             kind,
              features);
     }
 
@@ -340,7 +384,11 @@ public class FastOdsWorkbookWriter implements WorkbookWriter<FastOdsWorkbookWrit
     @Override
     public void close() throws IOException {
         try {
-            this.writer.save();
+            if (namedWriter == null) {
+                this.anonymousWriter.save(out);
+            } else {
+                this.namedWriter.save();
+            }
         } catch (final Exception e) {
             throw new IOException(e);
         }

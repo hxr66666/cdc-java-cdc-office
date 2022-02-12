@@ -6,7 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Added constructors using `OutputStream` to `CsvWriter`.  #15
+- Added `CsvWriter` constructors using `OutputStream`.  #15
+- Added creation of `WorkbookWriter` using an OutputStream. #15
 
 ### Changed
 - Resources (`Writer`, `OutputStream`, `PrintStream`) that are passed to CsvWriter are not closed.  

@@ -2,6 +2,7 @@ package cdc.office.ss.excel;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
 import java.time.LocalDate;
@@ -43,6 +44,7 @@ import cdc.util.strings.StringUtils;
  */
 public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> {
     private final File file;
+    private final OutputStream out;
     private final WorkbookWriterFeatures features;
     private final WorkbookKind kind;
     private final Workbook workbook;
@@ -66,13 +68,16 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
     private final CellStyle styleDate;
     private final CellStyle styleTime;
 
-    public ExcelWorkbookWriter(File file,
-                               WorkbookWriterFeatures features,
-                               boolean streaming) {
+    private ExcelWorkbookWriter(File file,
+                                OutputStream out,
+                                WorkbookKind kind,
+                                WorkbookWriterFeatures features,
+                                boolean streaming) {
         this.file = file;
+        this.out = out;
         this.features = features;
-        this.kind = WorkbookKind.from(file);
-        this.workbook = ExcelUtils.create(kind, streaming);
+        this.kind = file == null ? kind : WorkbookKind.from(file);
+        this.workbook = ExcelUtils.create(this.kind, streaming);
         this.sheet = null;
         this.row = null;
         this.cell = null;
@@ -98,7 +103,33 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
 
         this.styleTime = workbook.createCellStyle();
         this.styleTime.setDataFormat(format.getFormat("hh:mm:ss"));
+    }
 
+    public ExcelWorkbookWriter(OutputStream out,
+                               WorkbookKind kind,
+                               WorkbookWriterFeatures features,
+                               boolean streaming) {
+        this(null,
+             out,
+             kind,
+             features,
+             streaming);
+    }
+
+    public ExcelWorkbookWriter(OutputStream out,
+                               WorkbookKind kind,
+                               WorkbookWriterFeatures features,
+                               WorkbookWriterFactory factory) {
+        this(out,
+             kind,
+             features,
+             factory.isEnabled(WorkbookWriterFactory.Hint.POI_STREAMING));
+    }
+
+    public ExcelWorkbookWriter(File file,
+                               WorkbookWriterFeatures features,
+                               boolean streaming) {
+        this(file, null, null, features, streaming);
     }
 
     public ExcelWorkbookWriter(File file,
@@ -382,7 +413,11 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
         // autosize columns of last sheet
         autosizeColumns();
 
-        ExcelUtils.save(workbook, file);
+        if (file != null) {
+            ExcelUtils.save(workbook, file);
+        } else {
+            workbook.write(out);
+        }
         if (workbook instanceof SXSSFWorkbook) {
             ((SXSSFWorkbook) workbook).dispose();
         }

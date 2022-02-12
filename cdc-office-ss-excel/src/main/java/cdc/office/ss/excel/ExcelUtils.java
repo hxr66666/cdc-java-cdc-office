@@ -17,6 +17,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import cdc.office.ss.WorkbookKind;
+import cdc.util.lang.Checks;
 import cdc.util.lang.UnexpectedValueException;
 
 public final class ExcelUtils {
@@ -25,6 +26,7 @@ public final class ExcelUtils {
 
     public static Workbook create(WorkbookKind kind,
                                   boolean streaming) {
+        Checks.isNotNull(kind, "kibnd");
         switch (kind) {
         case XLS:
             return new HSSFWorkbook();

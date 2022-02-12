@@ -2,6 +2,7 @@ package cdc.office.ss.csv;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -57,6 +58,18 @@ public class CsvWorkbookWriter implements WorkbookWriter<CsvWorkbookWriter> {
             throws IOException {
         this(file,
              features);
+    }
+
+    public CsvWorkbookWriter(OutputStream out,
+                             WorkbookKind kind,
+                             WorkbookWriterFeatures features,
+                             WorkbookWriterFactory factory) {
+        if (kind != WorkbookKind.CSV) {
+            throw new IllegalArgumentException();
+        }
+        this.writer = new CsvWriter(out, features.getCharset());
+        this.writer.setSeparator(features.getSeparator());
+        this.features = features;
     }
 
     private void unexpectedState(String context) throws IOException {
