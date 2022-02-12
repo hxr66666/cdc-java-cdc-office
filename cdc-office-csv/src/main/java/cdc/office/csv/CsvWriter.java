@@ -6,12 +6,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.Flushable;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.Collection;
 
+import cdc.io.utils.NonCloseableOutputStream;
+import cdc.io.utils.NonCloseableWriter;
 import cdc.office.tables.Row;
 import cdc.util.strings.StringConversion;
 
@@ -30,6 +33,7 @@ public class CsvWriter implements Flushable, Closeable {
     public static final char DEFAULT_SEPARATOR = ';';
 
     private String lineSeparator = System.getProperty("line.separator");
+    /** The writer. */
     private final Writer writer;
     private char separator = DEFAULT_SEPARATOR;
 
@@ -41,22 +45,57 @@ public class CsvWriter implements Flushable, Closeable {
     private Status status = Status.START_LINE;
 
     /**
-     * Create a CsvWriter from a writer.
+     * Creates a CsvWriter from a writer.
+     * <p>
+     * <b>Note:</b> buffering is used.<br>
+     * <b>WARNING:</b> {@code writer} shall be closed by its owner.
      *
      * @param writer The writer.
      */
     public CsvWriter(Writer writer) {
-        this.writer = writer;
+        this.writer = new NonCloseableWriter(writer);
     }
 
     /**
-     * Creates a CSvWriter from a PrintStream.
+     * Creates a CsvWriter from an output stream and a charset.
      * <p>
-     * Buffering is used.
+     * <b>Note:</b> buffering is used.<br>
+     * <b>WARNING:</b> {@code out} shall be closed by its owner.
+     *
+     * @param out The output stream.
+     * @param charset The charset.
+     */
+    public CsvWriter(OutputStream out,
+                     Charset charset) {
+        if (charset == null) {
+            this.writer = new BufferedWriter(new OutputStreamWriter(new NonCloseableOutputStream(out)));
+        } else {
+            this.writer = new BufferedWriter(new OutputStreamWriter(new NonCloseableOutputStream(out), charset));
+        }
+    }
+
+    /**
+     * Creates a CsvWriter from an output stream and a default charset.
+     * <p>
+     * <b>Note:</b> buffering is used.<br>
+     * <b>WARNING:</b> {@code out} shall be closed by its owner.
+     *
+     * @param out The output stream.
+     */
+    public CsvWriter(OutputStream out) {
+        this(out, null);
+    }
+
+    /**
+     * Creates a CsvWriter from a PrintStream and a charset.
+     * <p>
+     * <b>Note:</b> buffering is used.<br>
+     * <b>WARNING:</b> {@code s} shall be closed by its owner.
      *
      * @param s The PrintStream.
-     * @param charset The charset name.
+     * @param charset The charset.
      */
+    @Deprecated
     public CsvWriter(PrintStream s,
                      Charset charset) {
         if (charset == null) {
@@ -67,26 +106,30 @@ public class CsvWriter implements Flushable, Closeable {
     }
 
     /**
-     * Creates a CSvWriter from a PrintStream.
+     * Creates a CsvWriter from a PrintStream and a default charset.
      * <p>
-     * Buffering is used.
+     * <b>Note:</b> buffering is used.<br>
+     * <b>WARNING:</b> {@code s} shall be closed by its owner.
      *
      * @param s The PrintStream.
      */
+    @Deprecated
     public CsvWriter(PrintStream s) {
         this(s, null);
     }
 
     /**
-     * Creates a CSvWriter from a file name.
+     * Creates a CSvWriter from a file name and a charset.
      * <p>
-     * Buffering is used.
+     * <b>Note:</b> buffering is used.
      *
      * @param filename The file name.
-     * @param charset The charset name.
-     * @param append If true, then bytes will be written to the end of the file rather than the beginning.
+     * @param charset The charset.
+     * @param append If {@code true}, then bytes will be written
+     *            to the end of the file rather than the beginning.
      * @throws IOException When an IO error occurs.
      */
+    @Deprecated
     public CsvWriter(String filename,
                      Charset charset,
                      boolean append)
@@ -98,51 +141,113 @@ public class CsvWriter implements Flushable, Closeable {
         }
     }
 
+    /**
+     * Creates a CSvWriter from a file name and a charset.
+     * <p>
+     * <b>Note:</b> buffering is used.
+     *
+     * @param filename The file name.
+     * @param charset The charset.
+     * @throws IOException When an IO error occurs.
+     */
+    @Deprecated
     public CsvWriter(String filename,
                      Charset charset)
             throws IOException {
         this(filename, charset, false);
     }
 
+    /**
+     * Creates a CSvWriter from a file name and a default charset.
+     * <p>
+     * <b>Note:</b> buffering is used.
+     *
+     * @param filename The file name.
+     * @param append If {@code true}, then bytes will be written
+     *            to the end of the file rather than the beginning.
+     * @throws IOException When an IO error occurs.
+     */
+    @Deprecated
     public CsvWriter(String filename,
                      boolean append)
             throws IOException {
         this(filename, null, append);
     }
 
+    /**
+     * Creates a CSvWriter from a file name and a default charset.
+     * <p>
+     * <b>Note:</b> buffering is used.
+     *
+     * @param filename The file name.
+     * @throws IOException When an IO error occurs.
+     */
+    @Deprecated
     public CsvWriter(String filename) throws IOException {
         this(filename, null, false);
     }
 
     /**
-     * Creates a CSvWriter from a file.
+     * Creates a CsvWriter from a file and a charset.
      * <p>
      * Buffering is used.
      *
      * @param file The file.
-     * @param charset The charset name.
-     * @param append If true, then bytes will be written to the end of the file rather than the beginning.
+     * @param charset The charset.
+     * @param append If true, then bytes will be written
+     *            to the end of the file rather than the beginning.
      * @throws IOException When an IO error occurs.
      */
     public CsvWriter(File file,
                      Charset charset,
                      boolean append)
             throws IOException {
-        this(file.getPath(), charset, append);
+        if (charset == null) {
+            this.writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, append)));
+        } else {
+            this.writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, append), charset));
+        }
     }
 
+    /**
+     * Creates a CsvWriter from a file and charset.
+     * <p>
+     * Buffering is used.
+     *
+     * @param file The file.
+     * @param charset The charset.
+     * @throws IOException When an IO error occurs.
+     */
     public CsvWriter(File file,
                      Charset charset)
             throws IOException {
         this(file, charset, false);
     }
 
+    /**
+     * Creates a CsvWriter from a file and a default charset.
+     * <p>
+     * Buffering is used.
+     *
+     * @param file The file.
+     * @param append If true, then bytes will be written
+     *            to the end of the file rather than the beginning.
+     * @throws IOException When an IO error occurs.
+     */
     public CsvWriter(File file,
                      boolean append)
             throws IOException {
         this(file, null, append);
     }
 
+    /**
+     * Creates a CsvWriter from a file and a default charset.
+     * <p>
+     * Buffering is used.
+     *
+     * @param file The file.
+     * @throws IOException When an IO error occurs.
+     */
     public CsvWriter(File file) throws IOException {
         this(file, null, false);
     }

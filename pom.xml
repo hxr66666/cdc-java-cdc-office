@@ -63,7 +63,7 @@
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-      <cdc.io.version>0.20.0</cdc.io.version>
+      <cdc.io.version>0.21.0-SNAPSHOT</cdc.io.version>
       <cdc.kernel.version>0.20.0</cdc.kernel.version>
       <cdc.tuples.version>1.0.0</cdc.tuples.version>
       <cdc.util.version>0.14.2</cdc.util.version>
@@ -96,6 +96,11 @@
       <dependencies>
          <!-- CDC -->
          <dependency>
+            <groupId>com.gitlab.cdc-java.tuples</groupId>
+            <artifactId>cdc-tuples</artifactId>
+            <version>${cdc.tuples.version}</version>
+         </dependency>
+         <dependency>
             <groupId>com.gitlab.cdc-java.util</groupId>
             <artifactId>cdc-util-bom</artifactId>
             <version>${cdc.util.version}</version>
@@ -115,11 +120,6 @@
             <version>${cdc.kernel.version}</version>
             <scope>import</scope>
             <type>pom</type>
-         </dependency>
-         <dependency>
-            <groupId>com.gitlab.cdc-java.tuples</groupId>
-            <artifactId>cdc-tuples</artifactId>
-            <version>${cdc.tuples.version}</version>
          </dependency>
 
          <!-- Fast ODS -->

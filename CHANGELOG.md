@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added constructors using `OutputStream` to `CsvWriter`.  #15
+
+### Changed
+- Resources (`Writer`, `OutputStream`, `PrintStream`) that are passed to CsvWriter are not closed.  
+  Some `CsvWriter` constructors have been deprecated. #15
+
+
 ### Fixed
 - Added support of '"' in `MultiplyShiftHashSearcher`.
 
