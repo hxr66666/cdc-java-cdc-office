@@ -12,7 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Resources (`Writer`, `OutputStream`, `PrintStream`) that are passed to CsvWriter are not closed.  
   Some `CsvWriter` constructors have been deprecated. #15
-
+- Updated dependencies
+    - cdc-io-0.21.0
+    - cdc-kernel-0.20.1
+    - cdc-util-0.20.0
 
 ### Fixed
 - Added support of '"' in `MultiplyShiftHashSearcher`.
