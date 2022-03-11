@@ -7,7 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - Updated dependencies:
-    - cdc-util-0.21.0
+    - cdc-io-0.21.1
+    - cdc-kernel-0.20.2
+    - cdc-util-0.23.0
+    - org.apache.log4j-2.17.2
 - `Config` data is now retrieved from Manifest.
 
 
