@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - cdc-kernel-0.20.2
     - cdc-util-0.23.0
     - org.apache.log4j-2.17.2
+    - org.apache.poi-5.2.1
 - `Config` data is now retrieved from Manifest.
 
 
