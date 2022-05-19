@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added    
+- Numerical comparison of integer tail of strings in KeyedTableDiffExporter. #17
+
 ### Changed
 - Updated maven plugins
 - Updated dependencies:
@@ -13,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - cdc-tuples-1.1.0
     - cdc-util-0.25.0
     - org.apache.poi-5.2.2
+    
 
 
 ## [0.21.1] - 2022-03-11

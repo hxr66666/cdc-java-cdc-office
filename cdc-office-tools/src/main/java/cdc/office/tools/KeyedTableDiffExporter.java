@@ -3,6 +3,7 @@ package cdc.office.tools;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -30,7 +31,9 @@ import cdc.office.tables.diff.RowDiff;
 import cdc.office.tables.diff.RowDiffKind;
 import cdc.office.tables.diff.Side;
 import cdc.tuples.CTupleN;
+import cdc.tuples.TupleN;
 import cdc.util.lang.UnexpectedValueException;
+import cdc.util.strings.StringComparison;
 
 /**
  * Class used to export a KeyedTableDiff to an Office file.
@@ -189,7 +192,8 @@ public class KeyedTableDiffExporter {
                 // Data
                 final List<CTupleN<String>> keys = diff.getKeys();
                 if (sortLines) {
-                    Collections.sort(keys);
+                    final Comparator<TupleN<String>> comparator = TupleN.comparator(StringComparison::compareDecimalDigits);
+                    Collections.sort(keys, comparator);
                 }
                 for (final CTupleN<String> key : keys) {
                     final RowDiff rdiff = diff.getDiff(key);
