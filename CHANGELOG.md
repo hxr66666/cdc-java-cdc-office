@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added    
 - Numerical comparison of integer tail of strings in KeyedTableDiffExporter. #17
+- Created `Header.Builder`. #16
 
 ### Changed
 - Updated maven plugins
@@ -16,7 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - cdc-tuples-1.1.0
     - cdc-util-0.25.0
     - org.apache.poi-5.2.2
-    
+
+### Deprecated
+- Deprecate `Header` constructors. #16
 
 
 ## [0.21.1] - 2022-03-11

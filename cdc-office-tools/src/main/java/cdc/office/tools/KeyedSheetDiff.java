@@ -120,11 +120,11 @@ public final class KeyedSheetDiff {
                 margs.sheet2 == null ? loader.load(margs.file2, null, 0) : loader.load(margs.file2, null, margs.sheet2);
 
         // Retrieve headers of both files
-        final Header header1 = new Header(rows1.get(0));
-        final Header header2 = new Header(rows2.get(0));
+        final Header header1 = Header.builder().names(rows1.get(0)).build();
+        final Header header2 = Header.builder().names(rows2.get(0)).build();
 
         // Check that both headers contain the expected keys
-        final Header expected = new Header(margs.keys);
+        final Header expected = Header.builder().names(margs.keys).build();
         final HeaderMapper mapper1 = HeaderMapper.builder().mandatory(expected).actual(header1).build();
         final HeaderMapper mapper2 = HeaderMapper.builder().mandatory(expected).actual(header2).build();
 

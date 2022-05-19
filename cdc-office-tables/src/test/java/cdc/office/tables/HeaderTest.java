@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 class HeaderTest {
     @Test
     void testEmpty() {
-        final Header h = new Header();
+        final Header h = Header.builder().build();
         assertTrue(h.isValid());
         assertSame(0, h.size());
         assertEquals(Header.EMPTY, h);
@@ -18,7 +18,7 @@ class HeaderTest {
 
     @Test
     void test1Name() {
-        final Header h = new Header("K1");
+        final Header h = Header.builder().names("K1").build();
         assertTrue(h.isValid());
         assertSame(1, h.size());
         assertTrue(h.contains("K1"));
@@ -27,7 +27,7 @@ class HeaderTest {
 
     @Test
     void test2Names() {
-        final Header h = new Header("K1", "K2");
+        final Header h = Header.builder().names("K1", "K2").build();
         assertTrue(h.isValid());
         assertSame(2, h.size());
         assertTrue(h.contains("K1"));
@@ -40,14 +40,14 @@ class HeaderTest {
 
     @Test
     void testInvalid() {
-        final Header h = new Header("K1", "K1");
+        final Header h = Header.builder().names("K1", "K1").build();
         assertFalse(h.isValid());
     }
 
     @Test
     void testContains() {
-        final Header h12 = new Header("K1", "K2");
-        final Header h123 = new Header("K1", "K2", "K3");
+        final Header h12 = Header.builder().names("K1", "K2").build();
+        final Header h123 = Header.builder().names("K1", "K2", "K3").build();
         assertTrue(h123.contains(h12));
         assertFalse(h12.contains(h123));
         assertTrue(Header.EMPTY.contains(Header.EMPTY));
@@ -56,8 +56,8 @@ class HeaderTest {
 
     @Test
     void testIntersects() {
-        final Header h12 = new Header("K1", "K2");
-        final Header h123 = new Header("K1", "K2", "K3");
+        final Header h12 = Header.builder().names("K1", "K2").build();
+        final Header h123 = Header.builder().names("K1", "K2", "K3").build();
         assertTrue(h123.intersects(h12));
         assertFalse(h12.intersects(Header.EMPTY));
         assertFalse(Header.EMPTY.intersects(Header.EMPTY));

@@ -25,14 +25,16 @@ public class Header {
     private final Map<String, Integer> map = new HashMap<>();
     private final boolean valid;
 
-    public static final Header EMPTY = new Header();
+    public static final Header EMPTY = builder().build();
 
     /**
      * Creates a TableHeader from a String array.
      *
      * @param names The names.
      * @throws IllegalArgumentException When a name is {@code null}.
+     * @deprecated Use Builder.
      */
+    @Deprecated
     public Header(String... names) {
         boolean invalid = false;
         int index = 0;
@@ -61,7 +63,9 @@ public class Header {
      *
      * @param names The names.
      * @throws IllegalArgumentException When a name is {@code null} or duplicate.
+     * @deprecated Use Builder.
      */
+    @Deprecated
     public Header(List<String> names) {
         this(names.toArray(new String[names.size()]));
     }
@@ -71,7 +75,9 @@ public class Header {
      *
      * @param row The row.
      * @throws IllegalArgumentException When a name is {@code null} or duplicate.
+     * @deprecated Use Builder.
      */
+    @Deprecated
     public Header(Row row) {
         this(row.getValues());
     }
@@ -167,5 +173,45 @@ public class Header {
     @Override
     public String toString() {
         return names.toString();
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+        private final List<String> names = new ArrayList<>();
+
+        Builder() {
+        }
+
+        public Builder name(String name) {
+            this.names.add(name);
+            return this;
+        }
+
+        public Builder names(String... names) {
+            Collections.addAll(this.names, names);
+            return this;
+        }
+
+        public Builder names(Collection<String> names) {
+            this.names.addAll(names);
+            return this;
+        }
+
+        public Builder names(Header header) {
+            this.names.addAll(header.getNames());
+            return this;
+        }
+
+        public Builder names(Row row) {
+            this.names.addAll(row.getValues());
+            return this;
+        }
+
+        public Header build() {
+            return new Header(names);
+        }
     }
 }

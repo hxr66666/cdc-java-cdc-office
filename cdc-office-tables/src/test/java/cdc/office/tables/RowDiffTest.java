@@ -37,7 +37,7 @@ class RowDiffTest {
     }
 
     private static Header h(String... values) {
-        return new Header(values);
+        return Header.builder().names(values).build();
     }
 
     private static void check(Row left,

@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 class HeaderMapperTest {
     @Test
     void test() {
-        final Header m = new Header("M1", "M2");
-        final Header o = new Header("O1", "O2");
-        final Header a = new Header("M1", "M2", "O1", "O2", "A1");
+        final Header m = Header.builder().names("M1", "M2").build();
+        final Header o = Header.builder().names("O1", "O2").build();
+        final Header a = Header.builder().names("M1", "M2", "O1", "O2", "A1").build();
 
         final HeaderMapper mapper = HeaderMapper.builder()
                                                 .mandatory(m)
@@ -40,8 +40,8 @@ class HeaderMapperTest {
 
     @Test
     void testExceptions() {
-        final Header e = new Header("M1", "M2");
-        final Header a = new Header("M1", "M2", "O1", "O2", "A1");
+        final Header e = Header.builder().names("M1", "M2").build();
+        final Header a = Header.builder().names("M1", "M2", "O1", "O2", "A1").build();
 
         assertThrows(IllegalArgumentException.class,
                      () -> {
