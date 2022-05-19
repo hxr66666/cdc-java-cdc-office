@@ -63,32 +63,32 @@
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-      <cdc.io.version>0.21.1</cdc.io.version>
-      <cdc.kernel.version>0.20.2</cdc.kernel.version>
-      <cdc.tuples.version>1.0.0</cdc.tuples.version>
-      <cdc.util.version>0.23.0</cdc.util.version>
+      <cdc.io.version>0.21.2</cdc.io.version>
+      <cdc.kernel.version>0.20.3</cdc.kernel.version>
+      <cdc.tuples.version>1.1.0</cdc.tuples.version>
+      <cdc.util.version>0.25.0</cdc.util.version>
       <fastods.version>0.8.1</fastods.version>
       <htmlflow.version>3.9</htmlflow.version>
-      <junit.version>5.8.2</junit.version>
+      <junit.version>5.9.0-M1</junit.version>
       <j2html.version>1.5.0</j2html.version>
       <log4j.version>2.17.2</log4j.version>
       <maven.checkstyle.version>3.1.2</maven.checkstyle.version>
-      <maven.compiler.version>3.9.0</maven.compiler.version>
-      <maven.dependency.version>3.2.0</maven.dependency.version>
-      <maven.depgraph.version>3.3.1</maven.depgraph.version>
+      <maven.compiler.version>3.10.1</maven.compiler.version>
+      <maven.dependency.version>3.3.0</maven.dependency.version>
+      <maven.depgraph.version>4.0.1</maven.depgraph.version>
       <maven.deploy.version>3.0.0-M2</maven.deploy.version>
       <maven.gpg.version>3.0.1</maven.gpg.version>
       <maven.install.version>3.0.0-M1</maven.install.version>
-      <maven.jacoco.version>0.8.7</maven.jacoco.version>
+      <maven.jacoco.version>0.8.8</maven.jacoco.version>
       <maven.jar.version>3.2.2</maven.jar.version>
-      <maven.javadoc.version>3.3.1</maven.javadoc.version>
+      <maven.javadoc.version>3.4.0</maven.javadoc.version>
       <maven.project.info.reports.version>3.0.0</maven.project.info.reports.version>
       <maven.source.version>3.2.1</maven.source.version>
-      <maven.surefire.version>3.0.0-M5</maven.surefire.version>
+      <maven.surefire.version>3.0.0-M6</maven.surefire.version>
       <maven.versions.version>2.7</maven.versions.version>
-      <nexus.staging.maven.version>1.6.8</nexus.staging.maven.version>
+      <nexus.staging.maven.version>1.6.13</nexus.staging.maven.version>
       <odftoolkit.version>0.10.0</odftoolkit.version>
-      <poi.version>5.2.1</poi.version>
+      <poi.version>5.2.2</poi.version>
       <xml.apis.version>1.4.01</xml.apis.version> <!-- newer than 2.x and contains org.w3c.dom.ElementTraversal -->
    </properties>
 
