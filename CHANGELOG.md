@@ -6,8 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added    
-- Numerical comparison of integer tail of strings in KeyedTableDiffExporter. #17
+- Numerical comparison of integer tail of strings in `KeyedTableDiffExporter`. #17
 - Created `Header.Builder`. #16
+- Added  `VERBOSE` option to `KeyedSheetDiff`. #18
+- Added `SAVE_SYNTHESIS` option to `KeyedSheetDiff`. #20
 
 ### Changed
 - Updated maven plugins

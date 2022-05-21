@@ -13,8 +13,7 @@ import cdc.util.lang.Checks;
  * @author Damien Carbonne
  */
 public class RowDiff {
-    // private static final Logger LOGGER = LogManager.getLogger(RowDiff.class);
-    private final List<CellDiff> diffs = new ArrayList<>();
+    private final List<LocalizedCellDiff> diffs = new ArrayList<>();
 
     /**
      * Compare cells that have the same header name.
@@ -39,21 +38,22 @@ public class RowDiff {
             final int leftCol = leftHeader.getIndex(name);
             final CellDiff diff;
             if (leftCol >= 0) {
+                // column name is present left and right
                 diff = new CellDiff(leftRow.getValue(leftCol), rightRow.getValue(rightCol, null));
             } else {
+                // column name is specific to right
                 diff = new CellDiff(null, rightRow.getValue(rightCol, null));
             }
-            // LOGGER.info("right {}: {}", name, diff);
-            diffs.add(diff);
+            diffs.add(new LocalizedCellDiff(diff, name));
         }
 
         // Finish comparison with left specific names
         for (int leftCol = 0; leftCol < leftHeader.size(); leftCol++) {
             final String name = leftHeader.getNameAt(leftCol);
             if (!rightHeader.contains(name)) {
+                // column name is specific to left
                 final CellDiff diff = new CellDiff(leftRow.getValue(leftCol), null);
-                // LOGGER.info("specific left {}: {}", name, diff);
-                diffs.add(diff);
+                diffs.add(new LocalizedCellDiff(diff, name));
             }
         }
     }
@@ -72,28 +72,31 @@ public class RowDiff {
         final int max = Math.max(leftRow.size(), rightRow.size());
 
         for (int column = 0; column < min; column++) {
-            diffs.add(new CellDiff(leftRow.getValue(column), rightRow.getValue(column)));
+            final CellDiff diff = new CellDiff(leftRow.getValue(column), rightRow.getValue(column));
+            diffs.add(new LocalizedCellDiff(diff, column));
         }
         if (max > min) {
             if (leftRow.size() == max) {
                 for (int col = min; col < max; col++) {
-                    diffs.add(new CellDiff(leftRow.getValue(col), null));
+                    final CellDiff diff = new CellDiff(leftRow.getValue(col), null);
+                    diffs.add(new LocalizedCellDiff(diff, col));
                 }
             } else {
                 for (int col = min; col < max; col++) {
-                    diffs.add(new CellDiff(null, rightRow.getValue(col)));
+                    final CellDiff diff = new CellDiff(null, rightRow.getValue(col));
+                    diffs.add(new LocalizedCellDiff(diff, col));
                 }
             }
         }
     }
 
-    public List<CellDiff> getDiffs() {
+    public List<LocalizedCellDiff> getDiffs() {
         return diffs;
     }
 
     public boolean containsDifferences() {
-        for (final CellDiff diff : diffs) {
-            if (diff.getKind().isNeitherSameNorNull()) {
+        for (final LocalizedCellDiff diff : diffs) {
+            if (diff.getDiff().getKind().isNeitherSameNorNull()) {
                 return true;
             }
         }
@@ -156,10 +159,9 @@ public class RowDiff {
         int added = 0;
         int changed = 0;
         int same = 0;
-        int nul = 0;
         int removed = 0;
-        for (final CellDiff diff : diffs) {
-            switch (diff.getKind()) {
+        for (final LocalizedCellDiff diff : diffs) {
+            switch (diff.getDiff().getKind()) {
             case ADDED:
                 added++;
                 break;
@@ -170,7 +172,6 @@ public class RowDiff {
                 removed++;
                 break;
             case NULL:
-                nul++;
                 break;
             case SAME:
                 same++;
@@ -202,7 +203,7 @@ public class RowDiff {
 
         builder.append('[');
         builder.append(getKind());
-        for (final CellDiff diff : getDiffs()) {
+        for (final LocalizedCellDiff diff : getDiffs()) {
             builder.append(' ').append(diff);
         }
         builder.append(']');

@@ -24,3 +24,5 @@ Line Diff
 --auto-size-columns
 --show-change-details
 #--no-colors
+--verbose
+--save-synthesis

@@ -27,6 +27,8 @@ import cdc.office.tables.TableSection;
 import cdc.office.tables.diff.CellDiff;
 import cdc.office.tables.diff.CellDiffKind;
 import cdc.office.tables.diff.KeyedTableDiff;
+import cdc.office.tables.diff.KeyedTableDiff.Synthesis.Action;
+import cdc.office.tables.diff.LocalizedCellDiff;
 import cdc.office.tables.diff.RowDiff;
 import cdc.office.tables.diff.RowDiffKind;
 import cdc.office.tables.diff.Side;
@@ -53,6 +55,7 @@ public class KeyedTableDiffExporter {
     private boolean showUnchangedLines = true;
     private boolean showColors = false;
     private boolean showChangeDetails = false;
+    private boolean saveSynthesis = false;
 
     public KeyedTableDiffExporter() {
         super();
@@ -117,6 +120,11 @@ public class KeyedTableDiffExporter {
         return this;
     }
 
+    public KeyedTableDiffExporter setSaveSynthesis(boolean saveSynthesis) {
+        this.saveSynthesis = saveSynthesis;
+        return this;
+    }
+
     public void save(KeyedTableDiff diff,
                      File file) throws IOException {
         final WorkbookKind outputKind = WorkbookKind.from(file);
@@ -168,6 +176,36 @@ public class KeyedTableDiffExporter {
         protected String wrap(String s) {
             return s == null ? "" : s;
         }
+
+        protected void generateSynthesisSheet(KeyedTableDiff.Synthesis synthesis,
+                                              WorkbookWriter<?> writer) throws IOException {
+            writer.beginSheet("Synthesis");
+            writer.beginRow(TableSection.HEADER);
+            writer.addCells("Item", Action.ADDED, Action.REMOVED, Action.CHANGED, Action.UNCHANGED);
+
+            writer.beginRow(TableSection.DATA);
+            writer.addCell("Lines");
+            writer.addCell(synthesis.getLinesCount(Action.ADDED));
+            writer.addCell(synthesis.getLinesCount(Action.REMOVED));
+            writer.addCell(synthesis.getLinesCount(Action.CHANGED));
+            writer.addCell(synthesis.getLinesCount(Action.UNCHANGED));
+
+            writer.beginRow(TableSection.DATA);
+            writer.addCell("Cells");
+            writer.addCell(synthesis.getCellsCount(Action.ADDED));
+            writer.addCell(synthesis.getCellsCount(Action.REMOVED));
+            writer.addCell(synthesis.getCellsCount(Action.CHANGED));
+            writer.addCell(synthesis.getCellsCount(Action.UNCHANGED));
+
+            for (final String name : synthesis.getColumnNames()) {
+                writer.beginRow(TableSection.DATA);
+                writer.addCell(name);
+                writer.addCell(synthesis.getColumnCellsCount(name, Action.ADDED));
+                writer.addCell(synthesis.getColumnCellsCount(name, Action.REMOVED));
+                writer.addCell(synthesis.getColumnCellsCount(name, Action.CHANGED));
+                writer.addCell(synthesis.getColumnCellsCount(name, Action.UNCHANGED));
+            }
+        }
     }
 
     private final class CsvGenerator extends Generator {
@@ -180,7 +218,11 @@ public class KeyedTableDiffExporter {
                              Header header,
                              KeyedTableDiff diff) throws IOException {
             try (final WorkbookWriter<?> writer = new CsvWorkbookWriter(file, features)) {
-                writer.beginSheet(null);
+                if (saveSynthesis) {
+                    generateSynthesisSheet(diff.getSynthesis(), writer);
+                }
+
+                writer.beginSheet(sheetName);
 
                 // Header
                 writer.beginRow(TableSection.HEADER);
@@ -202,7 +244,8 @@ public class KeyedTableDiffExporter {
                         if (insertLineMarkColumn) {
                             writer.addCell(rdiff.getKind());
                         }
-                        for (final CellDiff cdiff : rdiff.getDiffs()) {
+                        for (final LocalizedCellDiff lcdiff : rdiff.getDiffs()) {
+                            final CellDiff cdiff = lcdiff.getDiff();
                             switch (cdiff.getKind()) {
                             case ADDED:
                             case SAME:
@@ -326,6 +369,10 @@ public class KeyedTableDiffExporter {
                                                                             !showChangeDetails)) {
                 createStyles(writer.getWorkbook());
 
+                if (saveSynthesis) {
+                    generateSynthesisSheet(diff.getSynthesis(), writer);
+                }
+
                 writer.beginSheet(sheetName);
 
                 // Header
@@ -353,7 +400,8 @@ public class KeyedTableDiffExporter {
                             writer.addCell(rdiff.getKind().toString());
                             writer.getCell().setCellStyle(getStyle(rdiff.getKind()));
                         }
-                        for (final CellDiff cdiff : rdiff.getDiffs()) {
+                        for (final LocalizedCellDiff lcdiff : rdiff.getDiffs()) {
+                            final CellDiff cdiff = lcdiff.getDiff();
                             switch (cdiff.getKind()) {
                             case ADDED:
                             case CHANGED:
@@ -425,6 +473,10 @@ public class KeyedTableDiffExporter {
                              Header header,
                              KeyedTableDiff diff) throws IOException {
             try (WorkbookWriter<?> writer = new OdsWorkbookWriter(file, features)) {
+                if (saveSynthesis) {
+                    generateSynthesisSheet(diff.getSynthesis(), writer);
+                }
+
                 writer.beginSheet(sheetName);
 
                 // Header
@@ -453,7 +505,8 @@ public class KeyedTableDiffExporter {
                             // TODO style
                         }
 
-                        for (final CellDiff cdiff : rdiff.getDiffs()) {
+                        for (final LocalizedCellDiff lcdiff : rdiff.getDiffs()) {
+                            final CellDiff cdiff = lcdiff.getDiff();
                             switch (cdiff.getKind()) {
                             case ADDED:
                             case CHANGED:

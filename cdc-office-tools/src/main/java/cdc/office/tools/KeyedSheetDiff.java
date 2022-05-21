@@ -42,6 +42,12 @@ public final class KeyedSheetDiff {
         this.margs = margs;
     }
 
+    private void info(String message) {
+        if (margs.features.isEnabled(MainArgs.Feature.VERBOSE)) {
+            LOGGER.info(message);
+        }
+    }
+
     public static class MainArgs {
         public static final String DEFAULT_ADDED_MARK = "<A>";
         public static final String DEFAULT_REMOVED_MARK = "<R>";
@@ -58,7 +64,9 @@ public final class KeyedSheetDiff {
             SHOW_CHANGE_DETAILS("show-change-details",
                                 "If enabled, show value 1 (with removed mark or color) and value 2 (with added mark or color).\n"
                                         + " Otherwise, show value 2 (with changed mark or color)."),
-            SYNTHESIS("synthesis", "Prints a synthesis of differences.");
+            SYNTHESIS("synthesis", "Prints a synthesis of differences."),
+            SAVE_SYNTHESIS("save-synthesis", "Save synthesis in output file, in a dedicated sheet."),
+            VERBOSE("verbose", "Print progress messages.");
 
             private final String name;
             private final String description;
@@ -114,10 +122,14 @@ public final class KeyedSheetDiff {
         final SheetLoader loader = new SheetLoader();
         loader.getFactory().setCharset(margs.charset);
         loader.getFactory().setSeparator(margs.separator);
+        info("Load " + margs.file1);
         final List<Row> rows1 =
                 margs.sheet1 == null ? loader.load(margs.file1, null, 0) : loader.load(margs.file1, null, margs.sheet1);
+        info("Done");
+        info("Load " + margs.file2);
         final List<Row> rows2 =
                 margs.sheet2 == null ? loader.load(margs.file2, null, 0) : loader.load(margs.file2, null, margs.sheet2);
+        info("Done");
 
         // Retrieve headers of both files
         final Header header1 = Header.builder().names(rows1.get(0)).build();
@@ -141,14 +153,16 @@ public final class KeyedSheetDiff {
         rows2.remove(0);
 
         // Compare the data rows
+        info("Compare rows");
         final KeyedTableDiff diff = new KeyedTableDiff(header1,
                                                        rows1,
                                                        header2,
                                                        rows2,
                                                        margs.keys);
+        info("Done");
 
         if (margs.isEnabled(MainArgs.Feature.SYNTHESIS)) {
-            diff.printSynthesis(OUT);
+            diff.getSynthesis().print(OUT);
         }
 
         final KeyedTableDiffExporter exporter = new KeyedTableDiffExporter();
@@ -162,6 +176,7 @@ public final class KeyedSheetDiff {
                 .setSortLines(margs.isEnabled(Feature.SORT_LINES))
                 .setShowChangeDetails(margs.isEnabled(Feature.SHOW_CHANGE_DETAILS))
                 .setSheetName(margs.sheet == null ? "Delta" : margs.sheet)
+                .setSaveSynthesis(margs.isEnabled(Feature.SAVE_SYNTHESIS))
                 .setFeatures(WorkbookWriterFeatures.builder()
                                                    .separator(margs.separator)
                                                    .charset(margs.charset)
@@ -171,9 +186,9 @@ public final class KeyedSheetDiff {
                                                                margs.features.contains(Feature.AUTO_SIZE_COLUMNS))
                                                    .build());
 
-        LOGGER.info("Generate {}", margs.output);
+        info("Generate " + margs.output);
         exporter.save(diff, margs.output);
-        LOGGER.info("Done");
+        info("Done");
     }
 
     String getLineMarkColumn() {

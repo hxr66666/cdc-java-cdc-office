@@ -49,7 +49,7 @@ class RowDiffTest {
         assertSame(rowDiffKind != RowDiffKind.SAME, diff.containsDifferences());
         assertSame(cellDiffKinds.length, diff.getDiffs().size(), Arrays.toString(cellDiffKinds));
         for (int index = 0; index < cellDiffKinds.length; index++) {
-            assertSame(cellDiffKinds[index], diff.getDiffs().get(index).getKind());
+            assertSame(cellDiffKinds[index], diff.getDiffs().get(index).getDiff().getKind());
         }
         assertSame(rowDiffKind, diff.getKind(), left + " " + right);
     }
@@ -64,7 +64,7 @@ class RowDiffTest {
         LOGGER.info("{} {} {} {} {}", leftHeader, leftRow, rightHeader, rightRow, diff);
         assertSame(cellDiffKinds.length, diff.getDiffs().size(), Arrays.toString(cellDiffKinds) + " " + diff.getDiffs());
         for (int index = 0; index < cellDiffKinds.length; index++) {
-            assertSame(cellDiffKinds[index], diff.getDiffs().get(index).getKind());
+            assertSame(cellDiffKinds[index], diff.getDiffs().get(index).getDiff().getKind());
         }
         assertSame(rowDiffKind, diff.getKind(), leftRow + " " + rightRow);
         assertSame(rowDiffKind != RowDiffKind.SAME, diff.containsDifferences());
