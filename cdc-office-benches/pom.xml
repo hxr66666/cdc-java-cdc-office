@@ -3,7 +3,7 @@
    <parent>
       <groupId>com.gitlab.cdc-java.office</groupId>
       <artifactId>cdc-office</artifactId>
-      <version>0.22.0</version>
+      <version>0.23.0-SNAPSHOT</version>
       <relativePath>../pom.xml</relativePath>
    </parent>
 
