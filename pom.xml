@@ -178,12 +178,6 @@
             <version>${odftoolkit.version}</version>
          </dependency>
 
-         <dependency>
-            <groupId>org.odftoolkit</groupId>
-            <artifactId>simple-odf</artifactId>
-            <version>${odftoolkit.version}</version>
-         </dependency>
-
          <!-- POI -->
          <dependency>
             <groupId>org.apache.poi</groupId>
