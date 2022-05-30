@@ -46,21 +46,21 @@ public class RichTextDemo {
     private static void hssf() throws IOException {
         // Works
         try (final HSSFWorkbook workbook = new HSSFWorkbook()) {
-            gen(workbook, "target/hssf.xls");
+            gen(workbook, "target/rich-text-hssf.xls");
         }
     }
 
     private static void xssf() throws IOException {
         // Works
         try (final XSSFWorkbook workbook = new XSSFWorkbook()) {
-            gen(workbook, "target/xssf.xlsx");
+            gen(workbook, "target/rich-text-xssf.xlsx");
         }
     }
 
     private static void sxssf() throws IOException {
         // Does not work
         try (final SXSSFWorkbook workbook = new SXSSFWorkbook(null, 100, false, true)) {
-            gen(workbook, "target/sxssf.xlsx");
+            gen(workbook, "target/rich-text-sxssf.xlsx");
             workbook.dispose();
         }
     }
