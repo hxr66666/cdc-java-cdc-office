@@ -38,6 +38,13 @@
       <dependency>
          <groupId>org.odftoolkit</groupId>
          <artifactId>odfdom-java</artifactId>
+         <exclusions>
+            <!-- This dependency is incorrect. It should be removed in a future release. -->
+            <exclusion>
+               <groupId>io.github.git-commit-id</groupId>
+               <artifactId>git-commit-id-maven-plugin</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
 
       <dependency>
