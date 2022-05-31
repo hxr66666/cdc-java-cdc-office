@@ -42,6 +42,7 @@ public class DataValidationDemo {
         final DataValidation dv = dvh.createValidation(dvc, addressList);
         dv.setErrorStyle(DataValidation.ErrorStyle.STOP);
         dv.createPromptBox("Integer Range", "Value in 0 .. 100");
+        // dv.createErrorBox(null, null);
         dv.setShowPromptBox(true);
         dv.setShowErrorBox(true);
         return dv;
@@ -90,7 +91,7 @@ public class DataValidationDemo {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String... args) throws IOException {
         hssf();
         xssf();
         sxssf();

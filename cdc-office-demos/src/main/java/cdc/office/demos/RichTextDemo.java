@@ -65,7 +65,7 @@ public class RichTextDemo {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String... args) throws IOException {
         hssf();
         xssf();
         sxssf();

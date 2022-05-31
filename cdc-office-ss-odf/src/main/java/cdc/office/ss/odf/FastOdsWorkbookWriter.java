@@ -25,6 +25,7 @@ import com.github.jferard.fastods.Text;
 import com.github.jferard.fastods.TextBuilder;
 import com.github.jferard.fastods.util.AutoFilter;
 
+import cdc.office.ss.ContentValidation;
 import cdc.office.ss.Section;
 import cdc.office.ss.WorkbookKind;
 import cdc.office.ss.WorkbookWriter;
@@ -198,6 +199,12 @@ public class FastOdsWorkbookWriter implements WorkbookWriter<FastOdsWorkbookWrit
         this.row = null;
         this.cell = null;
         this.section = Section.SHEET;
+        return this;
+    }
+
+    @Override
+    public FastOdsWorkbookWriter addContentValidation(ContentValidation cv) throws IOException {
+        // Not supported
         return this;
     }
 

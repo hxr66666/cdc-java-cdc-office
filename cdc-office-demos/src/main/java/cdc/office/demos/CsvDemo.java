@@ -3,14 +3,14 @@ package cdc.office.demos;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 
-import cdc.office.tools.SeparatorConverter;
 import cdc.office.tools.AbstractFilter.BaseMainArgs.BaseFeature;
+import cdc.office.tools.SeparatorConverter;
 
 public final class CsvDemo {
     private CsvDemo() {
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String... args) throws Exception {
         final SeparatorConverter.MainArgs margs = new SeparatorConverter.MainArgs();
         margs.input = new File("src/test/resources/data01.csv");
         margs.inputCharset = StandardCharsets.UTF_8;

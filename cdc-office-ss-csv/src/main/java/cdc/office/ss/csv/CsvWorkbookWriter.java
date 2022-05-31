@@ -11,6 +11,7 @@ import java.time.LocalTime;
 import java.util.Date;
 
 import cdc.office.csv.CsvWriter;
+import cdc.office.ss.ContentValidation;
 import cdc.office.ss.Section;
 import cdc.office.ss.WorkbookKind;
 import cdc.office.ss.WorkbookWriter;
@@ -138,13 +139,16 @@ public class CsvWorkbookWriter implements WorkbookWriter<CsvWorkbookWriter> {
     }
 
     @Override
+    public CsvWorkbookWriter addContentValidation(ContentValidation cv) throws IOException {
+        // Not supported
+        return this;
+    }
+
+    @Override
     public CsvWorkbookWriter beginRow(TableSection section) throws IOException {
         if (this.section == Section.WORKBOOK) {
             unexpectedState("beginRow");
         }
-        // if (rowNumber >= 0) {
-        // writer.writeln();
-        // }
         if (section == TableSection.DATA) {
             this.section = Section.DATA_ROW;
         } else {
@@ -173,8 +177,6 @@ public class CsvWorkbookWriter implements WorkbookWriter<CsvWorkbookWriter> {
             break;
         }
         columnNumber++;
-        // fill();
-        // writer.write("");
 
         switch (section) {
         case DATA_ROW:

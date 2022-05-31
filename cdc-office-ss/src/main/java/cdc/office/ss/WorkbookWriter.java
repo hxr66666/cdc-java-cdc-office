@@ -51,6 +51,8 @@ public interface WorkbookWriter<W extends WorkbookWriter<W>> extends Closeable, 
      */
     public W beginSheet(String name) throws IOException;
 
+    public W addContentValidation(ContentValidation cv) throws IOException;
+
     /**
      * Starts the writing of a new row.
      *

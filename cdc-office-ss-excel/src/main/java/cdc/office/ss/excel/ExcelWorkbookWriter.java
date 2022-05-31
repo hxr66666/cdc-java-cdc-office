@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.usermodel.Cell;
@@ -17,6 +18,9 @@ import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.DataFormat;
+import org.apache.poi.ss.usermodel.DataValidation;
+import org.apache.poi.ss.usermodel.DataValidationConstraint;
+import org.apache.poi.ss.usermodel.DataValidationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Hyperlink;
 import org.apache.poi.ss.usermodel.RichTextString;
@@ -24,9 +28,13 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
+import cdc.office.ss.CellAddressRange;
+import cdc.office.ss.ContentValidation;
+import cdc.office.ss.ContentValidation.ValidationType;
 import cdc.office.ss.Section;
 import cdc.office.ss.WorkbookKind;
 import cdc.office.ss.WorkbookWriter;
@@ -34,6 +42,7 @@ import cdc.office.ss.WorkbookWriterFactory;
 import cdc.office.ss.WorkbookWriterFeatures;
 import cdc.office.tables.TableSection;
 import cdc.util.lang.DateUtils;
+import cdc.util.lang.UnexpectedValueException;
 import cdc.util.strings.StringUtils;
 
 /**
@@ -210,6 +219,103 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
         columnIndex = -1;
         section = Section.SHEET;
         maxColumnIndex = -1;
+        return this;
+    }
+
+    private static int getOperatorIndex(ContentValidation.Operator operator) {
+        switch (operator) {
+        case BETWEEN:
+            return DataValidationConstraint.OperatorType.BETWEEN;
+        case EQUAL:
+            return DataValidationConstraint.OperatorType.EQUAL;
+        case GREATER_OR_EQUAL:
+            return DataValidationConstraint.OperatorType.GREATER_OR_EQUAL;
+        case GREATER_THAN:
+            return DataValidationConstraint.OperatorType.GREATER_THAN;
+        case LESS_OR_EQUAL:
+            return DataValidationConstraint.OperatorType.LESS_OR_EQUAL;
+        case LESS_THAN:
+            return DataValidationConstraint.OperatorType.LESS_THAN;
+        case NONE:
+            return DataValidationConstraint.OperatorType.IGNORED;
+        case NOT_BETWEEN:
+            return DataValidationConstraint.OperatorType.NOT_BETWEEN;
+        case NOT_EQUAL:
+            return DataValidationConstraint.OperatorType.NOT_EQUAL;
+        default:
+            throw new UnexpectedValueException(operator);
+        }
+    }
+
+    private static int getErrorStyle(ContentValidation.ErrorReaction reaction) {
+        switch (reaction) {
+        case INFO:
+            return DataValidation.ErrorStyle.INFO;
+        case STOP:
+            return DataValidation.ErrorStyle.STOP;
+        case WARN:
+            return DataValidation.ErrorStyle.WARNING;
+        default:
+            throw new UnexpectedValueException(reaction);
+        }
+    }
+
+    private static DataValidationConstraint createConstraint(ContentValidation cv,
+                                                             DataValidationHelper dvh) {
+        final int operatiorIndex = getOperatorIndex(cv.getOperator());
+        switch (cv.getValidationType()) {
+        case ANY:
+            return null;
+        case DATE:
+            return dvh.createDateConstraint(operatiorIndex, cv.getValue1(), cv.getValue2(), "TODO"); // TODO
+        case DECIMAL:
+            return dvh.createDecimalConstraint(operatiorIndex, cv.getValue1(), cv.getValue2());
+        case FORMULA:
+            return dvh.createCustomConstraint(cv.getValue1());
+        case INTEGER:
+            return dvh.createIntegerConstraint(operatiorIndex, cv.getValue1(), cv.getValue2());
+        case LIST:
+            return dvh.createExplicitListConstraint(cv.getValues().toArray(new String[cv.getValues().size()]));
+        case TEXT_LENGTH:
+            return dvh.createTextLengthConstraint(operatiorIndex, cv.getValue1(), cv.getValue2());
+        case TIME:
+            return dvh.createTimeConstraint(operatiorIndex, cv.getValue1(), cv.getValue2());
+        default:
+            throw new UnexpectedValueException(cv.getValidationType());
+        }
+    }
+
+    private static CellRangeAddressList createRanges(List<CellAddressRange> list,
+                                                     WorkbookKind kind) {
+        final CellRangeAddressList x = new CellRangeAddressList();
+        for (final CellAddressRange cra : list) {
+            x.addCellRangeAddress(cra.getFirstRow(), cra.getFirstColumn(), cra.getLastRow(kind), cra.getLastColumn(kind));
+        }
+        return x;
+    }
+
+    @Override
+    public ExcelWorkbookWriter addContentValidation(ContentValidation cv) throws IOException {
+        if (cv.getValidationType() != ValidationType.ANY) {
+            final DataValidationHelper dvh = sheet.getDataValidationHelper();
+            final DataValidationConstraint dvc = createConstraint(cv, dvh);
+            final CellRangeAddressList cral = createRanges(cv.getRanges(), kind);
+            final DataValidation dv = dvh.createValidation(dvc, cral);
+            if (cv.showError()) {
+                dv.createErrorBox(cv.getErrorTitle(), cv.getErrorText());
+                dv.setShowErrorBox(true);
+            }
+
+            if (cv.showHelp()) {
+                dv.createPromptBox(cv.getHelpTitle(), cv.getHelpText());
+                dv.setShowPromptBox(true);
+            }
+            dv.setEmptyCellAllowed(cv.allowsEmptyCell());
+            dv.setErrorStyle(getErrorStyle(cv.getErrorReaction()));
+            dv.setSuppressDropDownArrow(true);
+            sheet.addValidationData(dv);
+        }
+
         return this;
     }
 

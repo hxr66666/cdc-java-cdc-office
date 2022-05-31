@@ -16,6 +16,7 @@ import org.odftoolkit.odfdom.doc.table.OdfTable;
 import org.odftoolkit.odfdom.doc.table.OdfTableCell;
 import org.odftoolkit.odfdom.doc.table.OdfTableRow;
 
+import cdc.office.ss.ContentValidation;
 import cdc.office.ss.Section;
 import cdc.office.ss.WorkbookKind;
 import cdc.office.ss.WorkbookWriter;
@@ -165,6 +166,12 @@ public class OdsWorkbookWriter implements WorkbookWriter<OdsWorkbookWriter> {
         this.row = null;
         this.cell = null;
         this.section = Section.SHEET;
+        return this;
+    }
+
+    @Override
+    public OdsWorkbookWriter addContentValidation(ContentValidation cv) throws IOException {
+        // TODO
         return this;
     }
 

@@ -16,6 +16,8 @@ import java.util.function.Consumer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import cdc.office.ss.ContentValidation.ErrorReaction;
+import cdc.office.ss.ContentValidation.ValidationType;
 import cdc.office.tables.TableSection;
 import cdc.util.time.Chronometer;
 
@@ -159,8 +161,7 @@ public class WorkbookWriterTestSupport {
         }
         final WorkbookWriterFactory factory = new WorkbookWriterFactory();
         factoryConsumer.accept(factory);
-        try (final WorkbookWriter<?> writer =
-                factory.create(file, features)) {
+        try (final WorkbookWriter<?> writer = factory.create(file, features)) {
             for (int sheetIndex = 0; sheetIndex < sheetsCount; sheetIndex++) {
                 writer.beginSheet("Sheet " + sheetIndex);
 
@@ -179,4 +180,28 @@ public class WorkbookWriterTestSupport {
         LOGGER.debug("Generated {} {}", file, chrono);
     }
 
+    protected static void testDataValidation(File file) throws IOException {
+        final Chronometer chrono = new Chronometer();
+        chrono.start();
+
+        final WorkbookWriterFactory factory = new WorkbookWriterFactory();
+        final WorkbookWriterFeatures features = WorkbookWriterFeatures.STANDARD_BEST;
+        try (final WorkbookWriter<?> writer = factory.create(file, features)) {
+            writer.beginSheet("Sheet");
+            writer.beginRow(TableSection.HEADER);
+            writer.addCell("List");
+            writer.addCell("Integer");
+
+            writer.addContentValidation(ContentValidation.builder()
+                                                         .help("List test", "Select: One, Two or Three")
+                                                         .allowsEmptyCell(true)
+                                                         .errorReaction(ErrorReaction.STOP)
+                                                         .validationType(ValidationType.LIST)
+                                                         .values("One", "Two", "Three")
+                                                         .addRange(new CellAddressRange(1, -1, 0, 0))
+                                                         .build());
+        }
+        chrono.suspend();
+        LOGGER.debug("Generated {} {}", file, chrono);
+    }
 }

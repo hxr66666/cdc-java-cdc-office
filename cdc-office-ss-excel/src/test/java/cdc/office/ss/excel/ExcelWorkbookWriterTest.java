@@ -130,4 +130,10 @@ class ExcelWorkbookWriterTest extends WorkbookWriterTestSupport {
                      WorkbookWriterFeatures.STANDARD_FAST);
         assertTrue(true);
     }
+
+    @Test
+    void testDataValidationXlsx() throws IOException {
+        testDataValidation(new File("target/" + getClass().getSimpleName() + "-data-validation.xlsx"));
+        assertTrue(true);
+    }
 }
