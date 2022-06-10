@@ -18,6 +18,12 @@ class DemosTest {
     }
 
     @Test
+    void testKeyedSheetDiffDemo() throws Exception {
+        KeyedSheetDiffDemo.main();
+        assertTrue(true);
+    }
+
+    @Test
     void testRichTextDemo() throws Exception {
         RichTextDemo.main();
         assertTrue(true);

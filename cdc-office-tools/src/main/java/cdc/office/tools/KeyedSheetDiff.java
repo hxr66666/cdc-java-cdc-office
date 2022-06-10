@@ -6,6 +6,7 @@ import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -141,11 +142,15 @@ public final class KeyedSheetDiff {
         final HeaderMapper mapper2 = HeaderMapper.builder().mandatory(expected).actual(header2).build();
 
         if (!mapper1.hasAllMandatoryNames()) {
-            throw new IllegalArgumentException("Invalid file1 header: " + header1);
+            throw new IllegalArgumentException("Missing keys: "
+                    + mapper1.getMissingMandatoryNames().stream().sorted().collect(Collectors.joining(",", "[", "]"))
+                    + " in file1 header: " + header1);
         }
 
         if (!mapper2.hasAllMandatoryNames()) {
-            throw new IllegalArgumentException("Invalid file2 header: " + header2);
+            throw new IllegalArgumentException("Missing keys: "
+                    + mapper2.getMissingMandatoryNames().stream().sorted().collect(Collectors.joining(",", "[", "]"))
+                    + " in file2 header: " + header2);
         }
 
         // Remove header in both input rows
