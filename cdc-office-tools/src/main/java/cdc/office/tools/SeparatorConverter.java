@@ -14,12 +14,11 @@ import cdc.office.tables.Row;
 import cdc.office.tables.RowLocation;
 import cdc.office.tables.TableHandler;
 import cdc.office.tools.AbstractFilter.BaseMainArgs.BaseFeature;
-import cdc.util.cli.AbstractMainSupport;
 import cdc.util.function.Evaluation;
 import cdc.util.lang.ExceptionWrapper;
 
 public final class SeparatorConverter extends AbstractFilter<SeparatorConverter.MainArgs> {
-    protected static final Logger LOGGER = LogManager.getLogger(SeparatorConverter.class);
+    private static final Logger LOGGER = LogManager.getLogger(SeparatorConverter.class);
 
     private SeparatorConverter(MainArgs margs) {
         super(margs);
@@ -78,7 +77,7 @@ public final class SeparatorConverter extends AbstractFilter<SeparatorConverter.
         }
     }
 
-    protected void execute() throws IOException {
+    private void execute() throws IOException {
         final Handler handler = new Handler();
         final CsvParser parser = new CsvParser();
         parser.setSeparator(margs.inputSeparator);
@@ -101,8 +100,7 @@ public final class SeparatorConverter extends AbstractFilter<SeparatorConverter.
         support.main(args);
     }
 
-    private static class MainSupport extends AbstractMainSupport<MainArgs, Void> {
-
+    private static class MainSupport extends FilterMainSupport<MainArgs> {
         public MainSupport() {
             super(SeparatorConverter.class, LOGGER);
         }
@@ -120,7 +118,7 @@ public final class SeparatorConverter extends AbstractFilter<SeparatorConverter.
         @Override
         protected MainArgs analyze(CommandLine cl) throws ParseException {
             final MainArgs margs = new MainArgs();
-            AbstractFilter.analyze(cl, margs);
+            analyze(cl, margs);
             return margs;
         }
 

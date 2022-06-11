@@ -28,8 +28,8 @@ import cdc.util.cli.OptionEnum;
 import cdc.util.function.Evaluation;
 import cdc.util.lang.ExceptionWrapper;
 
-public class SheetExtractor {
-    protected static final Logger LOGGER = LogManager.getLogger(SheetExtractor.class);
+public final class SheetExtractor {
+    private static final Logger LOGGER = LogManager.getLogger(SheetExtractor.class);
     private final MainArgs margs;
 
     private SheetExtractor(MainArgs margs) {
@@ -196,8 +196,8 @@ public class SheetExtractor {
         protected MainArgs analyze(CommandLine cl) throws ParseException {
             final MainArgs margs = new MainArgs();
 
-            margs.inputFile = getValueAsExistingFile(cl, INPUT, null);
-            margs.outputFile = getValueAsFile(cl, OUTPUT, null);
+            margs.inputFile = getValueAsFile(cl, INPUT, AbstractMainSupport.IS_FILE);
+            margs.outputFile = getValueAsFile(cl, OUTPUT);
             for (final String s : cl.getOptionValues(SHEET)) {
                 margs.sheetNames.add(s);
             }

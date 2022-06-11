@@ -354,11 +354,11 @@ public final class KeyedSheetDiff {
         protected MainArgs analyze(CommandLine cl) throws ParseException {
             final MainArgs margs = new MainArgs();
 
-            margs.file1 = getValueAsExistingFile(cl, FILE1, null);
+            margs.file1 = getValueAsResolvedFile(cl, FILE1, AbstractMainSupport.IS_FILE);
             margs.sheet1 = getValueAsString(cl, SHEET1, null);
-            margs.file2 = getValueAsExistingFile(cl, FILE2, null);
+            margs.file2 = getValueAsResolvedFile(cl, FILE2, AbstractMainSupport.IS_FILE);
             margs.sheet2 = getValueAsString(cl, SHEET2, null);
-            margs.output = getValueAsFile(cl, OUTPUT, null);
+            margs.output = getValueAsResolvedFile(cl, OUTPUT);
             margs.sheet = getValueAsString(cl, SHEET, null);
             margs.charset = getValueAsCharset(cl, CHARSET);
             margs.separator = AbstractMainSupport.getValueAsChar(cl, SEPARATOR, ';');

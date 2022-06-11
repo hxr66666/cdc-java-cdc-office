@@ -40,7 +40,7 @@ import cdc.util.strings.StringConversion;
  * @author Damien Carbonne
  */
 public final class Anonymizer extends AbstractFilter<Anonymizer.MainArgs> {
-    protected static final Logger LOGGER = LogManager.getLogger(Anonymizer.class);
+    private static final Logger LOGGER = LogManager.getLogger(Anonymizer.class);
 
     private Anonymizer(MainArgs margs) {
         super(margs);
@@ -156,7 +156,7 @@ public final class Anonymizer extends AbstractFilter<Anonymizer.MainArgs> {
         }
     }
 
-    protected void execute() throws IOException {
+    private void execute() throws IOException {
         final Handler handler = new Handler();
         final CsvParser parser = new CsvParser();
         parser.setSeparator(margs.inputSeparator);
@@ -181,7 +181,7 @@ public final class Anonymizer extends AbstractFilter<Anonymizer.MainArgs> {
         support.main(args);
     }
 
-    private static class MainSupport extends AbstractMainSupport<MainArgs, Void> {
+    private static class MainSupport extends FilterMainSupport<MainArgs> {
         private static final String REPLACEMENT = "replacement";
         private static final String PRESERVE_CHARS = "preserve-chars";
         private static final String MAX_LENGTH = "max-length";
@@ -229,7 +229,7 @@ public final class Anonymizer extends AbstractFilter<Anonymizer.MainArgs> {
         @Override
         protected MainArgs analyze(CommandLine cl) throws ParseException {
             final MainArgs margs = new MainArgs();
-            AbstractFilter.analyze(cl, margs);
+            analyze(cl, margs);
             for (final String s : cl.getOptionValues(COLUMNS)) {
                 try {
                     final int number = StringConversion.asInt(s);

@@ -16,6 +16,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.logging.log4j.Logger;
 
 import cdc.util.cli.AbstractMainSupport;
 import cdc.util.cli.FeatureMask;
@@ -114,54 +115,62 @@ public abstract class AbstractFilter<M extends AbstractFilter.BaseMainArgs> {
         }
     }
 
-    protected static void addSpecificBaseOptions(Options options) {
-        options.addOption(Option.builder()
-                                .longOpt(AbstractMainSupport.INPUT)
-                                .desc("Name of the input file.")
-                                .hasArg()
-                                .required()
-                                .build());
+    protected abstract static class FilterMainSupport<A extends BaseMainArgs> extends AbstractMainSupport<A, Void> {
+        protected FilterMainSupport(Class<?> mainClass,
+                                    Logger logger) {
+            super(mainClass,
+                  logger);
+        }
 
-        options.addOption(Option.builder()
-                                .longOpt(INPUT_CHARSET)
-                                .desc("Optional name of the input charset (default: platform default charset).")
-                                .hasArg()
-                                .build());
+        protected void addSpecificBaseOptions(Options options) {
+            options.addOption(Option.builder()
+                                    .longOpt(INPUT)
+                                    .desc("Name of the input file.")
+                                    .hasArg()
+                                    .required()
+                                    .build());
 
-        options.addOption(Option.builder()
-                                .longOpt(INPUT_SEPARATOR)
-                                .desc("Optional input char separator (default: ';').")
-                                .hasArg()
-                                .build());
+            options.addOption(Option.builder()
+                                    .longOpt(INPUT_CHARSET)
+                                    .desc("Optional name of the input charset (default: platform default charset).")
+                                    .hasArg()
+                                    .build());
 
-        options.addOption(Option.builder()
-                                .longOpt(AbstractMainSupport.OUTPUT)
-                                .desc("Name of the output file.")
-                                .hasArg()
-                                .required()
-                                .build());
+            options.addOption(Option.builder()
+                                    .longOpt(INPUT_SEPARATOR)
+                                    .desc("Optional input char separator (default: ';').")
+                                    .hasArg()
+                                    .build());
 
-        options.addOption(Option.builder()
-                                .longOpt(OUTPUT_CHARSET)
-                                .desc("Optional name of the output charset (default: input charset).")
-                                .hasArg()
-                                .build());
-        options.addOption(Option.builder()
-                                .longOpt(OUTPUT_SEPARATOR)
-                                .desc("Optional output char separator (default: input separator).")
-                                .hasArg()
-                                .build());
-        AbstractMainSupport.addNoArgOptions(options, BaseMainArgs.BaseFeature.class);
-    }
+            options.addOption(Option.builder()
+                                    .longOpt(OUTPUT)
+                                    .desc("Name of the output file.")
+                                    .hasArg()
+                                    .required()
+                                    .build());
 
-    protected static void analyze(CommandLine cl,
-                                  BaseMainArgs margs) throws ParseException {
-        margs.input = AbstractMainSupport.getValueAsNullOrExistingFile(cl, AbstractMainSupport.INPUT, null);
-        margs.inputCharset = AbstractMainSupport.getValueAsCharset(cl, INPUT_CHARSET);
-        margs.output = AbstractMainSupport.getValueAsFile(cl, AbstractMainSupport.OUTPUT, null);
-        margs.outputCharset = AbstractMainSupport.getValueAsCharset(cl, OUTPUT_CHARSET, margs.inputCharset);
-        margs.inputSeparator = AbstractMainSupport.getValueAsChar(cl, INPUT_SEPARATOR, ';');
-        margs.outputSeparator = AbstractMainSupport.getValueAsChar(cl, OUTPUT_SEPARATOR, margs.inputSeparator);
-        AbstractMainSupport.setMask(cl, BaseMainArgs.BaseFeature.class, margs.baseFeatures::setEnabled);
+            options.addOption(Option.builder()
+                                    .longOpt(OUTPUT_CHARSET)
+                                    .desc("Optional name of the output charset (default: input charset).")
+                                    .hasArg()
+                                    .build());
+            options.addOption(Option.builder()
+                                    .longOpt(OUTPUT_SEPARATOR)
+                                    .desc("Optional output char separator (default: input separator).")
+                                    .hasArg()
+                                    .build());
+            AbstractMainSupport.addNoArgOptions(options, BaseMainArgs.BaseFeature.class);
+        }
+
+        protected void analyze(CommandLine cl,
+                               BaseMainArgs margs) throws ParseException {
+            margs.input = getValueAsResolvedFile(cl, INPUT, AbstractMainSupport.IS_FILE);
+            margs.inputCharset = AbstractMainSupport.getValueAsCharset(cl, INPUT_CHARSET);
+            margs.output = getValueAsResolvedFile(cl, OUTPUT);
+            margs.outputCharset = AbstractMainSupport.getValueAsCharset(cl, OUTPUT_CHARSET, margs.inputCharset);
+            margs.inputSeparator = AbstractMainSupport.getValueAsChar(cl, INPUT_SEPARATOR, ';');
+            margs.outputSeparator = AbstractMainSupport.getValueAsChar(cl, OUTPUT_SEPARATOR, margs.inputSeparator);
+            AbstractMainSupport.setMask(cl, BaseMainArgs.BaseFeature.class, margs.baseFeatures::setEnabled);
+        }
     }
 }

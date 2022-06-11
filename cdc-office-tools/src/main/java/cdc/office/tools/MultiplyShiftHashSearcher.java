@@ -23,7 +23,7 @@ import cdc.util.cli.OptionEnum;
 import cdc.util.time.Chronometer;
 
 public final class MultiplyShiftHashSearcher {
-    protected static final Logger LOGGER = LogManager.getLogger(MultiplyShiftHashSearcher.class);
+    private static final Logger LOGGER = LogManager.getLogger(MultiplyShiftHashSearcher.class);
     private final MainArgs margs;
 
     private final BitSet set = new BitSet();
@@ -373,7 +373,7 @@ public final class MultiplyShiftHashSearcher {
         final int maxShift = Integer.numberOfLeadingZeros(length - 1);
         boolean finished = false;
         for (int multiplier = margs.minMultiplier; !finished && multiplier > 0 && multiplier <= margs.maxMultiplier; multiplier++) {
-            if (multiplier % 1000000 == 0 || multiplier == margs.minMultiplier || multiplier == margs.maxMultiplier) {
+            if (multiplier % 1_000_000 == 0 || multiplier == margs.minMultiplier || multiplier == margs.maxMultiplier) {
                 log(String.format("%d %d %d/%d",
                                   multiplier,
                                   count,
@@ -486,7 +486,7 @@ public final class MultiplyShiftHashSearcher {
         @Override
         protected MainArgs analyze(CommandLine cl) throws ParseException {
             final MainArgs margs = new MainArgs();
-            margs.output = getValueAsFile(cl, OUTPUT, null);
+            margs.output = getValueAsFile(cl, OUTPUT);
             margs.chars = getValueAsString(cl, CHARS, "");
             margs.filler = getValueAsChar(cl, FILLER, null);
             margs.minMultiplier = Math.max(getValueAsInt(cl, MIN_MULTIPLIER, 1), 1);

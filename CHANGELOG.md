@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Improved error message when a key is missing in `KeyedSheetDiff`. #23
+- Paths are now relative to args file location in `KeyedSheetDiff`. #22
 
 ### Fixed
 - Excluded the invalid odf dependency in pom.xml. This exclusion should be remove in the future. cdc-java/cdc-deps#17
