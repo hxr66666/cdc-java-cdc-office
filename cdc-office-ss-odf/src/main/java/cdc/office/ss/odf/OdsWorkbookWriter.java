@@ -163,7 +163,6 @@ public class OdsWorkbookWriter implements WorkbookWriter<OdsWorkbookWriter> {
         this.table = OdfTable.newTable(doc);
         this.table.setTableName(name);
         Checks.assertFalse(table == null, "Null table");
-        // }
         tableCount++;
         this.rowIndex = -1;
         this.columnIndex = -1;
