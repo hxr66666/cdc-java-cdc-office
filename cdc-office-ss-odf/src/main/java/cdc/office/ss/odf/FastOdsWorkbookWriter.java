@@ -39,7 +39,6 @@ import cdc.util.strings.StringUtils;
  * Open Office implementation of WorkbookWriter using FastOds.
  *
  * @author Damien Carbonne
- *
  */
 public class FastOdsWorkbookWriter implements WorkbookWriter<FastOdsWorkbookWriter> {
     private static final Logger LOGGER = LogManager.getLogger(FastOdsWorkbookWriter.class);
@@ -205,6 +204,7 @@ public class FastOdsWorkbookWriter implements WorkbookWriter<FastOdsWorkbookWrit
     @Override
     public FastOdsWorkbookWriter addContentValidation(ContentValidation cv) throws IOException {
         // Not supported
+        LOGGER.warn("addContentValidation(...) is not supported");
         return this;
     }
 
@@ -227,9 +227,6 @@ public class FastOdsWorkbookWriter implements WorkbookWriter<FastOdsWorkbookWrit
         }
 
         this.rowIndex++;
-        if (this.rowIndex % 100000 == 0) {
-            LOGGER.info(this.rowIndex);
-        }
         this.row = null;
         this.cell = null;
         this.columnIndex = -1;
@@ -265,6 +262,7 @@ public class FastOdsWorkbookWriter implements WorkbookWriter<FastOdsWorkbookWrit
 
     @Override
     public FastOdsWorkbookWriter addCellComment(String comment) {
+        LOGGER.warn("addCellComment(...) NYI");
         // TODO
         return this;
     }
@@ -278,7 +276,6 @@ public class FastOdsWorkbookWriter implements WorkbookWriter<FastOdsWorkbookWrit
     @Override
     public FastOdsWorkbookWriter addCell(boolean value) throws IOException {
         addCell();
-        // cell.setText(Text.content(value ? "TRUE" : "FALSE"));
         cell.setBooleanValue(value);
         return this;
     }
@@ -289,7 +286,6 @@ public class FastOdsWorkbookWriter implements WorkbookWriter<FastOdsWorkbookWrit
             addEmptyCell();
         } else {
             addCell();
-            // cell.setText(Text.content(value));
             if (features.isEnabled(WorkbookWriterFeatures.Feature.TRUNCATE_CELLS)) {
                 cell.setStringValue(StringUtils.extract(value, getKind().getMaxCellSize()));
             } else if (features.isEnabled(WorkbookWriterFeatures.Feature.TRUNCATE_CELLS_LINES)) {
@@ -304,7 +300,6 @@ public class FastOdsWorkbookWriter implements WorkbookWriter<FastOdsWorkbookWrit
     @Override
     public FastOdsWorkbookWriter addCell(double value) throws IOException {
         addCell();
-        // cell.setText(Text.content(String.format("%f", value)));
         cell.setFloatValue(Double.valueOf(value));
         return this;
     }
@@ -312,9 +307,7 @@ public class FastOdsWorkbookWriter implements WorkbookWriter<FastOdsWorkbookWrit
     @Override
     public FastOdsWorkbookWriter addCell(long value) throws IOException {
         addCell();
-        // cell.setText(Text.content(String.format("%.0f", (double) value)));
         cell.setFloatValue(Long.valueOf(value));
-        // cell.setFormatString(formatInt);
         return this;
     }
 
@@ -324,9 +317,7 @@ public class FastOdsWorkbookWriter implements WorkbookWriter<FastOdsWorkbookWrit
             addEmptyCell();
         } else {
             addCell();
-            // cell.setText(Text.content(FORMAT_DATE_TIME.format(value)));
             cell.setDateValue(DateUtils.asCalendar(value));
-            // cell.setFormatString(FORMAT_DATE_TIME);
         }
         return this;
     }
@@ -337,9 +328,7 @@ public class FastOdsWorkbookWriter implements WorkbookWriter<FastOdsWorkbookWrit
             addEmptyCell();
         } else {
             addCell();
-            // cell.setText(Text.content(FORMAT_DATE_TIME.format(DateUtils.asDate(value))));
             cell.setDateValue(DateUtils.asCalendar(value));
-            // cell.setFormatString(FORMAT_DATE_TIME);
         }
         return this;
     }
@@ -350,9 +339,7 @@ public class FastOdsWorkbookWriter implements WorkbookWriter<FastOdsWorkbookWrit
             addEmptyCell();
         } else {
             addCell();
-            // cell.setText(Text.content(FORMAT_DATE.format(DateUtils.asDate(value))));
             cell.setDateValue(DateUtils.asCalendar(value));
-            // cell.setFormatString(FORMAT_DATE);
         }
         return this;
     }
@@ -363,9 +350,7 @@ public class FastOdsWorkbookWriter implements WorkbookWriter<FastOdsWorkbookWrit
             addEmptyCell();
         } else {
             addCell();
-            // cell.setText(Text.content(FORMAT_TIME.format(DateUtils.asDate(value))));
             cell.setDateValue(DateUtils.asCalendar(value));
-            // cell.setFormatString(FORMAT_TIME);
         }
         return this;
     }

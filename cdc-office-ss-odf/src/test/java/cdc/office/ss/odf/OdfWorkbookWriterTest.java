@@ -51,4 +51,10 @@ class OdfWorkbookWriterTest extends WorkbookWriterTestSupport {
                               WorkbookWriterFeatures.STANDARD_BEST);
         assertTrue(true);
     }
+
+    @Test
+    void testDataValidationOds() throws IOException {
+        testDataValidation(new File("target/" + getClass().getSimpleName() + "-data-validation.ods"));
+        assertTrue(true);
+    }
 }

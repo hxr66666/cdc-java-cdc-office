@@ -171,6 +171,7 @@ public class OdsWorkbookWriter implements WorkbookWriter<OdsWorkbookWriter> {
 
     @Override
     public OdsWorkbookWriter addContentValidation(ContentValidation cv) throws IOException {
+        LOGGER.warn("addContentValidation(...) NYI");
         // TODO
         return this;
     }
@@ -227,7 +228,7 @@ public class OdsWorkbookWriter implements WorkbookWriter<OdsWorkbookWriter> {
 
     @Override
     public OdsWorkbookWriter addCellComment(String comment) {
-        LOGGER.warn("addCellComment()) NYI");
+        LOGGER.warn("addCellComment(...) NYI");
         // TODO
         return this;
     }
