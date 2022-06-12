@@ -267,7 +267,7 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
         case ANY:
             return null;
         case DATE:
-            return dvh.createDateConstraint(operatiorIndex, cv.getValue1(), cv.getValue2(), "TODO"); // TODO
+            return dvh.createDateConstraint(operatiorIndex, cv.getValue1(), cv.getValue2(), null);
         case DECIMAL:
             return dvh.createDecimalConstraint(operatiorIndex, cv.getValue1(), cv.getValue2());
         case FORMULA:

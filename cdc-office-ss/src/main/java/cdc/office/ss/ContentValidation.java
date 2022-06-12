@@ -52,16 +52,87 @@ public class ContentValidation {
         INFO
     }
 
+    /**
+     * Enumeration of data types that can be validated.
+     *
+     * @author Damien Carbonne
+     */
     public enum ValidationType {
+        /**
+         * The data can be anything.
+         * <p>
+         * The associated operator must be {@link Operator#NONE NONE}.<br>
+         * The associated values should be empty.
+         */
         ANY,
+
+        /**
+         * The data must be an integer number.
+         * <p>
+         * The associated operator must be different from {@link Operator#NONE NONE}.<br>
+         * There should be 1 or 2 associated values, in accordance with operator.
+         */
         INTEGER,
+
+        /**
+         * The data must be a decimal number.
+         * <p>
+         * The associated operator must be different from {@link Operator#NONE NONE}.<br>
+         * There should be 1 or 2 associated values, in accordance with operator.
+         */
         DECIMAL,
+
+        /**
+         * The data must be belong to a list.
+         * <p>
+         * The associated operator must be {@link Operator#NONE NONE}.<br>
+         * There should be any number of associated values.
+         */
         LIST,
+
+        /**
+         * The data must be a date.
+         * <p>
+         * The associated operator must be different from {@link Operator#NONE NONE}.<br>
+         * There should be 1 or 2 associated values, in accordance with operator.
+         */
         DATE,
+
+        /**
+         * The data must be a time.
+         * <p>
+         * The associated operator must be different from {@link Operator#NONE NONE}.<br>
+         * There should be 1 or 2 associated values, in accordance with operator.
+         */
         TIME,
+
+        /**
+         * The data must be any text whose length is checked.
+         * <p>
+         * The associated operator must be different from {@link Operator#NONE NONE}.<br>
+         * There should be 1 or 2 associated values, in accordance with operator.
+         */
         TEXT_LENGTH,
+
+        /**
+         * The data must be checked by a formula.
+         * <p>
+         * The associated operator must be {@link Operator#NONE NONE}.<br>
+         * There should be 1 associated value.
+         */
         FORMULA;
 
+        /**
+         * Returns {@code true} if this validation type is compliant with an operator.
+         * <ul>
+         * <li>If validation type is {@link #ANY}, {@link #FORMULA} or {@link #LIST},
+         * {@code operator} must be {@link Operator#NONE NONE}.
+         * <li>Otherwise {@code operator} must be different from {@link Operator#NONE NONE}.
+         * </ul>
+         *
+         * @param operator The operator.
+         * @return {@code true} if this validation type is compliant with {@code operator}.
+         */
         public boolean accepts(Operator operator) {
             if (this == ANY || this == FORMULA || this == LIST) {
                 return operator == Operator.NONE;
@@ -71,17 +142,41 @@ public class ContentValidation {
         }
     }
 
+    /**
+     * Enumeration of operators for data validation.
+     *
+     * @author Damien Carbonne
+     */
     public enum Operator {
         NONE,
+        /** Must be Used with 2 values: v1 <= v <= v2. */
         BETWEEN,
+        /** Must be Used with 2 values: !(v1 <= v <= v2). */
         NOT_BETWEEN,
+        /** Must be Used with 1 value: v = v1 */
         EQUAL,
+        /** Must be Used with 1 value: v != v1 */
         NOT_EQUAL,
+        /** Must be Used with 1 value: v > v1 */
         GREATER_THAN,
+        /** Must be Used with 1 value: v < v1 */
         LESS_THAN,
+        /** Must be Used with 1 value: v >= v1 */
         GREATER_OR_EQUAL,
+        /** Must be Used with 1 value: v <= v1 */
         LESS_OR_EQUAL;
 
+        /**
+         * Returns {@code true} when this operator is compliant with the passed number of values.
+         * <ul>
+         * <li>If this is operator is {#NONE}, any {@code size} is valid, even if meaningless.
+         * <li>If this is operator is {@value #BETWEEN} or {@value #NOT_BETWEEN}, {@code size} must equal 2.
+         * <li>Otherwise, {@code size} must equal 1.
+         * </ul>
+         *
+         * @param size The number of values.
+         * @return {@code true} when this operator is compliant with {@code size} values.
+         */
         boolean isCompliantWithValues(int size) {
             if (this == NONE) {
                 return true;
@@ -134,7 +229,7 @@ public class ContentValidation {
     }
 
     public String getValue1() {
-        return values.get(0);
+        return values.isEmpty() ? null : values.get(0);
     }
 
     public String getValue2() {

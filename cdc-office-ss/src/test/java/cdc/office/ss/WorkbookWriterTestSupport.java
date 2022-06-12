@@ -17,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import cdc.office.ss.ContentValidation.ErrorReaction;
+import cdc.office.ss.ContentValidation.Operator;
 import cdc.office.ss.ContentValidation.ValidationType;
 import cdc.office.tables.TableSection;
 import cdc.util.time.Chronometer;
@@ -191,14 +192,70 @@ public class WorkbookWriterTestSupport {
             writer.beginRow(TableSection.HEADER);
             writer.addCell("List");
             writer.addCell("Integer");
+            writer.addCell("Decimal");
+            writer.addCell("Time");
+            writer.addCell("Date");
+            writer.addCell("Text");
 
             writer.addContentValidation(ContentValidation.builder()
-                                                         .help("List test", "Select: One, Two or Three")
+                                                         .help("List test", "Select: One, Two or Three.")
+                                                         .error("Invalid data", "Must be a value among One, Two or Three.")
                                                          .allowsEmptyCell(true)
                                                          .errorReaction(ErrorReaction.STOP)
                                                          .validationType(ValidationType.LIST)
                                                          .values("One", "Two", "Three")
                                                          .addRange(new CellAddressRange(1, -1, 0, 0))
+                                                         .build());
+
+            writer.addContentValidation(ContentValidation.builder()
+                                                         .help("Integer test", "Any integer in [0-10].")
+                                                         .error("Invalid data", "Must be an integer in [0-10].")
+                                                         .allowsEmptyCell(true)
+                                                         .errorReaction(ErrorReaction.STOP)
+                                                         .validationType(ValidationType.INTEGER)
+                                                         .operator(Operator.BETWEEN)
+                                                         .values("0", "10")
+                                                         .addRange(new CellAddressRange(1, -1, 1, 1))
+                                                         .build());
+            writer.addContentValidation(ContentValidation.builder()
+                                                         .help("Dercimal test", "Any decimal > 0.")
+                                                         .error("Invalid data", "Must be a decimal > 0.")
+                                                         .allowsEmptyCell(true)
+                                                         .errorReaction(ErrorReaction.STOP)
+                                                         .validationType(ValidationType.DECIMAL)
+                                                         .operator(Operator.GREATER_THAN)
+                                                         .values("0")
+                                                         .addRange(new CellAddressRange(1, -1, 2, 2))
+                                                         .build());
+            writer.addContentValidation(ContentValidation.builder()
+                                                         .help("Time  test", "Any time >= 12:00:00.")
+                                                         .error("Invalid data", "Must be a time >= 12:00:00.")
+                                                         .allowsEmptyCell(true)
+                                                         .errorReaction(ErrorReaction.STOP)
+                                                         .validationType(ValidationType.TIME)
+                                                         .operator(Operator.GREATER_OR_EQUAL)
+                                                         .value("TIME(12,0,0)")
+                                                         .addRange(new CellAddressRange(1, -1, 3, 3))
+                                                         .build());
+            writer.addContentValidation(ContentValidation.builder()
+                                                         .help("Date test", "Any date >= 2000-01-01.")
+                                                         .error("Invalid data", "Must be a date >= 2000-01-01.")
+                                                         .allowsEmptyCell(true)
+                                                         .errorReaction(ErrorReaction.STOP)
+                                                         .validationType(ValidationType.DATE)
+                                                         .operator(Operator.GREATER_OR_EQUAL)
+                                                         .value("DATE(2000,1,1)")
+                                                         .addRange(new CellAddressRange(1, -1, 4, 4))
+                                                         .build());
+            writer.addContentValidation(ContentValidation.builder()
+                                                         .help("Text length test", "Length must be <= 10.")
+                                                         .error("Invalid data", "Text length must be <= 10.")
+                                                         .allowsEmptyCell(true)
+                                                         .errorReaction(ErrorReaction.STOP)
+                                                         .validationType(ValidationType.TEXT_LENGTH)
+                                                         .operator(Operator.LESS_OR_EQUAL)
+                                                         .value("10")
+                                                         .addRange(new CellAddressRange(1, -1, 5, 5))
                                                          .build());
         }
         chrono.suspend();
