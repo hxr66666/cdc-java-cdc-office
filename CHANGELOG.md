@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Excluded the invalid odf dependency in pom.xml. This exclusion should be remove in the future. cdc-java/cdc-deps#17
+- Removed automatically created sheet when using odftoolkit. #24
 
 
 ## [0.22.0] - 2022-05-21

@@ -70,6 +70,10 @@ public class OdsWorkbookWriter implements WorkbookWriter<OdsWorkbookWriter> {
         }
         try {
             this.doc = OdfSpreadsheetDocument.newSpreadsheetDocument();
+            // We don't want any sheet to be created automatically
+            for (final OdfTable t : doc.getTableList(false)) {
+                t.remove();
+            }
         } catch (final Exception e) {
             throw new IOException(e);
         }
@@ -334,7 +338,7 @@ public class OdsWorkbookWriter implements WorkbookWriter<OdsWorkbookWriter> {
         } else {
             addCell();
             cell.setStringValue(label);
-            LOGGER.warn("addCell(URI)) NYI");
+            LOGGER.warn("addCell(URI) NYI");
             // TODO
             // final Paragraph paragraph = cell.addParagraph(label == null ? uri.toString() : label);
             // paragraph.applyHyperlink(uri);
