@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Added Data validation. At the moment it is only implement for Excel formats. #21
+- Added `WorkbookWriterFeatures.Fature.CONTENT_VALIDATION`. #21
 
 ### Changed
 - Improved error message when a key is missing in `KeyedSheetDiff`. #23

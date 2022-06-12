@@ -172,7 +172,8 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
                 || feature == WorkbookWriterFeatures.Feature.TRUNCATE_CELLS
                 || feature == WorkbookWriterFeatures.Feature.TRUNCATE_CELLS_LINES
                 || feature == WorkbookWriterFeatures.Feature.NO_CELL_STYLES
-                || feature == WorkbookWriterFeatures.Feature.COMMENTS;
+                || feature == WorkbookWriterFeatures.Feature.COMMENTS
+                || feature == WorkbookWriterFeatures.Feature.CONTENT_VALIDATION;
     }
 
     private void unexpectedState(String context) throws IOException {

@@ -109,12 +109,29 @@ public class WorkbookWriterFeatures {
         NO_CELL_STYLES,
 
         /**
-         * Support feature.
+         * Support feature: can add comments to cells.
          */
-        COMMENTS;
+        COMMENTS,
 
+        /**
+         * Support feature: can create content validation.
+         */
+        CONTENT_VALIDATION;
+
+        /**
+         * @return {@code true} if this Feature is a configuration feature
+         *         which can be enabled or disabled.
+         */
         public boolean isConfiguration() {
-            return this != COMMENTS;
+            return !isSupportOnly();
+        }
+
+        /**
+         * @return {@code true} if this Feature is a support-only feature,
+         *         which cannot be enabled or disabled.
+         */
+        public boolean isSupportOnly() {
+            return this == COMMENTS;
         }
     }
 
@@ -173,6 +190,8 @@ public class WorkbookWriterFeatures {
 
         public Builder setEnabled(Feature feature,
                                   boolean enabled) {
+            Checks.isNotNull(feature, "feature");
+            Checks.isTrue(feature.isConfiguration(), feature + " is not a configuration feature");
             if (enabled) {
                 this.features.add(feature);
             } else {
