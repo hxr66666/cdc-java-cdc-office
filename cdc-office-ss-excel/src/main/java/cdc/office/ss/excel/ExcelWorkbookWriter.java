@@ -34,7 +34,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import cdc.office.ss.CellAddressRange;
 import cdc.office.ss.ContentValidation;
-import cdc.office.ss.ContentValidation.ValidationType;
+import cdc.office.ss.ContentValidation.Type;
 import cdc.office.ss.Section;
 import cdc.office.ss.WorkbookKind;
 import cdc.office.ss.WorkbookWriter;
@@ -297,7 +297,7 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
 
     @Override
     public ExcelWorkbookWriter addContentValidation(ContentValidation cv) throws IOException {
-        if (cv.getValidationType() != ValidationType.ANY) {
+        if (cv.getValidationType() != Type.ANY) {
             final DataValidationHelper dvh = sheet.getDataValidationHelper();
             final DataValidationConstraint dvc = createConstraint(cv, dvh);
             final CellRangeAddressList cral = createRanges(cv.getRanges(), kind);

@@ -8,7 +8,7 @@ import cdc.util.lang.Checks;
 
 public class ContentValidation {
     private final ErrorReaction errorReaction;
-    private final ValidationType validationType;
+    private final Type type;
     private final Operator operator;
     private final String helpTitle;
     private final String helpText;
@@ -19,7 +19,7 @@ public class ContentValidation {
     private final List<CellAddressRange> ranges;
 
     protected ContentValidation(ErrorReaction errorReaction,
-                                ValidationType validationType,
+                                Type type,
                                 Operator operator,
                                 String helpTitle,
                                 String helpText,
@@ -29,7 +29,7 @@ public class ContentValidation {
                                 boolean allowsEmptyCell,
                                 List<CellAddressRange> ranges) {
         this.errorReaction = errorReaction;
-        this.validationType = validationType;
+        this.type = type;
         this.operator = operator;
         this.helpTitle = helpTitle;
         this.helpText = helpText;
@@ -39,8 +39,8 @@ public class ContentValidation {
         this.allowsEmptyCell = allowsEmptyCell;
         this.ranges = new ArrayList<>(ranges);
 
-        Checks.isTrue(validationType.accepts(operator),
-                      validationType + " is not compliant with " + operator + " operator.");
+        Checks.isTrue(type.accepts(operator),
+                      type + " is not compliant with " + operator + " operator.");
         Checks.isTrue(operator.isCompliantWithValues(values.size()),
                       operator + " is not compliant with " + values.size() + " values.");
         Checks.isFalse(ranges.isEmpty(), "No ranges were defined.");
@@ -57,7 +57,7 @@ public class ContentValidation {
      *
      * @author Damien Carbonne
      */
-    public enum ValidationType {
+    public enum Type {
         /**
          * The data can be anything.
          * <p>
@@ -177,7 +177,7 @@ public class ContentValidation {
          * @param size The number of values.
          * @return {@code true} when this operator is compliant with {@code size} values.
          */
-        boolean isCompliantWithValues(int size) {
+        public boolean isCompliantWithValues(int size) {
             if (this == NONE) {
                 return true;
             } else if (this == BETWEEN || this == NOT_BETWEEN) {
@@ -192,8 +192,8 @@ public class ContentValidation {
         return errorReaction;
     }
 
-    public ValidationType getValidationType() {
-        return validationType;
+    public Type getValidationType() {
+        return type;
     }
 
     public Operator getOperator() {
@@ -250,7 +250,7 @@ public class ContentValidation {
 
     public static class Builder {
         protected ErrorReaction errorReaction = ErrorReaction.INFO;
-        protected ValidationType validationType = ValidationType.ANY;
+        protected Type type = Type.ANY;
         protected Operator operator = Operator.NONE;
         protected String helpTitle = null;
         protected String helpText = null;
@@ -268,8 +268,8 @@ public class ContentValidation {
             return this;
         }
 
-        public Builder validationType(ValidationType validationType) {
-            this.validationType = validationType;
+        public Builder type(Type type) {
+            this.type = type;
             return this;
         }
 
@@ -312,6 +312,12 @@ public class ContentValidation {
             return this;
         }
 
+        public Builder values(List<String> values) {
+            this.values.clear();
+            this.values.addAll(values);
+            return this;
+        }
+
         public Builder allowsEmptyCell(boolean allowsEmptyCell) {
             this.allowsEmptyCell = allowsEmptyCell;
             return this;
@@ -324,7 +330,7 @@ public class ContentValidation {
 
         public ContentValidation build() {
             return new ContentValidation(errorReaction,
-                                         validationType,
+                                         type,
                                          operator,
                                          helpTitle,
                                          helpText,
