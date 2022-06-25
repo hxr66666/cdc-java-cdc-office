@@ -65,7 +65,7 @@ public final class KeyedSheetDiff {
             SHOW_CHANGE_DETAILS("show-change-details",
                                 "If enabled, show value 1 (with removed mark or color) and value 2 (with added mark or color).\n"
                                         + " Otherwise, show value 2 (with changed mark or color)."),
-            SYNTHESIS("synthesis", "Prints a synthesis of differences."),
+            SYNTHESIS("synthesis", "Print a synthesis of differences."),
             SAVE_SYNTHESIS("save-synthesis", "Save synthesis in output file, in a dedicated sheet."),
             VERBOSE("verbose", "Print progress messages.");
 
