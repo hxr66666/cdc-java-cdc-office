@@ -81,6 +81,9 @@ public enum WorkbookKind {
         }
     }
 
+    /**
+     * @return The maximum number of characters in a cell supported by this kind of spreadsheet.
+     */
     public int getMaxCellSize() {
         switch (this) {
         case CSV:
@@ -95,4 +98,20 @@ public enum WorkbookKind {
         }
     }
 
+    /**
+     * @return The maximum number of characters for content validation message supported by this kind of spreadsheet.
+     */
+    public int getMaxContentValidationMessageSize() {
+        switch (this) {
+        case CSV:
+            return -1;
+        case ODS:
+        case XLS:
+        case XLSM:
+        case XLSX:
+            return 250;
+        default:
+            throw new UnexpectedValueException(this);
+        }
+    }
 }

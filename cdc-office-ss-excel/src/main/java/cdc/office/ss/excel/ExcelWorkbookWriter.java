@@ -303,12 +303,16 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
             final CellRangeAddressList cral = createRanges(cv.getRanges(), kind);
             final DataValidation dv = dvh.createValidation(dvc, cral);
             if (cv.showError()) {
-                dv.createErrorBox(cv.getErrorTitle(), cv.getErrorText());
+                dv.createErrorBox(cv.getErrorTitle(),
+                                  StringUtils.extract(cv.getErrorText(),
+                                                      kind.getMaxContentValidationMessageSize()));
                 dv.setShowErrorBox(true);
             }
 
             if (cv.showHelp()) {
-                dv.createPromptBox(cv.getHelpTitle(), cv.getHelpText());
+                dv.createPromptBox(cv.getHelpTitle(),
+                                   StringUtils.extract(cv.getHelpText(),
+                                                       kind.getMaxContentValidationMessageSize()));
                 dv.setShowPromptBox(true);
             }
             dv.setEmptyCellAllowed(cv.allowsEmptyCell());
