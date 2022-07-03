@@ -83,6 +83,7 @@ public class WorkbookWriterFeatures {
          * If enabled, adds filters to headers.
          * <p>
          * Configuration feature.<br>
+         * <b>WARNING:</b> there can be at most one auto-filter in a sheet.
          */
         AUTO_FILTER_COLUMNS,
 
