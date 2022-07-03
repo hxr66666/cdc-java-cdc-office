@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Fixed
 - Automatically limited size of error/help messages for data content validation. #26
+- Better computation of the size of the comment box. Things can still be improved,
+  but finding documentation on that topic is difficult. #27
 
 
 ## [0.23.0] - 2022-06-18

@@ -383,16 +383,24 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
 
     @Override
     public ExcelWorkbookWriter addCellComment(String comment) {
-        final Drawing<?> drawingPatriarch = sheet.createDrawingPatriarch();
+        final Drawing<?> drawing = sheet.createDrawingPatriarch();
         final CreationHelper factory = workbook.getCreationHelper();
         final ClientAnchor anchor = factory.createClientAnchor();
         // anchor.setAnchorType(AnchorType.MOVE_DONT_RESIZE);
 
+        final int maxLineLength = StringUtils.maxLineLength(comment);
+
         anchor.setCol1(cell.getColumnIndex());
-        anchor.setCol2(cell.getColumnIndex() + 2);
+        // The divisor should be computed rather than guessed
+        // It is the number of characters that a column can hold
+        final int divisor = 11;
+        // The maximum number of columns we want to use
+        final int maxCols = 25;
+        // Estimate col2
+        anchor.setCol2(cell.getColumnIndex() + 1 + Math.min(maxLineLength / divisor, maxCols));
         anchor.setRow1(row.getRowNum());
-        anchor.setRow2(row.getRowNum() + 3);
-        final Comment cmt = drawingPatriarch.createCellComment(anchor);
+        anchor.setRow2(row.getRowNum() + 1);
+        final Comment cmt = drawing.createCellComment(anchor);
         final RichTextString str = factory.createRichTextString(comment);
         cmt.setString(str);
         cmt.setRow(rowIndex);
