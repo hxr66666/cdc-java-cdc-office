@@ -397,7 +397,7 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
         // The maximum number of columns we want to use
         final int maxCols = 25;
         // Estimate col2
-        anchor.setCol2(cell.getColumnIndex() + 1 + Math.min(maxLineLength / divisor, maxCols));
+        anchor.setCol2(cell.getColumnIndex() + 2 + Math.min(maxLineLength / divisor, maxCols));
         anchor.setRow1(row.getRowNum());
         anchor.setRow2(row.getRowNum() + 1);
         final Comment cmt = drawing.createCellComment(anchor);
