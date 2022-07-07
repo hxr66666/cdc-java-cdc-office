@@ -9,8 +9,8 @@ import java.nio.charset.Charset;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cdc.io.txt.LineParser;
 import cdc.io.txt.LinesHandler;
+import cdc.io.txt.LinesParser;
 import cdc.office.tables.Row;
 import cdc.office.tables.RowLocation;
 import cdc.office.tables.TableHandler;
@@ -129,7 +129,8 @@ public class CsvParser {
         } else {
             numberOfRows = -1;
         }
-        LineParser.parse(reader, createLinesHandler(handler, headers, numberOfRows));
+        LinesParser.parse(reader,
+                          createLinesHandler(handler, headers, numberOfRows));
     }
 
     /**
@@ -160,10 +161,10 @@ public class CsvParser {
         } else {
             numberOfRows = -1;
         }
-        LineParser.parse(in,
-                         systemId,
-                         charset,
-                         createLinesHandler(handler, headers, numberOfRows));
+        LinesParser.parse(in,
+                          systemId,
+                          charset,
+                          createLinesHandler(handler, headers, numberOfRows));
     }
 
     /**
@@ -207,7 +208,9 @@ public class CsvParser {
             numberORows = -1;
         }
         TablesHandler.processBeginTables(handler, file.getPath());
-        LineParser.parse(file, charset, createLinesHandler(handler, headers, numberORows));
+        LinesParser.parse(file,
+                          charset,
+                          createLinesHandler(handler, headers, numberORows));
         TablesHandler.processEndTables(handler, file.getPath());
         traceEnd();
     }

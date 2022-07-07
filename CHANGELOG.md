@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Changed
+- Updated dependencies:
+    - cdc-io-0.22.0
+    - cdc-kernel-0.20.5
+    - cdc-util-0.27.0
+    - com.j2html-1.6.0
+    - org.apache.log4j-2.18.0
+    - org.junit-5.9.0-RC1
+
 ### Fixed
 - Automatically limited size of error/help messages for data content validation. #26
 - Better computation of the size of the comment box. Things can still be improved,
