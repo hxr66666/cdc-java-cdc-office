@@ -137,7 +137,7 @@ class ExcelWorkbookWriterTest extends WorkbookWriterTestSupport {
         assertTrue(true);
     }
 
-    @Test
+    // @Test This test is too long
     void testCommentsXlsx() throws IOException {
         testComments(new File("target/" + getClass().getSimpleName() + "-comments.xlsx"), 1);
         assertTrue(true);
