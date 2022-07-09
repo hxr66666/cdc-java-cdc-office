@@ -181,6 +181,62 @@ public class WorkbookWriterTestSupport {
         LOGGER.debug("Generated {} {}", file, chrono);
     }
 
+    /**
+     * Generates cells with comments on first lines / last lines, first columns /last columns.
+     * <p>
+     * <b>WARNING:</b> this can be very long.
+     *
+     * @param file The file.
+     * @param num The size of the commented cells block.
+     * @throws IOException When an IO error occurs.
+     */
+    protected static void testComments(File file,
+                                       int num) throws IOException {
+        final Chronometer chrono = new Chronometer();
+        chrono.start();
+
+        final WorkbookKind kind = WorkbookKind.from(file);
+        final int maxColumns = kind.getMaxColumns();
+        final int maxRows = kind.getMaxRows();
+
+        final WorkbookWriterFactory factory = new WorkbookWriterFactory();
+        final WorkbookWriterFeatures features = WorkbookWriterFeatures.STANDARD_BEST;
+        final String text = "Look here.";
+        final String comment = "Comment\nComment\n0123456789012345678901234567890123456789";
+        try (final WorkbookWriter<?> writer = factory.create(file, features)) {
+            writer.beginSheet("Sheet");
+            for (int r = 0; r < num; r++) {
+                writer.beginRow(TableSection.DATA);
+                for (int c = 0; c < num; c++) {
+                    writer.addCellAndComment(text, comment);
+                }
+                if (maxColumns > 0) {
+                    writer.addEmptyCells(maxColumns - 2 * num);
+                    for (int c = 0; c < num; c++) {
+                        writer.addCellAndComment(text, comment);
+                    }
+                }
+            }
+            if (maxRows > 0) {
+                writer.addEmptyRows(maxRows - 2 * num);
+                for (int r = 0; r < num; r++) {
+                    writer.beginRow(TableSection.DATA);
+                    for (int c = 0; c < num; c++) {
+                        writer.addCellAndComment(text, comment);
+                    }
+                    if (maxColumns > 0) {
+                        writer.addEmptyCells(maxColumns - 2 * num);
+                        for (int c = 0; c < num; c++) {
+                            writer.addCellAndComment(text, comment);
+                        }
+                    }
+                }
+            }
+        }
+        chrono.suspend();
+        LOGGER.debug("Generated {} {}", file, chrono);
+    }
+
     protected static void testDataValidation(File file) throws IOException {
         final Chronometer chrono = new Chronometer();
         chrono.start();

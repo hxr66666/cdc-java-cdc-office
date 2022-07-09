@@ -136,4 +136,16 @@ class ExcelWorkbookWriterTest extends WorkbookWriterTestSupport {
         testDataValidation(new File("target/" + getClass().getSimpleName() + "-data-validation.xlsx"));
         assertTrue(true);
     }
+
+    @Test
+    void testCommentsXlsx() throws IOException {
+        testComments(new File("target/" + getClass().getSimpleName() + "-comments.xlsx"), 1);
+        assertTrue(true);
+    }
+
+    @Test
+    void testCommentsXls() throws IOException {
+        testComments(new File("target/" + getClass().getSimpleName() + "-comments.xls"), 1);
+        assertTrue(true);
+    }
 }

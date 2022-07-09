@@ -38,10 +38,16 @@ public class CommentDemo {
         // anchor.setAnchorType(ClientAnchor.AnchorType.MOVE_DONT_RESIZE);
 
         final int maxLineLength = StringUtils.maxLineLength(comment);
-        anchor.setCol1(columnIndex);
-        anchor.setCol2(columnIndex + 1 + Math.min(maxLineLength / 11, 20));
+        final int numberOfLines = StringUtils.numberOfLines(comment) + 1;
+        final int divisor = 11;
+        // final int mul = 1;
+        final int maxCols = 25;
+        final int maxLines = 50;
+
+        anchor.setCol1(columnIndex + 1);
+        anchor.setCol2(columnIndex + 2 + Math.min(maxLineLength / divisor, maxCols));
         anchor.setRow1(rowIndex);
-        anchor.setRow2(rowIndex + 1);
+        anchor.setRow2(rowIndex + 1 + Math.min(numberOfLines, maxLines));
         // anchor.setDx1(23);
         // anchor.setDx2(46);
         // anchor.setDy1(24);
