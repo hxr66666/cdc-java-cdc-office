@@ -5,6 +5,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [Unreleased]
+### Added
+- Added `WorkbookWriter.addEmptyRows(count)`.
+
+### Changed
+- Updated dependencies:
+    - cdc-util-0.28.0-SNAPSHOT
+
+### Fixed
+- Improved computation of the size of cell comments. #29
+
+
 ## [0.23.1] - 2022-07-07
 ### Changed
 - Updated dependencies:
@@ -17,8 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Automatically limited size of error/help messages for data content validation. #26
-- Better computation of the size of the comment box. Things can still be improved,
-  but finding documentation on that topic is difficult. #27
+- Better computation of the size of the comment box. Things can still be improved. #27
 
 
 ## [0.23.0] - 2022-06-18

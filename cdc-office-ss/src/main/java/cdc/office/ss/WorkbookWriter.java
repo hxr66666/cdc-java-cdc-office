@@ -63,6 +63,20 @@ public interface WorkbookWriter<W extends WorkbookWriter<W>> extends Closeable, 
     public W beginRow(TableSection section) throws IOException;
 
     /**
+     * Adds empty rows to current sheet.
+     *
+     * @param count The number of empty rows to add.
+     * @return This WorkbookWriter.
+     * @throws IOException When an IO error occurs.
+     */
+    public default W addEmptyRows(int count) throws IOException {
+        for (int i = 0; i < count; i++) {
+            beginRow(TableSection.DATA);
+        }
+        return self();
+    }
+
+    /**
      * Adds a comment to current cell, if possible.
      *
      * @param comment The comment.

@@ -386,20 +386,38 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
         final Drawing<?> drawing = sheet.createDrawingPatriarch();
         final CreationHelper factory = workbook.getCreationHelper();
         final ClientAnchor anchor = factory.createClientAnchor();
-        // anchor.setAnchorType(AnchorType.MOVE_DONT_RESIZE);
+        anchor.setAnchorType(ClientAnchor.AnchorType.MOVE_DONT_RESIZE);
 
         final int maxLineLength = StringUtils.maxLineLength(comment);
+        final int numberOfLines = StringUtils.numberOfLines(comment);
 
-        anchor.setCol1(cell.getColumnIndex());
         // The divisor should be computed rather than guessed
-        // It is the number of characters that a column can hold
+        // It is the number of characters that a default column can hold
         final int divisor = 11;
         // The maximum number of columns we want to use
         final int maxCols = 25;
-        // Estimate col2
-        anchor.setCol2(cell.getColumnIndex() + 2 + Math.min(maxLineLength / divisor, maxCols));
-        anchor.setRow1(row.getRowNum());
-        anchor.setRow2(row.getRowNum() + 1);
+        // The maximum number of lines we want to use
+        final int maxLines = 50;
+        int col1 = cell.getColumnIndex() + 1;
+        int col2 = col1 + 2 + Math.min(maxLineLength / divisor, maxCols);
+        if (col2 >= kind.getMaxColumns()) {
+            final int offset = col2 - kind.getMaxColumns() + 1;
+            col1 -= offset;
+            col2 -= offset;
+        }
+        anchor.setCol1(col1);
+        anchor.setCol2(col2);
+
+        int row1 = row.getRowNum();
+        int row2 = row1 + Math.max(1, Math.min(numberOfLines, maxLines));
+        if (row2 >= kind.getMaxRows()) {
+            final int offset = row2 - kind.getMaxRows() + 1;
+            row1 -= offset;
+            row2 -= offset;
+        }
+
+        anchor.setRow1(row1);
+        anchor.setRow2(row2);
         final Comment cmt = drawing.createCellComment(anchor);
         final RichTextString str = factory.createRichTextString(comment);
         cmt.setString(str);
