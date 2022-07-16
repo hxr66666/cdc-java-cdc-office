@@ -64,6 +64,7 @@ public final class MultiplyShiftHashSearcher {
     private final boolean verbose;
     private final boolean showAll;
     private final boolean stopOnBest;
+    private final boolean fullCheck;
 
     private final int bestSize;
 
@@ -107,6 +108,9 @@ public final class MultiplyShiftHashSearcher {
          */
         public enum Feature implements OptionEnum {
             VERBOSE("verbose", "Print messages."),
+            FULL_CHECK("full-check",
+                       "If enabled, a full check is done. This is very expensive but gives a better garantee on validity of result.\n"
+                               + "When the number of characters is high, it should be disabled."),
             SHOW_ALL("show-all",
                      "Show all matching (multiplier, shift) pairs. If disabled, show only one solution for each max hash code."),
             STOP_ON_BEST("stop-on-best",
@@ -160,12 +164,26 @@ public final class MultiplyShiftHashSearcher {
         this.bestSize = 1 << (32 - Integer.numberOfLeadingZeros(this.length - 1));
 
         this.maxAcceptableHashCode = (int) (this.length * margs.maxRatio) - 1;
+
         this.filler = margs.filler == null ? chars[0] : margs.filler;
         this.counts = new long[this.maxAcceptableHashCode + 1];
         this.countsMaxEntries = this.maxAcceptableHashCode - this.length + 2;
         this.verbose = margs.isEnabled(MainArgs.Feature.VERBOSE);
         this.showAll = margs.isEnabled(MainArgs.Feature.SHOW_ALL);
         this.stopOnBest = margs.isEnabled(MainArgs.Feature.STOP_ON_BEST);
+        this.fullCheck = margs.isEnabled(MainArgs.Feature.FULL_CHECK);
+
+        if (fullCheck) {
+            log("Full check is enabled: performances will be degraded.");
+        } else {
+            log("Full check is disabled: results may be invalid.");
+        }
+
+        log("number of chars: " + length);
+        log("best size: " + bestSize);
+        log("max acceptable hashcode: " + maxAcceptableHashCode);
+        log("min multiplier: " + margs.minMultiplier);
+        log("max multiplier: " + margs.maxMultiplier);
 
         if (margs.output == null) {
             this.writer = null;
@@ -290,6 +308,8 @@ public final class MultiplyShiftHashSearcher {
      */
     private boolean test(int multiplier,
                          int shift) throws IOException {
+
+        // Encode passed characters to check that they are all have a different hash
         set.clear();
         for (final char c : chars) {
             final int hash = (c * multiplier) >>> shift;
@@ -300,8 +320,20 @@ public final class MultiplyShiftHashSearcher {
         }
 
         if (set.cardinality() == length) {
-            // All characters have been hashed with a valid hash code
+            // All characters have been hashed with a valid and different hash code
             count++;
+
+            // Now encode all characters
+            if (fullCheck) {
+                set.clear();
+                for (int c = 65535; c > 0; c--) {
+                    final int hash = (c * multiplier) >>> shift;
+                    if (hash < 0 || hash > maxAcceptableHashCode) {
+                        return false;
+                    }
+                    set.set(hash);
+                }
+            }
 
             // Computes the maximum hash code
             final int minHashCode = set.nextSetBit(0);
