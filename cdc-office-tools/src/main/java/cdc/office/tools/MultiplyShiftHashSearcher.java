@@ -20,8 +20,17 @@ import cdc.office.tables.TableSection;
 import cdc.util.cli.AbstractMainSupport;
 import cdc.util.cli.FeatureMask;
 import cdc.util.cli.OptionEnum;
+import cdc.util.function.MultiplyShiftCharPredicate;
 import cdc.util.time.Chronometer;
 
+/**
+ * Given a set of characters, this tools can search the combinations of multiplier and shift values
+ * to configure a {@link MultiplyShiftCharPredicate}.
+ * <p>
+ * Computing those values can be very long, depending on the size of the character set.
+ *
+ * @author Damien Carbonne
+ */
 public final class MultiplyShiftHashSearcher {
     private static final Logger LOGGER = LogManager.getLogger(MultiplyShiftHashSearcher.class);
     private final MainArgs margs;
