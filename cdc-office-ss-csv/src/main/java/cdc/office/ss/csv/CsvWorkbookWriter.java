@@ -10,9 +10,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import cdc.office.csv.CsvWriter;
 import cdc.office.ss.ContentValidation;
 import cdc.office.ss.Section;
@@ -31,7 +28,6 @@ import cdc.util.strings.StringUtils;
  *
  */
 public class CsvWorkbookWriter implements WorkbookWriter<CsvWorkbookWriter> {
-    private static final Logger LOGGER = LogManager.getLogger(CsvWorkbookWriter.class);
     private final CsvWriter writer;
     private final WorkbookWriterFeatures features;
     private Section section = Section.WORKBOOK;
@@ -61,8 +57,7 @@ public class CsvWorkbookWriter implements WorkbookWriter<CsvWorkbookWriter> {
                              WorkbookWriterFeatures features,
                              WorkbookWriterFactory factory)
             throws IOException {
-        this(file,
-             features);
+        this(file, features);
     }
 
     public CsvWorkbookWriter(OutputStream out,
@@ -145,7 +140,6 @@ public class CsvWorkbookWriter implements WorkbookWriter<CsvWorkbookWriter> {
     @Override
     public CsvWorkbookWriter addContentValidation(ContentValidation cv) throws IOException {
         // Not supported
-        LOGGER.warn("addContentValidation(...) is not supported");
         return this;
     }
 

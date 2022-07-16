@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Improved computation of the size of cell comments. #29
+- Do not generate warning message for non supported content validation in `CsvWorkbookWriter`.
 
 
 ## [0.23.1] - 2022-07-07
