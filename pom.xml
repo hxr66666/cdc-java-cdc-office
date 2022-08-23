@@ -63,13 +63,13 @@
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-      <cdc.io.version>0.22.0</cdc.io.version>
-      <cdc.kernel.version>0.20.5</cdc.kernel.version>
-      <cdc.tuples.version>1.1.0</cdc.tuples.version>
-      <cdc.util.version>0.28.0-SNAPSHOT</cdc.util.version>
+      <cdc.io.version>0.23.0</cdc.io.version>
+      <cdc.kernel.version>0.20.6</cdc.kernel.version>
+      <cdc.tuples.version>1.2.0</cdc.tuples.version>
+      <cdc.util.version>0.28.0</cdc.util.version>
       <fastods.version>0.8.1</fastods.version>
       <htmlflow.version>3.9</htmlflow.version>
-      <junit.version>5.9.0-RC1</junit.version>
+      <junit.version>5.9.0</junit.version>
       <j2html.version>1.6.0</j2html.version>
       <log4j.version>2.18.0</log4j.version>
       <maven.checkstyle.version>3.1.2</maven.checkstyle.version>

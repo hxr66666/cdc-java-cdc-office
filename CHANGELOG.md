@@ -11,7 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Updated dependencies:
-    - cdc-util-0.28.0-SNAPSHOT
+    - cdc-io-0.23.0
+    - cdc-kernel-0.20.6
+    - cdc-tuples-1.2.0
+    - cdc-util-0.28.0
+    - org.junit-5.9.0
 
 ### Fixed
 - Improved computation of the size of cell comments. #29
