@@ -37,6 +37,8 @@ public final class KeyedSheetDiff {
     static final Logger LOGGER = LogManager.getLogger(KeyedSheetDiff.class);
     static final PrintStream OUT = IoBuilder.forLogger(LOGGER).setLevel(Level.INFO).buildPrintStream();
     public static final String DEFAULT_LINE_MARK_COLUMN = "Line Diff";
+    public static final String DEFAULT_DELTA_SHEET_NAME = "Delta";
+
     final MainArgs margs;
 
     private KeyedSheetDiff(MainArgs margs) {
@@ -171,16 +173,16 @@ public final class KeyedSheetDiff {
         }
 
         final KeyedTableDiffExporter exporter = new KeyedTableDiffExporter();
-        exporter.setAddedMark(margs.addedMark)
+        exporter.setAddedMark(margs.isEnabled(Feature.NO_ADDED_OR_REMOVED_MARKS) ? "" : margs.addedMark)
                 .setChangedMark(margs.changedMark)
                 .setUnchangedMark(margs.unchangedMark)
-                .setRemovedMark(margs.removedMark)
+                .setRemovedMark(margs.isEnabled(Feature.NO_ADDED_OR_REMOVED_MARKS) ? "" : margs.removedMark)
                 .setLineMarkColumn(getLineMarkColumn())
                 .setShowColors(!margs.isEnabled(Feature.NO_COLORS))
                 .setShowUnchangedLines(!margs.isEnabled(Feature.NO_UNCHANGED_LINES))
                 .setSortLines(margs.isEnabled(Feature.SORT_LINES))
                 .setShowChangeDetails(margs.isEnabled(Feature.SHOW_CHANGE_DETAILS))
-                .setSheetName(margs.sheet == null ? "Delta" : margs.sheet)
+                .setSheetName(margs.sheet == null ? DEFAULT_DELTA_SHEET_NAME : margs.sheet)
                 .setSaveSynthesis(margs.isEnabled(Feature.SAVE_SYNTHESIS))
                 .setFeatures(WorkbookWriterFeatures.builder()
                                                    .separator(margs.separator)
@@ -286,7 +288,8 @@ public final class KeyedSheetDiff {
                                     .build());
             options.addOption(Option.builder()
                                     .longOpt(SHEET)
-                                    .desc("Name of the sheet in the xls, xlsx or ods output file.")
+                                    .desc("Name of the delta sheet in the output file. (default: \"" + DEFAULT_DELTA_SHEET_NAME
+                                            + "\").")
                                     .hasArg()
                                     .build());
 
