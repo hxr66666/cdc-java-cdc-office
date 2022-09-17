@@ -59,10 +59,10 @@ If present, the content of this column will be:
 
 Comparison of attribute cells can be displayed using marks or colors.  
 Colors are used by default with output formats that support them:
-- <font color="red">**red**</font> is used for removed rows and cells,
-- <font color="blue">**blue**</font> is used for added rows and cells,
-- <font color="magenta">**magenta**</font> is used for changed rows and cells.
-- **black** is used for identical rows and cells.
+- $`\textcolor{red}{\text{red}}`$  is used for removed rows and cells,
+- $`\textcolor{blue}{\text{blue}}`$ is used for added rows and cells,
+- $`\textcolor{magenta}{\text{magenta}}`$ is used for changed rows and cells.
+- $`\textcolor{black}{\text{black}}`$ is used for identical rows and cells.
 
 Marks can be customized (using `--added-mark`, `--changed-mark`, `--removed-mark` and `--unchanged-mark` options).  
 Default marks are:
@@ -96,7 +96,7 @@ The output format may differ from input format(s).
 
 When using **CSV**, one can optionally specify:
 - the used separator, using the `--separator` option,
-- the file character set, using the `charset` option.
+- the file character set, using the `--charset` option.
 
 **Warning:** all **CSV** files must use the same separator and character set.
 
@@ -122,22 +122,22 @@ Depending on additional options and on output type, result will be:
          <td><img src="doc-files/ksd-output-default-csv.png"/></td>
       </tr>
       <tr>
-         <td>--line-mark-column Diff</td>
+         <td><code>--line-mark-column</code></code></td>
          <td><img src="doc-files/ksd-output-lmc-office.png"/></td>
          <td><img src="doc-files/ksd-output-lmc-csv.png"/></td>
       </tr>
       <tr>
-         <td>--show-change-details</td>
+         <td><code>--show-change-details</code></td>
          <td><img src="doc-files/ksd-output-scd-office.png"/></td>
          <td><img src="doc-files/ksd-output-scd-csv.png"/></td>
       </tr>
       <tr>
-         <td>--show-change-details<br>--line-mark-column Diff</td>
+         <td><code>--show-change-details<br>--line-mark-column</code> Diff</td>
          <td><img src="doc-files/ksd-output-scd-lmc-office.png"/></td>
          <td><img src="doc-files/ksd-output-scd-lmc-csv.png"/></td>
       </tr>
       <tr>
-         <td>--show-change-details<br>--line-mark-column Diff<br>--no-unchanged-lines<br>--sort-lines</td>
+         <td><code>--show-change-details<br>--line-mark-column</code> Diff<br><code>--no-unchanged-lines<br>--sort-lines</code></td>
          <td><img src="doc-files/ksd-output-scd-lmc-nul-sl-office.png"/></td>
          <td><img src="doc-files/ksd-output-scd-lmc-nul-sl-csv.png"/></td>
       </tr>
