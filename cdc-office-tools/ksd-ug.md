@@ -1,6 +1,6 @@
 # Keyed Sheet Diff
 
-**Keyed Sheet Diff** (*aka* ** KSD**) can compare 2 workbook sheets whose lines are identified by one or more columns.  
+**Keyed Sheet Diff** (*aka* **KSD**) can compare 2 workbook sheets whose lines are identified by one or more columns.  
 
 ## Principles
 The **first file** is specified with the `--file1` option.  
