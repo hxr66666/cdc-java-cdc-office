@@ -29,14 +29,14 @@ import cdc.util.cli.FeatureMask;
 import cdc.util.cli.OptionEnum;
 
 /**
- * Utility used to compare 2 csv files whose lines are identified by key columns.
+ * Utility used to compare 2 workbook sheets whose lines are identified by key columns.
  *
  * @author Damien Carbonne
- *
  */
 public final class KeyedSheetDiff {
     static final Logger LOGGER = LogManager.getLogger(KeyedSheetDiff.class);
     static final PrintStream OUT = IoBuilder.forLogger(LOGGER).setLevel(Level.INFO).buildPrintStream();
+    public static final String DEFAULT_LINE_MARK_COLUMN = "Line Diff";
     final MainArgs margs;
 
     private KeyedSheetDiff(MainArgs margs) {
@@ -200,7 +200,7 @@ public final class KeyedSheetDiff {
         if (margs.lineMarkColumn != null) {
             return margs.lineMarkColumn;
         } else if (margs.isEnabled(MainArgs.Feature.NO_ADDED_OR_REMOVED_MARKS)) {
-            return "Line Diff";
+            return DEFAULT_LINE_MARK_COLUMN;
         } else {
             return null;
         }
@@ -343,7 +343,8 @@ public final class KeyedSheetDiff {
 
             options.addOption(Option.builder()
                                     .longOpt(LINE_MARK_COLUMN)
-                                    .desc("Optional name of a line mark column.")
+                                    .desc("Optional name of a line mark column. (default: \"" + DEFAULT_LINE_MARK_COLUMN
+                                            + "\" if necessary).")
                                     .hasArg()
                                     .build());
 
