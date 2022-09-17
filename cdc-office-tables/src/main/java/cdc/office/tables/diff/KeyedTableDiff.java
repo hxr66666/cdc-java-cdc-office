@@ -99,10 +99,10 @@ public class KeyedTableDiff {
         for (int number = 0; number < leftRows.size(); number++) {
             final Row left = leftRows.get(number);
             final CTupleN<String> key = getKey(Side.LEFT, left, number);
-            if (!diffs.containsKey(key)) {
-                diffs.put(key, new RowDiff(leftHeader, left, rightHeader, Row.EMPTY));
-                keys.add(key);
-            }
+            diffs.computeIfAbsent(key, k -> {
+                keys.add(k);
+                return new RowDiff(leftHeader, left, rightHeader, Row.EMPTY);
+            });
         }
 
         this.synthesis.compute(this);
