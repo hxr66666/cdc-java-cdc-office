@@ -113,44 +113,52 @@ Depending on additional options and on output type, result will be:
 
 <table>
    <thead>
-      <tr><th>Additional options</th><th>Office</th><th>CSV</th></tr>
+      <tr><th>Additional options</th><th>Office</th><th>CSV</th><th>Notes</th></tr>
    </thead>
    <tbody>
       <tr>
-         <td>None</td>
+         <td></td>
          <td><img src="doc-files/ksd-output-default-office.png"/></td>
          <td><img src="doc-files/ksd-output-default-csv.png"/></td>
+         <td></td>
       </tr>
       <tr>
          <td><code>--no-added-or-removed-marks</code></code></td>
          <td><img src="doc-files/ksd-output-naorm-office.png"/></td>
          <td><img src="doc-files/ksd-output-naorm-csv.png"/></td>
+         <td>A <code>Line Diff</code> column has been automatically added, even for Office formats.</td>
       </tr>
       <tr>
-         <td><code>--line-mark-column</code></code></td>
+         <td><code>--line-mark-column</code> Diff</td>
          <td><img src="doc-files/ksd-output-lmc-office.png"/></td>
          <td><img src="doc-files/ksd-output-lmc-csv.png"/></td>
+         <td></td>
       </tr>
       <tr>
          <td><code>--show-change-details</code></td>
          <td><img src="doc-files/ksd-output-scd-office.png"/></td>
          <td><img src="doc-files/ksd-output-scd-csv.png"/></td>
+         <td></td>
       </tr>
       <tr>
          <td><code>--show-change-details<br>--line-mark-column</code> Diff</td>
          <td><img src="doc-files/ksd-output-scd-lmc-office.png"/></td>
          <td><img src="doc-files/ksd-output-scd-lmc-csv.png"/></td>
+         <td></td>
       </tr>
       <tr>
          <td><code>--show-change-details<br>--line-mark-column</code> Diff<br><code>--no-unchanged-lines<br>--sort-lines</code></td>
          <td><img src="doc-files/ksd-output-scd-lmc-nul-sl-office.png"/></td>
          <td><img src="doc-files/ksd-output-scd-lmc-nul-sl-csv.png"/></td>
+         <td></td>
       </tr>
       <tr>
          <td><code>--show-change-details<br>--line-mark-column</code> Diff<br><code>--no-unchanged-lines<br>--sort-lines<br>--no-added-or-removed-marks</code></td>
          <td><img src="doc-files/ksd-output-scd-lmc-nul-sl-naorm-office.png"/></td>
          <td><img src="doc-files/ksd-output-scd-lmc-nul-sl-naorm-csv.png"/></td>
-      </tr>   </tbody>
+         <td></td>
+      </tr>
+   </tbody>
 </table>
 
 If the `--save-synthesis` option is enabled, an additional sheet is generated with that content:
