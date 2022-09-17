@@ -220,4 +220,5 @@ Options of KSD are:
     --unchanged-mark <arg>        Optional mark for unchanged cells
                                   (default: "").
  -v,--version                     Prints version and exits.
-    --verbose                     Print progress messages.```
+    --verbose                     Print progress messages.
+```
