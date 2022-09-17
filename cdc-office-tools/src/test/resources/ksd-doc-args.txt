@@ -14,4 +14,6 @@ Diff
 --verbose
 --sort-lines
 --no-unchanged-lines
+--no-added-or-removed-marks
 #--save-synthesis
+--help

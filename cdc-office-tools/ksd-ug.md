@@ -122,6 +122,11 @@ Depending on additional options and on output type, result will be:
          <td><img src="doc-files/ksd-output-default-csv.png"/></td>
       </tr>
       <tr>
+         <td><code>--no-added-or-removed-marks</code></code></td>
+         <td><img src="doc-files/ksd-output-naorm-office.png"/></td>
+         <td><img src="doc-files/ksd-output-naorm-csv.png"/></td>
+      </tr>
+      <tr>
          <td><code>--line-mark-column</code></code></td>
          <td><img src="doc-files/ksd-output-lmc-office.png"/></td>
          <td><img src="doc-files/ksd-output-lmc-csv.png"/></td>
@@ -141,7 +146,11 @@ Depending on additional options and on output type, result will be:
          <td><img src="doc-files/ksd-output-scd-lmc-nul-sl-office.png"/></td>
          <td><img src="doc-files/ksd-output-scd-lmc-nul-sl-csv.png"/></td>
       </tr>
-   </tbody>
+      <tr>
+         <td><code>--show-change-details<br>--line-mark-column</code> Diff<br><code>--no-unchanged-lines<br>--sort-lines<br>--no-added-or-removed-marks</code></td>
+         <td><img src="doc-files/ksd-output-scd-lmc-nul-sl-naorm-office.png"/></td>
+         <td><img src="doc-files/ksd-output-scd-lmc-nul-sl-naorm-csv.png"/></td>
+      </tr>   </tbody>
 </table>
 
 If the `--save-synthesis` option is enabled, an additional sheet is generated with that content:
@@ -177,7 +186,7 @@ Options of KSD are:
  -h,--help                        Prints this help and exits.
     --key <arg>                   Name of key column(s).
     --line-mark-column <arg>      Optional name of a line mark column.
-                                  (default: "Line Diff" if necessary)
+                                  (default: "Line Diff" if necessary).
     --no-added-or-removed-marks   Do not print added or removed marks.
                                   This forces insertion of the line mark
                                   column.
@@ -192,8 +201,8 @@ Options of KSD are:
                                   dedicated sheet.
     --separator <arg>             Optional char separator for csv files
                                   (default: ';').
-    --sheet <arg>                 Name of the sheet in the xls, xlsx or
-                                  ods output file.
+    --sheet <arg>                 Name of the delta sheet in the output
+                                  file. (default: "Delta").
     --sheet1 <arg>                Name of the sheet in the first xls, xlsx
                                   or ods input file. If omitted, the first
                                   sheet is loaded
@@ -211,5 +220,4 @@ Options of KSD are:
     --unchanged-mark <arg>        Optional mark for unchanged cells
                                   (default: "").
  -v,--version                     Prints version and exits.
-    --verbose                     Print progress messages.
-```
+    --verbose                     Print progress messages.```

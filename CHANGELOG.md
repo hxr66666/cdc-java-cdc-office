@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Created `ksd` documentation. #19
 
+### Fixed
+- Fixed the `--no-added-or-removed-marks`option in `ksd`. #31
 
 ## [0.24.0] - 2022-08-24
 ### Added
