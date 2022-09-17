@@ -1,0 +1,17 @@
+--file1
+ksd-doc-file1.csv
+--file2
+ksd-doc-file2.csv
+--output
+../../../target/ksd-doc-output.csv
+--key
+ID
+--line-mark-column
+Diff
+#--auto-size-columns
+--show-change-details
+#--no-colors
+--verbose
+--sort-lines
+--no-unchanged-lines
+#--save-synthesis
