@@ -100,6 +100,7 @@ When using **CSV**, one can optionally specify:
 
 **Warning:** all **CSV** files must use the same separator and character set.
 
+
 ## Examples
 The 2 input sheets are:  
 ![Image](doc-files/ksd-file1.png) ![Image](doc-files/ksd-file2.png)
@@ -107,9 +108,12 @@ The 2 input sheets are:
 There is 1 `key` column: ID.  
 There are 4 `attribute` columns: A, B, C and D.
 
-Minimal mandatory options are: `--file1` ... `--file2` ... `--output` ...  
-Let's suppose the sheets to compare are the first ones. Otherwise, one must add `--sheet1`...  or `--sheet2` ... options.  
-Depending on additional options and on output type, result will be:
+Minimal mandatory options, if the sheets to compare are the first ones, are:
+`--file1` *<file1>* `--file2` *<file2>* `--output` *<output>* `--key` ID  
+Otherwise, one must add `--sheet1` *<sheet1>* option if the sheet of first file *<file1>* is not the first one,
+and `--sheet2` *<sheet2>* option if the sheet of second file *<file2>* is not the first one.
+
+Depending on additional options and on output format, result will be:
 
 <table>
    <thead>
@@ -164,6 +168,49 @@ Depending on additional options and on output type, result will be:
 If the `--save-synthesis` option is enabled, an additional sheet is generated with that content:
 
 ![Image](doc-files/ksd-output-synthesis.png)
+
+- `Lines` gives the count of the 4 possible values in `line mark column` (**Diff** or **Line Diff** in above example), even if unchanged lines are filtered out.
+- `Cells` gives the count for all cells, including added and removed lines.
+- One line is created for each column. In the above example, there are 5 columns.
+
+
+## Common errors
+
+The following table lists commons errors, their symptoms and solutions.
+
+<table>
+   <thead>
+      <tr><th>Symptoms</th><th>Cause</th><th>Solution</th></tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td>KSD probably fails with an exception like:<br><code>Missing keys: [...] in file1/file2 header: [...]</code></td>
+         <td>Both input CSV files <b>MUST</b> use the same separator and character set.<br>They don't.</td>
+         <td>Convert one or both files in order to use the same separator and character set.</td>
+      </tr>
+      <tr>
+         <td>KSD probably fails with an exception like:<br><code>Missing keys: [...] in file1/file2 header: [...]</code></td>
+         <td>Input CSV file(s) <b>MUST</b> be compliant with the default or specified separator and character set.<br>It isn't / they aren't.<br></td>
+         <td>Convert CSV file(s) to used the specified separator and character set,<br>or specify correct separator and character set.</td>
+      </tr>
+      <tr>
+         <td>KSD fails.<br>An exception is thrown with a message similar to:<br><code>Missing keys: [...] in file1/file2 header: [...]</code></td>
+         <td>Headers <b>MUST</b> be compliant with specified keys.<br>They aren't.</td>
+         <td>Fix key names in input files or command line, or add missing key column(s) with appropriate name(s).</td>
+      </tr>
+      <tr>
+         <td>KSD succeeds.<br>Many or all attribute cells are marked as <code>ADDED</code> or <code>REMOVED</code>.</td>
+         <td>Headers <b>ARE</b> case sensitive. Attributes of headers <b>MUST</b> be consistent.<br>They aren't.</td>
+         <td>Make sure both headers use the same names and case.</td>
+      </tr>
+      <tr>
+         <td>KSD fails.<br>An exception is thrown with a message similar to:<br><code>Invalid header (duplicate names): [...]</code></td>
+         <td>Header names <b>MUST</b> be unique.<br>They aren't.</td>
+         <td>Fix header names so that they are all different.</td>
+      </tr>
+   </tbody>
+</table>
+
 
 ## Options
 Options of KSD are:
