@@ -45,7 +45,7 @@ public class Header {
      * @throws IllegalArgumentException When a name is {@code null}.
      * @deprecated Use {@link Builder}.
      */
-    @Deprecated
+    @Deprecated(since = "2022-05-19", forRemoval = true)
     public Header(String... names) {
         boolean invalid = false;
         int index = 0;
@@ -76,7 +76,7 @@ public class Header {
      * @throws IllegalArgumentException When a name is {@code null} or duplicate.
      * @deprecated Use Builder.
      */
-    @Deprecated
+    @Deprecated(since = "2022-05-19", forRemoval = true)
     public Header(List<String> names) {
         this(names.toArray(new String[names.size()]));
     }
@@ -88,7 +88,7 @@ public class Header {
      * @throws IllegalArgumentException When a name is {@code null} or duplicate.
      * @deprecated Use Builder.
      */
-    @Deprecated
+    @Deprecated(since = "2022-05-19", forRemoval = true)
     public Header(Row row) {
         this(row.getValues());
     }

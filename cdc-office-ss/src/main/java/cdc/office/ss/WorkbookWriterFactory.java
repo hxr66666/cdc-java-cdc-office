@@ -200,7 +200,7 @@ public class WorkbookWriterFactory {
      * @throws IOException When an IO error occurs.
      * @throws IllegalArgumentException When {@code filename} kind is not recognized.
      */
-    @Deprecated
+    @Deprecated(since = "2022-02-12", forRemoval = true)
     public WorkbookWriter<?> create(String filename,
                                     WorkbookWriterFeatures features) throws IOException {
         return create(new File(filename), features);
@@ -214,7 +214,7 @@ public class WorkbookWriterFactory {
      * @throws IOException When an IO error occurs.
      * @throws IllegalArgumentException When {@code filename} kind is not recognized.
      */
-    @Deprecated
+    @Deprecated(since = "2022-02-12", forRemoval = true)
     public WorkbookWriter<?> create(String filename) throws IOException {
         return create(filename, WorkbookWriterFeatures.DEFAULT);
     }

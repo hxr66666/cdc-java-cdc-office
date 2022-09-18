@@ -95,7 +95,7 @@ public class CsvWriter implements Flushable, Closeable {
      * @param s The PrintStream.
      * @param charset The charset.
      */
-    @Deprecated
+    @Deprecated(since = "2022-02-12", forRemoval = true)
     public CsvWriter(PrintStream s,
                      Charset charset) {
         if (charset == null) {
@@ -113,7 +113,7 @@ public class CsvWriter implements Flushable, Closeable {
      *
      * @param s The PrintStream.
      */
-    @Deprecated
+    @Deprecated(since = "2022-02-12", forRemoval = true)
     public CsvWriter(PrintStream s) {
         this(s, null);
     }
@@ -129,7 +129,7 @@ public class CsvWriter implements Flushable, Closeable {
      *            to the end of the file rather than the beginning.
      * @throws IOException When an IO error occurs.
      */
-    @Deprecated
+    @Deprecated(since = "2022-02-12", forRemoval = true)
     public CsvWriter(String filename,
                      Charset charset,
                      boolean append)
@@ -150,7 +150,7 @@ public class CsvWriter implements Flushable, Closeable {
      * @param charset The charset.
      * @throws IOException When an IO error occurs.
      */
-    @Deprecated
+    @Deprecated(since = "2022-02-12", forRemoval = true)
     public CsvWriter(String filename,
                      Charset charset)
             throws IOException {
@@ -167,7 +167,7 @@ public class CsvWriter implements Flushable, Closeable {
      *            to the end of the file rather than the beginning.
      * @throws IOException When an IO error occurs.
      */
-    @Deprecated
+    @Deprecated(since = "2022-02-12", forRemoval = true)
     public CsvWriter(String filename,
                      boolean append)
             throws IOException {
@@ -182,7 +182,7 @@ public class CsvWriter implements Flushable, Closeable {
      * @param filename The file name.
      * @throws IOException When an IO error occurs.
      */
-    @Deprecated
+    @Deprecated(since = "2022-02-12", forRemoval = true)
     public CsvWriter(String filename) throws IOException {
         this(filename, null, false);
     }
