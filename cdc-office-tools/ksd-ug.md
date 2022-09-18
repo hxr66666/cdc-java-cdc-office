@@ -109,9 +109,9 @@ There is 1 `key` column: ID.
 There are 4 `attribute` columns: A, B, C and D.
 
 Minimal mandatory options, if the sheets to compare are the first ones, are:
-`--file1` *<file1>* `--file2` *<file2>* `--output` *<output>* `--key` ID  
-Otherwise, one must add `--sheet1` *<sheet1>* option if the sheet of first file *<file1>* is not the first one,
-and `--sheet2` *<sheet2>* option if the sheet of second file *<file2>* is not the first one.
+`--file1` &lt;file1> `--file2` &lt;file2> `--output` &lt;output> `--key` ID  
+Otherwise, one must add `--sheet1` &lt;sheet1> option if the sheet of first file &lt;file1> is not the first one,
+and `--sheet2` &lt;sheet2> option if the sheet of second file &lt;file2> is not the first one.
 
 Depending on additional options and on output format, result will be:
 
