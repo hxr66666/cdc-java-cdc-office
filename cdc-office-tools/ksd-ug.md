@@ -191,7 +191,7 @@ The following table lists commons errors, their symptoms and solutions.
       <tr>
          <td>KSD probably fails with an exception like:<br><code>Missing keys: [...] in file1/file2 header: [...]</code></td>
          <td>Input CSV file(s) <b>MUST</b> be compliant with the default or specified separator and character set.<br>It isn't / they aren't.<br></td>
-         <td>Convert CSV file(s) to used the specified separator and character set,<br>or specify correct separator and character set.</td>
+         <td>Convert CSV file(s) to use the specified separator and character set,<br>or specify correct separator and character set.</td>
       </tr>
       <tr>
          <td>KSD fails.<br>An exception is thrown with a message similar to:<br><code>Missing keys: [...] in file1/file2 header: [...]</code></td>
