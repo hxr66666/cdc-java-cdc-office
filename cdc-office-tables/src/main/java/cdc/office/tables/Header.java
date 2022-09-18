@@ -28,11 +28,22 @@ public class Header {
     public static final Header EMPTY = builder().build();
 
     /**
-     * Creates a TableHeader from a String array.
+     * Checks the validity of this Header.
+     *
+     * @throws IllegalStateException When this header is invalid.
+     */
+    private void checkValidity() {
+        if (!valid) {
+            throw new IllegalStateException("Invalid header (duplicate names): " + this);
+        }
+    }
+
+    /**
+     * Creates a Header from a String array.
      *
      * @param names The names.
      * @throws IllegalArgumentException When a name is {@code null}.
-     * @deprecated Use Builder.
+     * @deprecated Use {@link Builder}.
      */
     @Deprecated
     public Header(String... names) {
@@ -133,9 +144,7 @@ public class Header {
      * @throws IllegalStateException When this header is invalid.
      */
     public int getIndex(String name) {
-        if (!valid) {
-            throw new IllegalStateException("Invalid header");
-        }
+        checkValidity();
         return map.getOrDefault(name, -1);
     }
 
