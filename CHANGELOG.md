@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Improved error message in Header.
+- Renamed `KeyedTableDiff.Synthesis.Action.UNCHANGED` to `SAME`. #32
 
 ### Fixed
 - Fixed the `--no-added-or-removed-marks`option in `ksd`. #31

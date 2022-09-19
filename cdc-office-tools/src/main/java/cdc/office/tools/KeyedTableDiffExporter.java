@@ -181,21 +181,21 @@ public class KeyedTableDiffExporter {
                                               WorkbookWriter<?> writer) throws IOException {
             writer.beginSheet("Synthesis");
             writer.beginRow(TableSection.HEADER);
-            writer.addCells("Item", Action.ADDED, Action.REMOVED, Action.CHANGED, Action.UNCHANGED);
+            writer.addCells("Item", Action.ADDED, Action.REMOVED, Action.CHANGED, Action.SAME);
 
             writer.beginRow(TableSection.DATA);
             writer.addCell("Lines");
             writer.addCell(synthesis.getLinesCount(Action.ADDED));
             writer.addCell(synthesis.getLinesCount(Action.REMOVED));
             writer.addCell(synthesis.getLinesCount(Action.CHANGED));
-            writer.addCell(synthesis.getLinesCount(Action.UNCHANGED));
+            writer.addCell(synthesis.getLinesCount(Action.SAME));
 
             writer.beginRow(TableSection.DATA);
             writer.addCell("Cells");
             writer.addCell(synthesis.getCellsCount(Action.ADDED));
             writer.addCell(synthesis.getCellsCount(Action.REMOVED));
             writer.addCell(synthesis.getCellsCount(Action.CHANGED));
-            writer.addCell(synthesis.getCellsCount(Action.UNCHANGED));
+            writer.addCell(synthesis.getCellsCount(Action.SAME));
 
             for (final String name : synthesis.getColumnNames()) {
                 writer.beginRow(TableSection.DATA);
@@ -203,7 +203,7 @@ public class KeyedTableDiffExporter {
                 writer.addCell(synthesis.getColumnCellsCount(name, Action.ADDED));
                 writer.addCell(synthesis.getColumnCellsCount(name, Action.REMOVED));
                 writer.addCell(synthesis.getColumnCellsCount(name, Action.CHANGED));
-                writer.addCell(synthesis.getColumnCellsCount(name, Action.UNCHANGED));
+                writer.addCell(synthesis.getColumnCellsCount(name, Action.SAME));
             }
         }
     }

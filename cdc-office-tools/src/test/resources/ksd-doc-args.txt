@@ -3,7 +3,7 @@ ksd-doc-file1.csv
 --file2
 ksd-doc-file2.csv
 --output
-../../../target/ksd-doc-output.csv
+../../../target/ksd-doc-output.xlsx
 --key
 ID
 --line-mark-column
@@ -15,5 +15,5 @@ Diff
 --sort-lines
 --no-unchanged-lines
 --no-added-or-removed-marks
-#--save-synthesis
---help
+--save-synthesis
+#--help

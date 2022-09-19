@@ -243,7 +243,7 @@ public class KeyedTableDiff {
             ADDED,
             REMOVED,
             CHANGED,
-            UNCHANGED
+            SAME
         }
 
         /** Counts of lines. */
@@ -297,8 +297,8 @@ public class KeyedTableDiff {
                             break;
                         case SAME:
                         case NULL:
-                            cells[Action.UNCHANGED.ordinal()]++;
-                            counts[Action.UNCHANGED.ordinal()]++;
+                            cells[Action.SAME.ordinal()]++;
+                            counts[Action.SAME.ordinal()]++;
                             break;
                         default:
                             throw new UnexpectedValueException(lcdiff.getDiff().getKind());
@@ -314,12 +314,12 @@ public class KeyedTableDiff {
                     }
                     break;
                 case SAME:
-                    lines[Action.UNCHANGED.ordinal()]++;
+                    lines[Action.SAME.ordinal()]++;
                     // left and right header have the same size
-                    cells[Action.UNCHANGED.ordinal()] += diffs.leftHeader.size();
+                    cells[Action.SAME.ordinal()] += diffs.leftHeader.size();
                     for (final String name : diffs.leftHeader.getNames()) {
                         final int[] counts = columnToCells.get(name);
-                        counts[Action.UNCHANGED.ordinal()]++;
+                        counts[Action.SAME.ordinal()]++;
                     }
                     break;
                 default:
