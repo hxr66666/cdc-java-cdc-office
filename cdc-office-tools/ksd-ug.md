@@ -176,37 +176,51 @@ If the `--save-synthesis` option is enabled, an additional sheet is generated wi
 
 ## Common errors
 
+![Image](doc-files/ksd-processing.svg)
+
+
 The following table lists commons errors, their symptoms and solutions.
 
 <table>
    <thead>
-      <tr><th>Symptoms</th><th>Cause</th><th>Solution</th></tr>
+      <tr><th>Symptoms</th><th>Step</th><th>Cause</th><th>Solution</th></tr>
    </thead>
    <tbody>
       <tr>
          <td>KSD probably fails with an exception like:<br><code>Missing keys: [...] in file1/file2 header: [...]</code></td>
+         <td>2</td>
          <td>Both input CSV files <b>MUST</b> use the same separator and character set.<br>They don't.</td>
          <td>Convert one or both files in order to use the same separator and character set.</td>
       </tr>
       <tr>
          <td>KSD probably fails with an exception like:<br><code>Missing keys: [...] in file1/file2 header: [...]</code></td>
+         <td>2</td>
          <td>Input CSV file(s) <b>MUST</b> be compliant with the default or specified separator and character set.<br>It isn't / they aren't.<br></td>
          <td>Convert CSV file(s) to used the specified separator and character set,<br>or specify correct separator and character set.</td>
       </tr>
       <tr>
          <td>KSD fails.<br>An exception is thrown with a message similar to:<br><code>Missing keys: [...] in file1/file2 header: [...]</code></td>
+         <td>3</td>
          <td>Headers <b>MUST</b> be compliant with specified keys.<br>They aren't.</td>
          <td>Fix key names in input files or command line, or add missing key column(s) with appropriate name(s).</td>
       </tr>
       <tr>
-         <td>KSD succeeds.<br>Many or all attribute cells are marked as <code>ADDED</code> or <code>REMOVED</code>.</td>
-         <td>Headers <b>ARE</b> case sensitive. Attributes of headers <b>MUST</b> be consistent.<br>They aren't.</td>
-         <td>Make sure both headers use the same names and case.</td>
-      </tr>
-      <tr>
          <td>KSD fails.<br>An exception is thrown with a message similar to:<br><code>Invalid header (duplicate names): [...]</code></td>
+         <td>3</td>
          <td>Header names <b>MUST</b> be unique.<br>They aren't.</td>
          <td>Fix header names so that they are all different.</td>
+      </tr>
+      <tr>
+         <td>KSD fails.<br>An exception is thrown with a message similar to:<br><code>Duplicate key [...] in (LEFT|RIGHT) row [...], line ...</code></td>
+         <td>3</td>
+         <td>Identifiers <b>MUST</b> be unique.<br>They aren't.</td>
+         <td>Remove lines with duplicate identifiers.</td>
+      </tr>
+      <tr>
+         <td>KSD succeeds.<br>Many or all attribute cells are marked as <code>ADDED</code> or <code>REMOVED</code>.</td>
+         <td>4</td>
+         <td>Headers <b>ARE</b> case sensitive. Attributes of headers <b>MUST</b> be consistent.<br>They aren't.</td>
+         <td>Make sure both headers use the same names and case.</td>
       </tr>
    </tbody>
 </table>
