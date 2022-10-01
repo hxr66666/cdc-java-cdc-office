@@ -10,10 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Created `ksd` documentation. #19
 - Added a `SheetParserFactory.Feature.DISABLE_VULNERABILITY_PROTECTIONS` to disable vulnerability detection
   such as Zip bombs. #33
-- Added a new option `KeyedSheetDiff` to disable disable vulnerability detection. #33
+- Added a new option to `ksd` to disable disable vulnerability detection. #33
 
 ### Changed
-- Improved error message in Header.
+- Improved error message in `Header`.
 - Renamed `KeyedTableDiff.Synthesis.Action.UNCHANGED` to `SAME`. #32
 
 ### Fixed
