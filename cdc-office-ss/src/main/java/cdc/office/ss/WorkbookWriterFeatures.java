@@ -31,14 +31,11 @@ public class WorkbookWriterFeatures {
 
     private final int maxLineLength;
 
-    protected WorkbookWriterFeatures(Set<Feature> features,
-                                     char separator,
-                                     Charset charset,
-                                     int maxLineLength) {
-        this.features.addAll(features);
-        this.separator = separator;
-        this.charset = charset;
-        this.maxLineLength = maxLineLength;
+    protected WorkbookWriterFeatures(Builder builder) {
+        this.features.addAll(builder.features);
+        this.separator = builder.separator;
+        this.charset = builder.charset;
+        this.maxLineLength = builder.maxLineLength;
     }
 
     /**
@@ -217,10 +214,7 @@ public class WorkbookWriterFeatures {
         }
 
         public WorkbookWriterFeatures build() {
-            return new WorkbookWriterFeatures(features,
-                                              separator,
-                                              charset,
-                                              maxLineLength);
+            return new WorkbookWriterFeatures(this);
         }
     }
 }
