@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
+import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.ss.usermodel.BuiltinFormats;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.util.XMLHelper;
@@ -28,6 +29,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import cdc.office.ss.SheetParser;
 import cdc.office.ss.SheetParserFactory;
+import cdc.office.ss.SheetParserFactory.Feature;
 import cdc.office.ss.WorkbookKind;
 import cdc.office.tables.Row;
 import cdc.office.tables.RowLocation;
@@ -38,14 +40,29 @@ import cdc.util.lang.ExceptionWrapper;
 
 public class PoiSaxSheetParser implements SheetParser {
     protected static final Logger LOGGER = LogManager.getLogger(PoiSaxSheetParser.class);
+    private final boolean disableVulnerabilityDetections;
+
+    private void pre() {
+        if (disableVulnerabilityDetections) {
+            ZipSecureFile.setMinInflateRatio(0.0);
+        } else {
+            ZipSecureFile.setMinInflateRatio(ExcelUtils.DEFAULT_MIN_INFLATE_RATIO);
+        }
+    }
+
+    private void post() {
+        if (disableVulnerabilityDetections) {
+            ZipSecureFile.setMinInflateRatio(ExcelUtils.DEFAULT_MIN_INFLATE_RATIO);
+        }
+    }
 
     public PoiSaxSheetParser() {
-        super();
+        this.disableVulnerabilityDetections = false;
     }
 
     public PoiSaxSheetParser(SheetParserFactory factory,
                              WorkbookKind kind) {
-        this();
+        this.disableVulnerabilityDetections = factory.isEnabled(Feature.DISABLE_VULNERABILITY_PROTECTIONS);
         LOGGER.warn("Cannot estimate number of rows");
     }
 
@@ -54,6 +71,7 @@ public class PoiSaxSheetParser implements SheetParser {
                       String password,
                       int headers,
                       TablesHandler handler) throws IOException {
+        pre();
         try (OPCPackage pkg = OPCPackage.open(file.getPath(), PackageAccess.READ)) {
             parse(file.getPath(), pkg, headers, handler);
             // Do this to avoid POI to generate a warning message
@@ -62,6 +80,8 @@ public class PoiSaxSheetParser implements SheetParser {
             throw e;
         } catch (final Exception e) {
             throw ExceptionWrapper.wrap(e);
+        } finally {
+            post();
         }
     }
 
@@ -72,12 +92,15 @@ public class PoiSaxSheetParser implements SheetParser {
                       String password,
                       int headers,
                       TablesHandler handler) throws IOException {
+        pre();
         try (OPCPackage pkg = OPCPackage.open(in)) {
             parse(systemId, pkg, headers, handler);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
             throw ExceptionWrapper.wrap(e);
+        } finally {
+            post();
         }
     }
 
@@ -87,6 +110,7 @@ public class PoiSaxSheetParser implements SheetParser {
                       String sheetName,
                       int headers,
                       TableHandler handler) throws IOException {
+        pre();
         try (OPCPackage pkg = OPCPackage.open(file.getPath(), PackageAccess.READ)) {
             parse(file.getPath(), pkg, sheetName, headers, handler);
             // Do this to avoid POI to generate a warning message
@@ -95,6 +119,8 @@ public class PoiSaxSheetParser implements SheetParser {
             throw e;
         } catch (final Exception e) {
             throw ExceptionWrapper.wrap(e);
+        } finally {
+            post();
         }
     }
 
@@ -104,6 +130,7 @@ public class PoiSaxSheetParser implements SheetParser {
                       int sheetIndex,
                       int headers,
                       TableHandler handler) throws IOException {
+        pre();
         try (OPCPackage pkg = OPCPackage.open(file.getPath(), PackageAccess.READ)) {
             parse(file.getPath(), pkg, sheetIndex, headers, handler);
             // Do this to avoid POI to generate a warning message
@@ -112,6 +139,8 @@ public class PoiSaxSheetParser implements SheetParser {
             throw e;
         } catch (final Exception e) {
             throw ExceptionWrapper.wrap(e);
+        } finally {
+            post();
         }
     }
 
@@ -123,12 +152,15 @@ public class PoiSaxSheetParser implements SheetParser {
                       String sheetName,
                       int headers,
                       TableHandler handler) throws IOException {
+        pre();
         try (OPCPackage pkg = OPCPackage.open(in)) {
             parse(systemId, pkg, sheetName, headers, handler);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
             throw ExceptionWrapper.wrap(e);
+        } finally {
+            post();
         }
     }
 
@@ -140,12 +172,15 @@ public class PoiSaxSheetParser implements SheetParser {
                       int sheetIndex,
                       int headers,
                       TableHandler handler) throws IOException {
+        pre();
         try (OPCPackage pkg = OPCPackage.open(in)) {
             parse(systemId, pkg, sheetIndex, headers, handler);
         } catch (final IOException e) {
             throw e;
         } catch (final Exception e) {
             throw ExceptionWrapper.wrap(e);
+        } finally {
+            post();
         }
     }
 
@@ -395,7 +430,7 @@ public class PoiSaxSheetParser implements SheetParser {
                 }
 
                 if (previousRowIndex != rowIndex && previousRowIndex % 10000 == 0) {
-                    LOGGER.info("processed: {}", previousRowIndex);
+                    LOGGER.debug("processed: {}", previousRowIndex);
                 }
                 previousRowIndex = rowIndex;
 

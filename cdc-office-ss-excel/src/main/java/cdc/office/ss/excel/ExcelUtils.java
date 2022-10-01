@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -23,6 +24,9 @@ import cdc.util.lang.UnexpectedValueException;
 public final class ExcelUtils {
     private ExcelUtils() {
     }
+
+    /** This value was copied from {@link ZipSecureFile}. */
+    public static final double DEFAULT_MIN_INFLATE_RATIO = 0.01;
 
     public static Workbook create(WorkbookKind kind,
                                   boolean streaming) {

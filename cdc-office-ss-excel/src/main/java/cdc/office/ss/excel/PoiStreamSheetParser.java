@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
+import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.util.XMLHelper;
@@ -29,6 +30,7 @@ import org.xml.sax.XMLReader;
 
 import cdc.office.ss.SheetParser;
 import cdc.office.ss.SheetParserFactory;
+import cdc.office.ss.SheetParserFactory.Feature;
 import cdc.office.ss.WorkbookKind;
 import cdc.office.tables.Row;
 import cdc.office.tables.RowLocation;
@@ -46,14 +48,29 @@ import cdc.util.lang.ExceptionWrapper;
  */
 public class PoiStreamSheetParser implements SheetParser {
     protected static final Logger LOGGER = LogManager.getLogger(PoiStreamSheetParser.class);
+    private final boolean disableVulnerabilityDetections;
+
+    private void pre() {
+        if (disableVulnerabilityDetections) {
+            ZipSecureFile.setMinInflateRatio(0.0);
+        } else {
+            ZipSecureFile.setMinInflateRatio(ExcelUtils.DEFAULT_MIN_INFLATE_RATIO);
+        }
+    }
+
+    private void post() {
+        if (disableVulnerabilityDetections) {
+            ZipSecureFile.setMinInflateRatio(ExcelUtils.DEFAULT_MIN_INFLATE_RATIO);
+        }
+    }
 
     public PoiStreamSheetParser() {
-        super();
+        this.disableVulnerabilityDetections = false;
     }
 
     public PoiStreamSheetParser(SheetParserFactory factory,
                                 WorkbookKind kind) {
-        this();
+        this.disableVulnerabilityDetections = factory.isEnabled(Feature.DISABLE_VULNERABILITY_PROTECTIONS);
     }
 
     @Override
@@ -61,6 +78,7 @@ public class PoiStreamSheetParser implements SheetParser {
                       String password,
                       int headers,
                       TablesHandler handler) throws IOException {
+        pre();
         try (OPCPackage opcPackage = OPCPackage.open(file.getPath(), PackageAccess.READ)) {
             final StreamParser parser = new StreamParser(opcPackage);
             parser.process(file.getPath(), headers, handler);
@@ -70,6 +88,8 @@ public class PoiStreamSheetParser implements SheetParser {
             throw e;
         } catch (final Exception e) {
             throw ExceptionWrapper.wrap(e);
+        } finally {
+            post();
         }
     }
 
@@ -80,6 +100,7 @@ public class PoiStreamSheetParser implements SheetParser {
                       String password,
                       int headers,
                       TablesHandler handler) throws IOException {
+        pre();
         try (OPCPackage opcPackage = OPCPackage.open(in)) {
             final StreamParser parser = new StreamParser(opcPackage);
             parser.process(systemId, headers, handler);
@@ -87,6 +108,8 @@ public class PoiStreamSheetParser implements SheetParser {
             throw e;
         } catch (final Exception e) {
             throw ExceptionWrapper.wrap(e);
+        } finally {
+            post();
         }
     }
 
@@ -96,6 +119,7 @@ public class PoiStreamSheetParser implements SheetParser {
                       String sheetName,
                       int headers,
                       TableHandler handler) throws IOException {
+        pre();
         try (OPCPackage opcPackage = OPCPackage.open(file.getPath(), PackageAccess.READ)) {
             final StreamParser parser = new StreamParser(opcPackage);
             parser.process(file.getPath(), sheetName, headers, handler);
@@ -105,6 +129,8 @@ public class PoiStreamSheetParser implements SheetParser {
             throw e;
         } catch (final Exception e) {
             throw ExceptionWrapper.wrap(e);
+        } finally {
+            post();
         }
     }
 
@@ -114,6 +140,7 @@ public class PoiStreamSheetParser implements SheetParser {
                       int sheetIndex,
                       int headers,
                       TableHandler handler) throws IOException {
+        pre();
         try (OPCPackage opcPackage = OPCPackage.open(file.getPath(), PackageAccess.READ)) {
             final StreamParser parser = new StreamParser(opcPackage);
             parser.process(file.getPath(), sheetIndex, headers, handler);
@@ -123,6 +150,8 @@ public class PoiStreamSheetParser implements SheetParser {
             throw e;
         } catch (final Exception e) {
             throw ExceptionWrapper.wrap(e);
+        } finally {
+            post();
         }
     }
 
@@ -134,6 +163,7 @@ public class PoiStreamSheetParser implements SheetParser {
                       String sheetName,
                       int headers,
                       TableHandler handler) throws IOException {
+        pre();
         try (OPCPackage opcPackage = OPCPackage.open(in)) {
             final StreamParser parser = new StreamParser(opcPackage);
             parser.process(systemId, sheetName, headers, handler);
@@ -141,6 +171,8 @@ public class PoiStreamSheetParser implements SheetParser {
             throw e;
         } catch (final Exception e) {
             throw ExceptionWrapper.wrap(e);
+        } finally {
+            post();
         }
     }
 
@@ -152,6 +184,7 @@ public class PoiStreamSheetParser implements SheetParser {
                       int sheetIndex,
                       int headers,
                       TableHandler handler) throws IOException {
+        pre();
         try (OPCPackage opcPackage = OPCPackage.open(in)) {
             final StreamParser parser = new StreamParser(opcPackage);
             parser.process(systemId, sheetIndex, headers, handler);
@@ -159,6 +192,8 @@ public class PoiStreamSheetParser implements SheetParser {
             throw e;
         } catch (final Exception e) {
             throw ExceptionWrapper.wrap(e);
+        } finally {
+            post();
         }
     }
 

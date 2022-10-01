@@ -52,7 +52,18 @@ public class SheetParserFactory {
          * If enabled, and a formula is found, evaluate it.
          * Otherwise, cached value is used.
          */
-        EVALUATE_FORMULA
+        EVALUATE_FORMULA,
+
+        /**
+         * If enabled, vulnerability protections are disabled.
+         * <p>
+         * This may typically useful with compressed formats (XLSX, ...) which can be used to create ZIP bombs.<br>
+         * <b>WARNING:</b> this option should be used with care.
+         * <p>
+         * <b>WARNING:</b> Apache POI uses global variables to control ZIP bombs.
+         * This may lead to unexpected behaviors in case of concurrent accesses.
+         */
+        DISABLE_VULNERABILITY_PROTECTIONS
     }
 
     public SheetParserFactory() {

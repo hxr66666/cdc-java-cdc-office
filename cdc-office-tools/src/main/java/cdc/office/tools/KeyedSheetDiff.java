@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.io.IoBuilder;
 
 import cdc.office.ss.SheetLoader;
+import cdc.office.ss.SheetParserFactory;
 import cdc.office.ss.WorkbookWriterFeatures;
 import cdc.office.tables.Header;
 import cdc.office.tables.HeaderMapper;
@@ -62,6 +63,9 @@ public final class KeyedSheetDiff {
             NO_ADDED_OR_REMOVED_MARKS("no-added-or-removed-marks",
                                       "Do not print added or removed marks. This forces insertion of the line mark column."),
             NO_COLORS("no-colors", "Do not use colors with output formats that support colors."),
+            NO_VULNERABILITY_PROTECTIONS("no-vulnerability-protections",
+                                         "Disable vulnerability protections such as detection of Zip bombs.\n"
+                                                 + "This should be used with trusted sources."),
             SORT_LINES("sort-lines", "Sort lines using keys. Order of key columns declaration matters."),
             AUTO_SIZE_COLUMNS("auto-size-columns", "Auto size columns. This may take longer time."),
             SHOW_CHANGE_DETAILS("show-change-details",
@@ -125,13 +129,20 @@ public final class KeyedSheetDiff {
         final SheetLoader loader = new SheetLoader();
         loader.getFactory().setCharset(margs.charset);
         loader.getFactory().setSeparator(margs.separator);
+        loader.getFactory()
+              .setEnabled(SheetParserFactory.Feature.DISABLE_VULNERABILITY_PROTECTIONS,
+                          margs.isEnabled(MainArgs.Feature.NO_VULNERABILITY_PROTECTIONS));
         info("Load " + margs.file1);
         final List<Row> rows1 =
-                margs.sheet1 == null ? loader.load(margs.file1, null, 0) : loader.load(margs.file1, null, margs.sheet1);
+                margs.sheet1 == null
+                        ? loader.load(margs.file1, null, 0)
+                        : loader.load(margs.file1, null, margs.sheet1);
         info("Done");
         info("Load " + margs.file2);
         final List<Row> rows2 =
-                margs.sheet2 == null ? loader.load(margs.file2, null, 0) : loader.load(margs.file2, null, margs.sheet2);
+                margs.sheet2 == null
+                        ? loader.load(margs.file2, null, 0)
+                        : loader.load(margs.file2, null, margs.sheet2);
         info("Done");
 
         // Retrieve headers of both files
@@ -245,7 +256,7 @@ public final class KeyedSheetDiff {
         @Override
         protected String getHelpHeader() {
             return KeyedSheetDiff.class.getSimpleName()
-                    + " is used to compare two sheets (csv, xls, xlsx or ods).\n"
+                    + " is used to compare two sheets (csv, xls, xlsx, xlsm  or ods).\n"
                     + "Lines in sheets are matched by a set of key columns.\n"
                     + "Input and output files can use different formats.\n"
                     + "Differences are indicated with textual marks or colors (if output format supports it).\n";
@@ -263,27 +274,27 @@ public final class KeyedSheetDiff {
         protected void addSpecificOptions(Options options) {
             options.addOption(Option.builder()
                                     .longOpt(FILE1)
-                                    .desc("Name of the first csv, xls, xlsx or ods input file.")
+                                    .desc("Name of the first input file.")
                                     .hasArg()
                                     .required()
                                     .build());
 
             options.addOption(Option.builder()
                                     .longOpt(FILE2)
-                                    .desc("Name of the second csv, xls, xlsx or ods input file.")
+                                    .desc("Name of the second input file.")
                                     .hasArg()
                                     .required()
                                     .build());
 
             options.addOption(Option.builder()
                                     .longOpt(SHEET1)
-                                    .desc("Name of the sheet in the first xls, xlsx or ods input file. If omitted, the first sheet is loaded")
+                                    .desc("Name of the sheet in the first input file. If omitted, the first sheet is loaded")
                                     .hasArg()
                                     .build());
 
             options.addOption(Option.builder()
                                     .longOpt(SHEET2)
-                                    .desc("Name of the sheet in the second xls, xlsx or ods input file. If omitted, the first sheet is loaded")
+                                    .desc("Name of the sheet in the second input file. If omitted, the first sheet is loaded")
                                     .hasArg()
                                     .build());
             options.addOption(Option.builder()
@@ -295,7 +306,7 @@ public final class KeyedSheetDiff {
 
             options.addOption(Option.builder()
                                     .longOpt(OUTPUT)
-                                    .desc("Name of the csv, xls, xlsx or ods output file.")
+                                    .desc("Name of the output file.")
                                     .hasArg()
                                     .required()
                                     .build());

@@ -6,6 +6,7 @@ import java.io.InputStream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -31,20 +32,36 @@ import cdc.util.lang.BlackHole;
  * It can be used with xls and xlsx formats.
  *
  * @author Damien Carbonne
- *
  */
 public class PoiStandardSheetParser implements SheetParser {
     protected static final Logger LOGGER = LogManager.getLogger(PoiStandardSheetParser.class);
     private final DataFormatter df = new DataFormatter();
     private final boolean evaluateFormula;
+    private final boolean disableVulnerabilityDetections;
+
+    private void pre() {
+        if (disableVulnerabilityDetections) {
+            ZipSecureFile.setMinInflateRatio(0.0);
+        } else {
+            ZipSecureFile.setMinInflateRatio(ExcelUtils.DEFAULT_MIN_INFLATE_RATIO);
+        }
+    }
+
+    private void post() {
+        if (disableVulnerabilityDetections) {
+            ZipSecureFile.setMinInflateRatio(ExcelUtils.DEFAULT_MIN_INFLATE_RATIO);
+        }
+    }
 
     public PoiStandardSheetParser() {
         this.evaluateFormula = false;
+        this.disableVulnerabilityDetections = false;
     }
 
     public PoiStandardSheetParser(SheetParserFactory factory,
                                   WorkbookKind kind) {
         this.evaluateFormula = factory.isEnabled(Feature.EVALUATE_FORMULA);
+        this.disableVulnerabilityDetections = factory.isEnabled(Feature.DISABLE_VULNERABILITY_PROTECTIONS);
         BlackHole.discard(kind);
     }
 
@@ -53,9 +70,12 @@ public class PoiStandardSheetParser implements SheetParser {
                       String password,
                       int headers,
                       TablesHandler handler) throws IOException {
+        pre();
         // Open the file in read only mode
         try (final Workbook workbook = WorkbookFactory.create(file, password, true)) {
             parse(file.getPath(), workbook, headers, handler);
+        } finally {
+            post();
         }
     }
 
@@ -66,8 +86,11 @@ public class PoiStandardSheetParser implements SheetParser {
                       String password,
                       int headers,
                       TablesHandler handler) throws IOException {
+        pre();
         try (final Workbook workbook = WorkbookFactory.create(in, password)) {
             parse(systemId, workbook, headers, handler);
+        } finally {
+            post();
         }
     }
 
@@ -77,9 +100,12 @@ public class PoiStandardSheetParser implements SheetParser {
                       String sheetName,
                       int headers,
                       TableHandler handler) throws IOException {
+        pre();
         // Open the file in read only mode
         try (final Workbook workbook = WorkbookFactory.create(file, password, true)) {
             parse(file.getPath(), workbook, sheetName, headers, handler);
+        } finally {
+            post();
         }
     }
 
@@ -89,9 +115,12 @@ public class PoiStandardSheetParser implements SheetParser {
                       int sheetIndex,
                       int headers,
                       TableHandler handler) throws IOException {
+        pre();
         // Open the file in read only mode
         try (final Workbook workbook = WorkbookFactory.create(file, password, true)) {
             parse(file.getPath(), workbook, sheetIndex, headers, handler);
+        } finally {
+            post();
         }
     }
 
@@ -103,8 +132,11 @@ public class PoiStandardSheetParser implements SheetParser {
                       String sheetName,
                       int headers,
                       TableHandler handler) throws IOException {
+        pre();
         try (final Workbook workbook = WorkbookFactory.create(in, password)) {
             parse(systemId, workbook, sheetName, headers, handler);
+        } finally {
+            post();
         }
     }
 
@@ -116,8 +148,11 @@ public class PoiStandardSheetParser implements SheetParser {
                       int sheetIndex,
                       int headers,
                       TableHandler handler) throws IOException {
+        pre();
         try (final Workbook workbook = WorkbookFactory.create(in, password)) {
             parse(systemId, workbook, sheetIndex, headers, handler);
+        } finally {
+            post();
         }
     }
 

@@ -230,64 +230,66 @@ The following table lists commons errors, their symptoms and solutions.
 Options of KSD are:
 
 ```
-    --added-mark <arg>            Optional mark for added cells (default:
-                                  "<A>").
-    --args-file <arg>             Name of the file from which options can
-                                  be read.
-                                  A line is either ignored or interpreted
-                                  as a single argument (option or value).
-                                  A line is ignored when it is empty or
-                                  starts by any number of white spaces
-                                  followed by '#'.
-                                  A line that only contains white spaces
-                                  is an argument.
-    --auto-size-columns           Auto size columns. This may take longer
-                                  time.
-    --changed-mark <arg>          Optional mark for changed cells
-                                  (default: "<C>").
-    --charset <arg>               Optional name of the charset for csv
-                                  files (default: platform default
-                                  charset).
-    --file1 <arg>                 Name of the first csv, xls, xlsx or ods
-                                  input file.
-    --file2 <arg>                 Name of the second csv, xls, xlsx or ods
-                                  input file.
- -h,--help                        Prints this help and exits.
-    --key <arg>                   Name of key column(s).
-    --line-mark-column <arg>      Optional name of a line mark column.
-                                  (default: "Line Diff" if necessary).
-    --no-added-or-removed-marks   Do not print added or removed marks.
-                                  This forces insertion of the line mark
-                                  column.
-    --no-colors                   Do not use colors with output formats
-                                  that support colors.
-    --no-unchanged-lines          Do not output unchanged lines.
-    --output <arg>                Name of the csv, xls, xlsx or ods output
-                                  file.
-    --removed-mark <arg>          Optional mark for removed cells
-                                  (default: "<R>").
-    --save-synthesis              Save synthesis in output file, in a
-                                  dedicated sheet.
-    --separator <arg>             Optional char separator for csv files
-                                  (default: ';').
-    --sheet <arg>                 Name of the delta sheet in the output
-                                  file. (default: "Delta").
-    --sheet1 <arg>                Name of the sheet in the first xls, xlsx
-                                  or ods input file. If omitted, the first
-                                  sheet is loaded
-    --sheet2 <arg>                Name of the sheet in the second xls,
-                                  xlsx or ods input file. If omitted, the
-                                  first sheet is loaded
-    --show-change-details         If enabled, show value 1 (with removed
-                                  mark or color) and value 2 (with added
-                                  mark or color).
-                                  Otherwise, show value 2 (with changed
-                                  mark or color).
-    --sort-lines                  Sort lines using keys. Order of key
-                                  columns declaration matters.
-    --synthesis                   Print a synthesis of differences.
-    --unchanged-mark <arg>        Optional mark for unchanged cells
-                                  (default: "").
- -v,--version                     Prints version and exits.
-    --verbose                     Print progress messages.
+    --added-mark <arg>               Optional mark for added cells
+                                     (default: "<A>").
+    --args-file <arg>                Name of the file from which options
+                                     can be read.
+                                     A line is either ignored or
+                                     interpreted as a single argument
+                                     (option or value).
+                                     A line is ignored when it is empty or
+                                     starts by any number of white spaces
+                                     followed by '#'.
+                                     A line that only contains white
+                                     spaces is an argument.
+    --auto-size-columns              Auto size columns. This may take
+                                     longer time.
+    --changed-mark <arg>             Optional mark for changed cells
+                                     (default: "<C>").
+    --charset <arg>                  Optional name of the charset for csv
+                                     files (default: platform default
+                                     charset).
+    --file1 <arg>                    Name of the first input file.
+    --file2 <arg>                    Name of the second input file.
+ -h,--help                           Prints this help and exits.
+    --key <arg>                      Name of key column(s).
+    --line-mark-column <arg>         Optional name of a line mark column.
+                                     (default: "Line Diff" if necessary).
+    --no-added-or-removed-marks      Do not print added or removed marks.
+                                     This forces insertion of the line
+                                     mark column.
+    --no-colors                      Do not use colors with output formats
+                                     that support colors.
+    --no-unchanged-lines             Do not output unchanged lines.
+    --no-vulnerability-protections   Disable vulnerability protections
+                                     such as detection of Zip bombs.
+                                     This should be used with trusted
+                                     sources.
+    --output <arg>                   Name of the output file.
+    --removed-mark <arg>             Optional mark for removed cells
+                                     (default: "<R>").
+    --save-synthesis                 Save synthesis in output file, in a
+                                     dedicated sheet.
+    --separator <arg>                Optional char separator for csv files
+                                     (default: ';').
+    --sheet <arg>                    Name of the delta sheet in the output
+                                     file. (default: "Delta").
+    --sheet1 <arg>                   Name of the sheet in the first input
+                                     file. If omitted, the first sheet is
+                                     loaded
+    --sheet2 <arg>                   Name of the sheet in the second input
+                                     file. If omitted, the first sheet is
+                                     loaded
+    --show-change-details            If enabled, show value 1 (with
+                                     removed mark or color) and value 2
+                                     (with added mark or color).
+                                     Otherwise, show value 2 (with changed
+                                     mark or color).
+    --sort-lines                     Sort lines using keys. Order of key
+                                     columns declaration matters.
+    --synthesis                      Print a synthesis of differences.
+    --unchanged-mark <arg>           Optional mark for unchanged cells
+                                     (default: "").
+ -v,--version                        Prints version and exits.
+    --verbose                        Print progress messages.
 ```
