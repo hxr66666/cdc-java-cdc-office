@@ -187,6 +187,13 @@ The following table lists commons errors, their symptoms and solutions.
    </thead>
    <tbody>
       <tr>
+         <td>KSD fails with an exception like:<br><code>... Zip bomb detected ...</code></td>
+         <td>2</td>
+         <td>The input file would exceed the maximum allowed ratio of expanded file size to the compressed file size.<br>
+         This maximum ratio depends on file format. It is typically 100 with XLSX.</td>
+         <td>Clean the input file or add <code>--no-vulnerability-detection</code> option.</td>
+      </tr>
+      <tr>
          <td>KSD probably fails with an exception like:<br><code>Missing keys: [...] in file1/file2 header: [...]</code></td>
          <td>2</td>
          <td>Both input CSV files <b>MUST</b> use the same separator and character set.<br>They don't.</td>
