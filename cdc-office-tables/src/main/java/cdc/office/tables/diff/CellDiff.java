@@ -18,7 +18,7 @@ import java.util.Objects;
  * <tbody>
  * <tr>
  * <td>null</td>
- * <td>SAME</td>
+ * <td>NULL</td>
  * <td>ADDED</td>
  * <td>ADDED</td>
  * <td>ADDED</td>
