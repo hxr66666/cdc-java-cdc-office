@@ -48,7 +48,7 @@ import java.util.Objects;
  * </table>
  *
  * <ul>
- * <li>{@code CellDiff(null, null) = SAME}
+ * <li>{@code CellDiff(null, null) = NULL}
  * <li>{@code CellDiff(null, "") = ADDED}
  * <li>{@code CellDiff(null, "foo") = ADDED}
  * <li>{@code CellDiff("", null) = REMOVED}
