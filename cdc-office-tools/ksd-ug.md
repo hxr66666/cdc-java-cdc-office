@@ -194,6 +194,18 @@ The following table lists commons errors, their symptoms and solutions.
          <td>Clean the input file or add <code>--no-vulnerability-detection</code> option.</td>
       </tr>
       <tr>
+         <td>KSD fails with an exception like:<br><code>Invalid sheet name: ...</code></td>
+         <td>2</td>
+         <td>Sheets with expected name <b>MUST</b> exits.<br>They don't.</td>
+         <td>Make sure sheet names correspond to existing sheets.</td>
+      </tr>
+      <tr>
+         <td>KSD fails with an exception like:<br><code>No data in file1/file2 sheet.</code></td>
+         <td>2</td>
+         <td>Sheets <b>MUST</b> have a content, at least one row for header.<br>They don't.</td>
+         <td>Make sure sheets contain at least one line, the first one being the header.</td>
+      </tr>
+      <tr>
          <td>KSD probably fails with an exception like:<br><code>Missing keys: [...] in file1/file2 header: [...]</code></td>
          <td>2</td>
          <td>Both input CSV files <b>MUST</b> use the same separator and character set.<br>They don't.</td>
