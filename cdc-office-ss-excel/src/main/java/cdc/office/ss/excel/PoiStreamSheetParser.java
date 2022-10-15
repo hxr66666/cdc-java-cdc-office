@@ -250,6 +250,9 @@ public class PoiStreamSheetParser implements SheetParser {
                     }
                 }
             }
+            if (!found) {
+                throw new IllegalArgumentException("Invalid sheet name: " + sheetName);
+            }
             TablesHandler.processEndTables(handler, systemId);
         }
 
@@ -277,6 +280,9 @@ public class PoiStreamSheetParser implements SheetParser {
                     }
                 }
                 index++;
+            }
+            if (!found) {
+                throw new IllegalArgumentException("Invalid sheet index: " + sheetIndex);
             }
             TablesHandler.processEndTables(handler, systemId);
         }

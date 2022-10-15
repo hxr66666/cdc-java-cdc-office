@@ -267,6 +267,9 @@ public class PoiSaxSheetParser implements SheetParser {
                 }
                 LOGGER.debug("Processed sheet");
             }
+            if (!found) {
+                throw new IllegalArgumentException("Invalid sheet name: " + sheetName);
+            }
 
             TablesHandler.processEndTables(handler, systemId);
         } catch (final IOException e) {
@@ -301,11 +304,13 @@ public class PoiSaxSheetParser implements SheetParser {
 
             final XSSFReader.SheetIterator sheets = (XSSFReader.SheetIterator) r.getSheetsData();
             int index = -1;
+            boolean found = false;
             while (sheets.hasNext() && index < sheetIndex) {
                 index++;
                 LOGGER.debug("Processing new sheet");
                 try (InputStream sheet = sheets.next()) {
                     if (index == sheetIndex) {
+                        found = true;
                         final InputSource sheetSource = new InputSource(sheet);
                         handler.processBeginTable(sheets.getSheetName(), -1);
                         parser.parse(sheetSource);
@@ -313,6 +318,9 @@ public class PoiSaxSheetParser implements SheetParser {
                     }
                 }
                 LOGGER.debug("Processed sheet");
+            }
+            if (!found) {
+                throw new IllegalArgumentException("Invalid sheet index: " + sheetIndex);
             }
 
             TablesHandler.processEndTables(handler, systemId);

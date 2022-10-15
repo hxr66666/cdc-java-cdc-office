@@ -1,6 +1,7 @@
 package cdc.office.ss.excel;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -37,6 +38,29 @@ class ExcelSheetLoaderTest {
         assertTrue(true);
     }
 
+    private static void testInvalidSheetName(String filename,
+                                             String sheetName,
+                                             SheetParserFactory.Feature... features) throws IOException {
+        final File file = new File("src/test/resources/", filename);
+        final SheetLoader loader = new SheetLoader();
+        for (final SheetParserFactory.Feature feature : features) {
+            loader.getFactory().setEnabled(feature, true);
+        }
+        assertThrows(IOException.class,
+                     () -> loader.load(file, null, sheetName));
+    }
+
+    private static void testInvalidSheetIndex(String filename,
+                                              SheetParserFactory.Feature... features) throws IOException {
+        final File file = new File("src/test/resources/", filename);
+        final SheetLoader loader = new SheetLoader();
+        for (final SheetParserFactory.Feature feature : features) {
+            loader.getFactory().setEnabled(feature, true);
+        }
+        assertThrows(IOException.class,
+                     () -> loader.load(file, null, 100));
+    }
+
     @ParameterizedTest
     @ValueSource(strings = { "file1.xlsx", "file1.xlsm", "file1.xls" })
     void testLoad(String filename) throws IOException {
@@ -70,5 +94,50 @@ class ExcelSheetLoaderTest {
     void testLoadPoiStreaming(String filename) throws IOException {
         test(filename,
              SheetParserFactory.Feature.POI_STREAMING);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "file1.xlsx", "file1.xlsm", "file1.xls" })
+    void testInvalidSheetNamePoiSax(String filename) throws IOException {
+        testInvalidSheetName(filename,
+                             "XXX",
+                             SheetParserFactory.Feature.POI_SAX);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "file1.xlsx", "file1.xlsm", "file1.xls" })
+    void testInvalidSheetNamePoiStandard(String filename) throws IOException {
+        testInvalidSheetName(filename,
+                             "XXX",
+                             SheetParserFactory.Feature.POI_STANDARD);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "file1.xlsx", "file1.xlsm", "file1.xls" })
+    void testInvalidSheetNamePoiStreaming(String filename) throws IOException {
+        testInvalidSheetName(filename,
+                             "XXX",
+                             SheetParserFactory.Feature.POI_STREAMING);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "file1.xlsx", "file1.xlsm", "file1.xls" })
+    void testInvalidSheetIndexPoiSax(String filename) throws IOException {
+        testInvalidSheetIndex(filename,
+                              SheetParserFactory.Feature.POI_SAX);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "file1.xlsx", "file1.xlsm", "file1.xls" })
+    void testInvalidSheetIndexPoiStandard(String filename) throws IOException {
+        testInvalidSheetIndex(filename,
+                              SheetParserFactory.Feature.POI_STANDARD);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "file1.xlsx", "file1.xlsm", "file1.xls" })
+    void testInvalidSheetIndexPoiStreaming(String filename) throws IOException {
+        testInvalidSheetIndex(filename,
+                              SheetParserFactory.Feature.POI_STREAMING);
     }
 }
