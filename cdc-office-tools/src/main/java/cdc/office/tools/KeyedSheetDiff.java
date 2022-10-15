@@ -145,6 +145,12 @@ public final class KeyedSheetDiff {
                         : loader.load(margs.file2, null, margs.sheet2);
         info("Done");
 
+        if (rows1.isEmpty()) {
+            throw new IllegalArgumentException("No data in file1 sheet.");
+        } else if (rows2.isEmpty()) {
+            throw new IllegalArgumentException("No data in file2 sheet.");
+        }
+
         // Retrieve headers of both files
         final Header header1 = Header.builder().names(rows1.get(0)).build();
         final Header header2 = Header.builder().names(rows2.get(0)).build();
