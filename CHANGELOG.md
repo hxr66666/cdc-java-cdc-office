@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Changed
+- `RowDiff` now accept more data in, a row than declared in the corresponding header.
+
 ### Fixed
 - Added detection of invalid sheet name or sheet index in POI SAX and POI Stream loading. #34
 - Added a check in `ksd` to detect empty sheets and avoid throwing unexpected exception.

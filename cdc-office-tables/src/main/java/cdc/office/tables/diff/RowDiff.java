@@ -5,7 +5,6 @@ import java.util.List;
 
 import cdc.office.tables.Header;
 import cdc.office.tables.Row;
-import cdc.util.lang.Checks;
 
 /**
  * Class used to compare two rows.
@@ -22,16 +21,11 @@ public class RowDiff {
      * @param leftRow The left row.
      * @param rightHeader The right header.
      * @param rightRow The right row.
-     * @throws IllegalArgumentException When {@code leftRow} has more elements than {@code leftHeader}
-     *             or {@code rightRow} has more elements than {@code rightHeader}.
      */
     public RowDiff(Header leftHeader,
                    Row leftRow,
                    Header rightHeader,
                    Row rightRow) {
-        Checks.isTrue(leftRow.size() <= leftHeader.size(), "left row is too large");
-        Checks.isTrue(rightRow.size() <= rightHeader.size(), "right row is too large");
-
         // Start comparison with right names
         for (int rightCol = 0; rightCol < rightHeader.size(); rightCol++) {
             final String name = rightHeader.getNameAt(rightCol);

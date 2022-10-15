@@ -1,7 +1,6 @@
 package cdc.office.tables;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 
@@ -298,13 +297,6 @@ class RowDiffTest {
         check(h(A, B), r(NS, FOO), h(A, B), r(FOO, NS), RCHANGED, CADDED, CREMOVED);
         check(h(A, B), r(NS, FOO), h(A, B), r(FOO, BAR), RCHANGED, CADDED, CCHANGED);
         check(h(A, B), r(NS, FOO), h(A, B), r(NS, BAR), RCHANGED, CNULL, CCHANGED);
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            check(h(), r("a"), h(), r(), RSAME);
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            check(h(), r(), h(), r("b"), RSAME);
-        });
     }
 
     @Test
@@ -347,5 +339,11 @@ class RowDiffTest {
         check(h(A), r(FOO), h(B), r(), RREMOVED, CNULL, CREMOVED);
         check(h(A), r(), h(B), r(BAR), RADDED, CADDED, CNULL);
         check(h(A), r(FOO), h(B), r(BAR), RCHANGED, CADDED, CREMOVED);
+    }
+
+    @Test
+    void testTooManyData() {
+        check(h(A), r(FOO, FOO), h(A), r(FOO), RSAME, CSAME);
+        check(h(A), r(FOO), h(A), r(FOO, FOO), RSAME, CSAME);
     }
 }
