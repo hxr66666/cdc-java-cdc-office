@@ -44,7 +44,7 @@ class KeyedSheetDiffTest {
     }
 
     @Test
-    void test1() throws IOException {
+    void testNonMatchingHeaders() throws IOException {
         assertThrows(IllegalArgumentException.class,
                      () -> {
                          check("src/test/resources/ksd-test1-file1.csv",
@@ -52,5 +52,51 @@ class KeyedSheetDiffTest {
                                "csv",
                                false);
                      });
+    }
+
+    @Test
+    void testInvalidSheet1() throws IOException {
+        final KeyedSheetDiff.MainArgs margs = new KeyedSheetDiff.MainArgs();
+        margs.file1 = new File("src/test/resources/ksd-test-invalid-sheet-file1.xlsx");
+        margs.file2 = new File("src/test/resources/ksd-test-invalid-sheet-file2.xlsx");
+        margs.output = new File("target", "ksd-test-invalid-sheet.xlsx");
+        margs.keys.add("ID");
+        margs.sheet1 = "XXX";
+        assertThrows(IOException.class,
+                     () -> KeyedSheetDiff.execute(margs));
+    }
+
+    @Test
+    void testInvalidSheet2() throws IOException {
+        final KeyedSheetDiff.MainArgs margs = new KeyedSheetDiff.MainArgs();
+        margs.file1 = new File("src/test/resources/ksd-test-invalid-sheet-file1.xlsx");
+        margs.file2 = new File("src/test/resources/ksd-test-invalid-sheet-file2.xlsx");
+        margs.output = new File("target", "ksd-test-invalid-sheet.xlsx");
+        margs.keys.add("ID");
+        margs.sheet2 = "XXX";
+        assertThrows(IOException.class,
+                     () -> KeyedSheetDiff.execute(margs));
+    }
+
+    @Test
+    void testEmptySheet1() throws IOException {
+        final KeyedSheetDiff.MainArgs margs = new KeyedSheetDiff.MainArgs();
+        margs.file1 = new File("src/test/resources/ksd-test-empty-sheet.xlsx");
+        margs.file2 = new File("src/test/resources/ksd-test-non-empty-sheet.xlsx");
+        margs.output = new File("target", "ksd-test-empty-sheet.xlsx");
+        margs.keys.add("ID");
+        assertThrows(IllegalArgumentException.class,
+                     () -> KeyedSheetDiff.execute(margs));
+    }
+
+    @Test
+    void testEmptySheet2() throws IOException {
+        final KeyedSheetDiff.MainArgs margs = new KeyedSheetDiff.MainArgs();
+        margs.file1 = new File("src/test/resources/ksd-test-non-empty-sheet.xlsx");
+        margs.file2 = new File("src/test/resources/ksd-test-empty-sheet.xlsx");
+        margs.output = new File("target", "ksd-test-empty-sheet.xlsx");
+        margs.keys.add("ID");
+        assertThrows(IllegalArgumentException.class,
+                     () -> KeyedSheetDiff.execute(margs));
     }
 }
