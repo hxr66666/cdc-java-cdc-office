@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - Created `KeyedTableDiff.Builder`.
+- Automatically remove empty trailing rows in `MemoryTableHandler()`.
+  To keep them, use `MemoryTableHandler(false)`. #36
 
 ### Removed
 - Removed public constructors of `KeyedTableDiff`. Use `KeyedTableDiff.Builder`.

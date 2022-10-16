@@ -10,29 +10,84 @@ import cdc.util.function.Evaluation;
 
 public class MemoryTableHandler implements TableHandler {
     private static final Logger LOGGER = LogManager.getLogger(MemoryTableHandler.class);
+    private final boolean removeEmptyTrailingRows;
     private final List<Row> rows = new ArrayList<>();
     private int headers = 0;
 
+    public MemoryTableHandler() {
+        this(true);
+    }
+
+    public MemoryTableHandler(boolean removeEmptyTrailingRows) {
+        this.removeEmptyTrailingRows = removeEmptyTrailingRows;
+    }
+
+    /**
+     * Remove all trailing empty rows.
+     * <p>
+     * This should be called once all rows have been loaded.
+     */
+    public void removeEmptyTrailingtRows() {
+        boolean active = true;
+        int index = rows.size() - 1;
+        while (index >= 0 && active) {
+            final Row row = rows.get(index);
+            if (row.isEmpty()) {
+                index--;
+            } else {
+                // found a non-empty row
+                // index is the index of this first non empty row
+                active = false;
+            }
+        }
+
+        // index+1 is the index of the first trailing empty row
+        index++;
+        if (index < rows.size()) {
+            rows.subList(index, rows.size()).clear();
+        }
+    }
+
+    /**
+     * @return The number of header rows.
+     *         It should usually be 0 or 1, and is passed by the application.
+     */
     public int getHeaderRowsCount() {
         return headers;
     }
 
+    /**
+     * @return The number of data rows.
+     */
     public int getDataRowsCount() {
         return rows.size() - getHeaderRowsCount();
     }
 
+    /**
+     * @return {@code true} if there are some header rows.
+     */
     public boolean hasHeaders() {
         return headers > 0;
     }
 
+    /**
+     * @return The total number of rows (header + data).
+     */
     public int getRowsCount() {
         return rows.size();
     }
 
+    /**
+     * @param index The rows index (0-based).
+     * @return The row at {@code index}.
+     */
     public Row getRow(int index) {
         return rows.get(index);
     }
 
+    /**
+     * @return A list of all rows.
+     */
     public List<Row> getRows() {
         return rows;
     }
@@ -65,6 +120,8 @@ public class MemoryTableHandler implements TableHandler {
     @Override
     public void processEndTable(String name) {
         LOGGER.trace("processEndTable({})", name);
-        // Ignore
+        if (removeEmptyTrailingRows) {
+            removeEmptyTrailingtRows();
+        }
     }
 }
