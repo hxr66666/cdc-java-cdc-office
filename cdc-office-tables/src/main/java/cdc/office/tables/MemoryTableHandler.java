@@ -8,22 +8,37 @@ import org.apache.logging.log4j.Logger;
 
 import cdc.util.function.Evaluation;
 
+/**
+ * Implementation of {@link TableHandler} that stores rows.
+ *
+ * @author Damien Carbonne
+ */
 public class MemoryTableHandler implements TableHandler {
     private static final Logger LOGGER = LogManager.getLogger(MemoryTableHandler.class);
     private final boolean removeEmptyTrailingRows;
     private final List<Row> rows = new ArrayList<>();
     private int headers = 0;
 
+    /**
+     * Creates a MemoryTableHandler that removed empty trailing rows.
+     * <p>
+     * <b>WARNING:</b> this does not remove empty-like trailing rows.
+     */
     public MemoryTableHandler() {
         this(true);
     }
 
+    /**
+     * Creates a MemoryTableHandler that can remove empty trailing rows.
+     *
+     * @param removeEmptyTrailingRows If {@code true}, empty (not empty-like) trailing rows are removed.
+     */
     public MemoryTableHandler(boolean removeEmptyTrailingRows) {
         this.removeEmptyTrailingRows = removeEmptyTrailingRows;
     }
 
     /**
-     * @return The number of empty trailing rows
+     * @return The number of empty trailing rows.
      */
     public int getEmptyTrailingRowsCount() {
         boolean active = true;
@@ -44,12 +59,45 @@ public class MemoryTableHandler implements TableHandler {
     }
 
     /**
+     * @return The number of empty-like trailing rows.
+     */
+    public int getEmptyLikeTrailingRowsCount() {
+        boolean active = true;
+        int index = rows.size() - 1;
+        while (index >= 0 && active) {
+            final Row row = rows.get(index);
+            if (row.isEmptyLike()) {
+                index--;
+            } else {
+                // found a non-empty row
+                // index is the index of this first non empty row
+                active = false;
+            }
+        }
+
+        // index+1 is the index of the first trailing empty row
+        return rows.size() - index - 1;
+    }
+
+    /**
      * Remove all trailing empty rows.
      * <p>
      * This should be called once all rows have been loaded.
      */
     public void removeEmptyTrailingtRows() {
         final int count = getEmptyTrailingRowsCount();
+        if (count > 0) {
+            rows.subList(rows.size() - count, rows.size()).clear();
+        }
+    }
+
+    /**
+     * Remove all trailing empty-like rows.
+     * <p>
+     * This should be called once all rows have been loaded.
+     */
+    public void removeEmptyLikeTrailingtRows() {
+        final int count = getEmptyLikeTrailingRowsCount();
         if (count > 0) {
             rows.subList(rows.size() - count, rows.size()).clear();
         }

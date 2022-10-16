@@ -53,8 +53,24 @@ public interface Row {
         return getValues().size();
     }
 
+    /**
+     * @return {@code true} if this row is empty: it does not contain any cell.
+     */
     public default boolean isEmpty() {
         return getValues().isEmpty();
+    }
+
+    /**
+     * @return {@code true} if this row does not contain any cell,
+     *         or all cells have a {@code null} or empty content.
+     */
+    public default boolean isEmptyLike() {
+        for (final String value : getValues()) {
+            if (value != null && !value.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
