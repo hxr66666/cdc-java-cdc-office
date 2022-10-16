@@ -24,6 +24,7 @@ import cdc.office.tables.Header;
 import cdc.office.tables.HeaderMapper;
 import cdc.office.tables.Row;
 import cdc.office.tables.diff.KeyedTableDiff;
+import cdc.office.tables.diff.Side;
 import cdc.office.tools.KeyedSheetDiff.MainArgs.Feature;
 import cdc.util.cli.AbstractMainSupport;
 import cdc.util.cli.FeatureMask;
@@ -137,13 +138,13 @@ public final class KeyedSheetDiff {
                 margs.sheet1 == null
                         ? loader.load(margs.file1, null, 0)
                         : loader.load(margs.file1, null, margs.sheet1);
-        info("Done");
+        info("Done (" + rows1.size() + " rows)");
         info("Load " + margs.file2);
         final List<Row> rows2 =
                 margs.sheet2 == null
                         ? loader.load(margs.file2, null, 0)
                         : loader.load(margs.file2, null, margs.sheet2);
-        info("Done");
+        info("Done (" + rows2.size() + " rows)");
 
         if (rows1.isEmpty()) {
             throw new IllegalArgumentException("No data in file1 sheet.");
@@ -178,12 +179,22 @@ public final class KeyedSheetDiff {
 
         // Compare the data rows
         info("Compare rows");
-        final KeyedTableDiff diff = new KeyedTableDiff(header1,
-                                                       rows1,
-                                                       header2,
-                                                       rows2,
-                                                       margs.keys);
-        info("Done");
+        final KeyedTableDiff diff = KeyedTableDiff.builder()
+                                                  .leftSystemId(margs.file1.getName()
+                                                          + (margs.sheet1 == null ? "" : ":" + margs.sheet1))
+                                                  .leftHeader(header1)
+                                                  .leftRows(rows1)
+                                                  .rightSystemId(margs.file2.getName()
+                                                          + (margs.sheet2 == null ? "" : ":" + margs.sheet2))
+                                                  .rightHeader(header2)
+                                                  .rightRows(rows2)
+                                                  .keyNames(margs.keys)
+                                                  .build();
+
+        info("Done" + (diff.getNumberOfIgnoredRows() == 0
+                ? ""
+                : " (" + diff.getNumberOfIgnoredRows(Side.LEFT) + "/" + rows1.size() + " "
+                        + diff.getNumberOfIgnoredRows(Side.RIGHT) + "/" + rows2.size() + " ignored)"));
 
         if (margs.isEnabled(MainArgs.Feature.SYNTHESIS)) {
             diff.getSynthesis().print(OUT);

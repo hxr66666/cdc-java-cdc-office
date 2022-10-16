@@ -2,8 +2,8 @@ package cdc.office.tables.diff;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +22,10 @@ import cdc.util.lang.UnexpectedValueException;
  * @author Damien Carbonne
  */
 public class KeyedTableDiff {
+    /** The left SystemId. */
+    private final String leftSystemId;
+    /** The right SystemId. */
+    private final String rightSystemId;
     /** The left header. */
     private final Header leftHeader;
     /** The right header. */
@@ -32,6 +36,7 @@ public class KeyedTableDiff {
     private final int[] leftKeyColumns;
     /** Indices in right header of key columns. */
     private final int[] rightKeyColumns;
+
     /**
      * The list of all keys.
      * <p>
@@ -42,128 +47,77 @@ public class KeyedTableDiff {
     private final Map<CTupleN<String>, RowDiff> diffs = new HashMap<>();
     /** The synthesis of differences. */
     private final Synthesis synthesis = new Synthesis();
+    private final int leftIgnored;
+    private final int rightIgnored;
 
-    /**
-     * Creates a KeyedTableDiff.
-     *
-     * @param leftHeader The left header.
-     * @param leftRows The left rows.
-     * @param rightHeader the right header.
-     * @param rightRows The right rows.
-     * @param keyNames The key names.
-     */
-    public KeyedTableDiff(Header leftHeader,
-                          List<Row> leftRows,
-                          Header rightHeader,
-                          List<Row> rightRows,
-                          String... keyNames) {
-        Checks.isNotNull(leftHeader, "leftHeader");
-        Checks.isNotNull(leftRows, "leftRows");
-        Checks.isNotNull(rightHeader, "rightHeader");
-        Checks.isNotNull(rightRows, "rightRows");
-        Checks.isNotNullOrEmpty(keyNames, "keys");
-
-        this.leftHeader = leftHeader;
-        this.rightHeader = rightHeader;
-        this.keyNames = Arrays.asList(keyNames);
+    protected KeyedTableDiff(Builder builder) {
+        this.leftSystemId = builder.leftSystemId;
+        this.rightSystemId = builder.rightSystemId;
+        this.leftHeader = Checks.isNotNull(builder.leftHeader, "leftHeader");
+        this.rightHeader = Checks.isNotNull(builder.rightHeader, "rightHeader");
+        this.keyNames = builder.keyNames;
 
         this.leftKeyColumns = buildKeyColumns(leftHeader, keyNames);
         this.rightKeyColumns = buildKeyColumns(rightHeader, keyNames);
 
+        // The number of left rows that are empty and ignored
+        int leftEmpty = 0;
+
         // Map from left keys to left rows
         final Map<CTupleN<String>, Row> leftMap = new HashMap<>();
-        for (int number = 0; number < leftRows.size(); number++) {
-            final Row row = leftRows.get(number);
-            final CTupleN<String> key = getKey(Side.LEFT, row, number);
-            if (leftMap.containsKey(key)) {
-                throw new InvalidDataException("Duplicate key " + key + locate(Side.LEFT, row, number));
+        for (int number = 0; number < builder.leftRows.size(); number++) {
+            final Row row = builder.leftRows.get(number);
+            if (row.isEmpty()) {
+                leftEmpty++;
+            } else {
+                // Ignore empty rows
+                final CTupleN<String> key = getKey(Side.LEFT, row, number);
+                if (leftMap.containsKey(key)) {
+                    throw new InvalidDataException("Duplicate key " + key + locate(Side.LEFT, row, number));
+                }
+                leftMap.put(key, row);
             }
-            leftMap.put(key, row);
         }
 
-        // Compare right rows to left ones
-        for (int number = 0; number < rightRows.size(); number++) {
-            final Row right = rightRows.get(number);
-            final CTupleN<String> key = getKey(Side.RIGHT, right, number);
-            final Row left = leftMap.getOrDefault(key, Row.EMPTY);
-            if (diffs.containsKey(key)) {
-                throw new InvalidDataException("Duplicate key " + key + locate(Side.RIGHT, right, number));
-            }
+        // The number of right rows that are empty and ignored
+        int rightEmpty = 0;
 
-            final RowDiff diff = new RowDiff(leftHeader, left, rightHeader, right);
-            diffs.put(key, diff);
-            keys.add(key);
+        // Compare right rows to left ones
+        for (int number = 0; number < builder.rightRows.size(); number++) {
+            final Row right = builder.rightRows.get(number);
+            if (right.isEmpty()) {
+                rightEmpty++;
+            } else {
+                // Ignore empty rows
+                final CTupleN<String> key = getKey(Side.RIGHT, right, number);
+                final Row left = leftMap.getOrDefault(key, Row.EMPTY);
+                if (diffs.containsKey(key)) {
+                    throw new InvalidDataException("Duplicate key " + key + locate(Side.RIGHT, right, number));
+                }
+
+                final RowDiff diff = new RowDiff(leftHeader, left, rightHeader, right);
+                diffs.put(key, diff);
+                keys.add(key);
+            }
         }
 
         // Add all left rows that are not in right rows
-        for (int number = 0; number < leftRows.size(); number++) {
-            final Row left = leftRows.get(number);
-            final CTupleN<String> key = getKey(Side.LEFT, left, number);
-            diffs.computeIfAbsent(key, k -> {
-                keys.add(k);
-                return new RowDiff(leftHeader, left, rightHeader, Row.EMPTY);
-            });
+        for (int number = 0; number < builder.leftRows.size(); number++) {
+            final Row left = builder.leftRows.get(number);
+            if (!left.isEmpty()) {
+                // Ignore empty rows
+                final CTupleN<String> key = getKey(Side.LEFT, left, number);
+                diffs.computeIfAbsent(key, k -> {
+                    keys.add(k);
+                    return new RowDiff(leftHeader, left, rightHeader, Row.EMPTY);
+                });
+            }
         }
 
+        this.leftIgnored = leftEmpty;
+        this.rightIgnored = rightEmpty;
+
         this.synthesis.compute(this);
-    }
-
-    /**
-     * Creates a KeyedTableDiff.
-     *
-     * @param leftHeader The left header.
-     * @param leftRows The left rows.
-     * @param rightHeader the right header.
-     * @param rightRows The right rows.
-     * @param keyNames The key names.
-     */
-    public KeyedTableDiff(Header leftHeader,
-                          List<Row> leftRows,
-                          Header rightHeader,
-                          List<Row> rightRows,
-                          List<String> keyNames) {
-        this(leftHeader,
-             leftRows,
-             rightHeader,
-             rightRows,
-             keyNames.toArray(new String[keyNames.size()]));
-    }
-
-    /**
-     * Creates a KeyedTableDiff.
-     *
-     * @param header The common header.
-     * @param leftRows The left rows.
-     * @param rightRows The right rows.
-     * @param keyNames The key names.
-     */
-    public KeyedTableDiff(Header header,
-                          List<Row> leftRows,
-                          List<Row> rightRows,
-                          String... keyNames) {
-        this(header,
-             leftRows,
-             header,
-             rightRows,
-             keyNames);
-    }
-
-    /**
-     * Creates a KeyedTableDiff.
-     *
-     * @param header The common header.
-     * @param leftRows The left rows.
-     * @param rightRows The right rows.
-     * @param keyNames The key names.
-     */
-    public KeyedTableDiff(Header header,
-                          List<Row> leftRows,
-                          List<Row> rightRows,
-                          List<String> keyNames) {
-        this(header,
-             leftRows,
-             rightRows,
-             keyNames.toArray(new String[keyNames.size()]));
     }
 
     private int[] getKeyColumns(Side side) {
@@ -171,22 +125,35 @@ public class KeyedTableDiff {
     }
 
     private static int[] buildKeyColumns(Header header,
-                                         String... keyNames) {
-        final int[] result = new int[keyNames.length];
-        for (int index = 0; index < keyNames.length; index++) {
-            final int column = header.getIndex(keyNames[index]);
+                                         List<String> keyNames) {
+        final int[] result = new int[keyNames.size()];
+        for (int index = 0; index < keyNames.size(); index++) {
+            final int column = header.getIndex(keyNames.get(index));
             if (column < 0) {
-                throw new IllegalArgumentException("Key '" + keyNames[index] + "' missing in " + header);
+                throw new IllegalArgumentException("Key '" + keyNames.get(index) + "' missing in " + header);
             }
             result[index] = column;
         }
         return result;
     }
 
-    private static String locate(Side side,
-                                 Row row,
-                                 int number) {
-        return " in " + side + " row " + row + ", line " + (number + 2);
+    private String locate(Side side,
+                          Row row,
+                          int number) {
+        final String systemId = getSystemId(side);
+        final StringBuilder builder = new StringBuilder();
+        builder.append(" in ")
+               .append(side)
+               .append(" row ")
+               .append(row)
+               .append(", line ")
+               .append(number + 2);
+        if (systemId != null) {
+            builder.append(" (")
+                   .append(systemId)
+                   .append(')');
+        }
+        return builder.toString();
     }
 
     private CTupleN<String> getKey(Side side,
@@ -202,28 +169,154 @@ public class KeyedTableDiff {
         return new CTupleN<>(values);
     }
 
+    /**
+     * @param side The side.
+     * @return The SystemId associated to {@code side}. May be {@code null}.
+     */
+    public String getSystemId(Side side) {
+        return side == Side.LEFT ? leftSystemId : rightSystemId;
+    }
+
+    /**
+     * @param side The side.
+     * @return The {@link Header} associated to {@code side}.
+     */
     public Header getHeader(Side side) {
         return side == Side.LEFT ? leftHeader : rightHeader;
     }
 
+    /**
+     * @return A list of key names.
+     */
     public List<String> getKeyNames() {
         return keyNames;
     }
 
+    /**
+     * @return A list of all keys. Some may be left-only or right-only.
+     */
     public List<CTupleN<String>> getKeys() {
         return keys;
     }
 
+    /**
+     * @param key The key.
+     * @return The {@link RowDiff} associated to {@code key}.
+     */
     public RowDiff getDiff(TupleN<String> key) {
         return diffs.get(key);
     }
 
+    /**
+     * @return A collections of all row differences.
+     */
     public Collection<RowDiff> getDiffs() {
         return diffs.values();
     }
 
+    /**
+     * @param side The side.
+     * @return The number of ignored rows on {@code side}.
+     */
+    public int getNumberOfIgnoredRows(Side side) {
+        return side == Side.LEFT ? leftIgnored : rightIgnored;
+    }
+
+    public int getNumberOfIgnoredRows() {
+        return leftIgnored + rightIgnored;
+    }
+
+    /**
+     * @return A {@link Synthesis} of differences.
+     */
     public Synthesis getSynthesis() {
         return synthesis;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * Builder of {@link KeyedTableDiff}.
+     */
+    public static class Builder {
+        private String leftSystemId;
+        private String rightSystemId;
+        private Header leftHeader;
+        private Header rightHeader;
+        private final List<String> keyNames = new ArrayList<>();
+        private final List<Row> leftRows = new ArrayList<>();
+        private final List<Row> rightRows = new ArrayList<>();
+
+        protected Builder() {
+        }
+
+        public Builder leftSystemId(String systemId) {
+            this.leftSystemId = systemId;
+            return this;
+        }
+
+        public Builder rightSystemId(String systemId) {
+            this.rightSystemId = systemId;
+            return this;
+        }
+
+        public Builder header(Header header) {
+            this.leftHeader = header;
+            this.rightHeader = header;
+            return this;
+        }
+
+        public Builder leftHeader(Header leftHeader) {
+            this.leftHeader = leftHeader;
+            return this;
+        }
+
+        public Builder rightHeader(Header rightHeader) {
+            this.rightHeader = rightHeader;
+            return this;
+        }
+
+        public Builder keyNames(List<String> keyNames) {
+            this.keyNames.clear();
+            this.keyNames.addAll(keyNames);
+            return this;
+        }
+
+        public Builder keyNames(String... keyNames) {
+            this.keyNames.clear();
+            Collections.addAll(this.keyNames, keyNames);
+            return this;
+        }
+
+        public Builder leftRows(List<Row> leftRows) {
+            this.leftRows.clear();
+            this.leftRows.addAll(leftRows);
+            return this;
+        }
+
+        public Builder leftRows(Row... leftRows) {
+            this.leftRows.clear();
+            Collections.addAll(this.leftRows, leftRows);
+            return this;
+        }
+
+        public Builder rightRows(List<Row> rightRows) {
+            this.rightRows.clear();
+            this.rightRows.addAll(rightRows);
+            return this;
+        }
+
+        public Builder rightRows(Row... rightRows) {
+            this.rightRows.clear();
+            Collections.addAll(this.rightRows, rightRows);
+            return this;
+        }
+
+        public KeyedTableDiff build() {
+            return new KeyedTableDiff(this);
+        }
     }
 
     /**
