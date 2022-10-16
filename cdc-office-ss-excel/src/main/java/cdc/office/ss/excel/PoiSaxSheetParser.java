@@ -36,11 +36,18 @@ import cdc.office.tables.RowLocation;
 import cdc.office.tables.TableHandler;
 import cdc.office.tables.TablesHandler;
 import cdc.util.function.Evaluation;
+import cdc.util.lang.Checks;
 import cdc.util.lang.ExceptionWrapper;
 
 public class PoiSaxSheetParser implements SheetParser {
     protected static final Logger LOGGER = LogManager.getLogger(PoiSaxSheetParser.class);
     private final boolean disableVulnerabilityDetections;
+
+    private static final String FILE = "file";
+    private static final String HANDLER = "handler";
+    private static final String IN = "in";
+    private static final String KIND = "kind";
+    private static final String SHEET_NAME = "sheetName";
 
     private void pre() {
         if (disableVulnerabilityDetections) {
@@ -71,6 +78,9 @@ public class PoiSaxSheetParser implements SheetParser {
                       String password,
                       int headers,
                       TablesHandler handler) throws IOException {
+        Checks.isNotNull(file, FILE);
+        Checks.isNotNull(handler, HANDLER);
+
         pre();
         try (OPCPackage pkg = OPCPackage.open(file.getPath(), PackageAccess.READ)) {
             parse(file.getPath(), pkg, headers, handler);
@@ -92,6 +102,10 @@ public class PoiSaxSheetParser implements SheetParser {
                       String password,
                       int headers,
                       TablesHandler handler) throws IOException {
+        Checks.isNotNull(in, IN);
+        Checks.isNotNull(kind, KIND);
+        Checks.isNotNull(handler, HANDLER);
+
         pre();
         try (OPCPackage pkg = OPCPackage.open(in)) {
             parse(systemId, pkg, headers, handler);
@@ -110,6 +124,10 @@ public class PoiSaxSheetParser implements SheetParser {
                       String sheetName,
                       int headers,
                       TableHandler handler) throws IOException {
+        Checks.isNotNull(file, FILE);
+        Checks.isNotNull(sheetName, SHEET_NAME);
+        Checks.isNotNull(handler, HANDLER);
+
         pre();
         try (OPCPackage pkg = OPCPackage.open(file.getPath(), PackageAccess.READ)) {
             parse(file.getPath(), pkg, sheetName, headers, handler);
@@ -130,6 +148,8 @@ public class PoiSaxSheetParser implements SheetParser {
                       int sheetIndex,
                       int headers,
                       TableHandler handler) throws IOException {
+        Checks.isNotNull(file, FILE);
+        Checks.isNotNull(handler, HANDLER);
         pre();
         try (OPCPackage pkg = OPCPackage.open(file.getPath(), PackageAccess.READ)) {
             parse(file.getPath(), pkg, sheetIndex, headers, handler);
@@ -152,6 +172,11 @@ public class PoiSaxSheetParser implements SheetParser {
                       String sheetName,
                       int headers,
                       TableHandler handler) throws IOException {
+        Checks.isNotNull(in, IN);
+        Checks.isNotNull(kind, KIND);
+        Checks.isNotNull(sheetName, SHEET_NAME);
+        Checks.isNotNull(handler, HANDLER);
+
         pre();
         try (OPCPackage pkg = OPCPackage.open(in)) {
             parse(systemId, pkg, sheetName, headers, handler);
@@ -172,6 +197,10 @@ public class PoiSaxSheetParser implements SheetParser {
                       int sheetIndex,
                       int headers,
                       TableHandler handler) throws IOException {
+        Checks.isNotNull(in, IN);
+        Checks.isNotNull(kind, KIND);
+        Checks.isNotNull(handler, HANDLER);
+
         pre();
         try (OPCPackage pkg = OPCPackage.open(in)) {
             parse(systemId, pkg, sheetIndex, headers, handler);
@@ -184,6 +213,17 @@ public class PoiSaxSheetParser implements SheetParser {
         }
     }
 
+    private static void show(StylesTable styles) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("styles:");
+            LOGGER.debug(styles);
+            LOGGER.debug("number formats: {}", styles.getNumDataFormats());
+            for (final Map.Entry<Short, String> entry : styles.getNumberFormats().entrySet()) {
+                LOGGER.debug("   number format: {}", entry);
+            }
+        }
+    }
+
     private static void parse(String systemId,
                               OPCPackage pkg,
                               int headers,
@@ -193,14 +233,7 @@ public class PoiSaxSheetParser implements SheetParser {
             final SharedStrings sst = r.getSharedStringsTable();
             final StylesTable styles = r.getStylesTable();
 
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("styles:");
-                LOGGER.debug(styles);
-                LOGGER.debug("number formats: {}", styles.getNumDataFormats());
-                for (final Map.Entry<Short, String> entry : styles.getNumberFormats().entrySet()) {
-                    LOGGER.debug("   number format: {}", entry);
-                }
-            }
+            show(styles);
 
             handler.processBeginTables(systemId);
 
@@ -239,14 +272,7 @@ public class PoiSaxSheetParser implements SheetParser {
             final SharedStrings sst = r.getSharedStringsTable();
             final StylesTable styles = r.getStylesTable();
 
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("styles:");
-                LOGGER.debug(styles);
-                LOGGER.debug("number formats: {}", styles.getNumDataFormats());
-                for (final Map.Entry<Short, String> entry : styles.getNumberFormats().entrySet()) {
-                    LOGGER.debug("   number format: {}", entry);
-                }
-            }
+            show(styles);
 
             final XMLReader parser = fetchSheetParser(headers, handler, sst, styles);
 
@@ -291,14 +317,7 @@ public class PoiSaxSheetParser implements SheetParser {
             final SharedStrings sst = r.getSharedStringsTable();
             final StylesTable styles = r.getStylesTable();
 
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("styles:");
-                LOGGER.debug(styles);
-                LOGGER.debug("number formats: {}", styles.getNumDataFormats());
-                for (final Map.Entry<Short, String> entry : styles.getNumberFormats().entrySet()) {
-                    LOGGER.debug("   number format: {}", entry);
-                }
-            }
+            show(styles);
 
             final XMLReader parser = fetchSheetParser(headers, handler, sst, styles);
 
@@ -424,7 +443,7 @@ public class PoiSaxSheetParser implements SheetParser {
                 final int rowIndex = addr.getRow();
                 final int columnIndex = addr.getColumn();
                 if (previousRowIndex != rowIndex) {
-                    if (active && location.getGlobalNumber() >= 0) {
+                    if (active && location.getGlobalNumber() > 0) {
                         active = publishRow().isContinue();
                     }
                     location.incrementNumbers(headers);

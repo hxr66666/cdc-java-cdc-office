@@ -69,7 +69,7 @@ public interface SheetParser {
      *
      * @param file The file.
      * @param password The optional password. Used by some implementations.
-     * @param sheetIndex The O-based sheet index. Used by multi-sheet implementations.
+     * @param sheetIndex The 0-based sheet index. Used by multi-sheet implementations.
      * @param headers The number of header rows in the sheet.
      * @param handler The table handler.
      * @throws IOException When an IO exception occurs.

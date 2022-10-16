@@ -23,11 +23,9 @@ public class MemoryTableHandler implements TableHandler {
     }
 
     /**
-     * Remove all trailing empty rows.
-     * <p>
-     * This should be called once all rows have been loaded.
+     * @return The number of empty trailing rows
      */
-    public void removeEmptyTrailingtRows() {
+    public int getEmptyTrailingRowsCount() {
         boolean active = true;
         int index = rows.size() - 1;
         while (index >= 0 && active) {
@@ -42,9 +40,18 @@ public class MemoryTableHandler implements TableHandler {
         }
 
         // index+1 is the index of the first trailing empty row
-        index++;
-        if (index < rows.size()) {
-            rows.subList(index, rows.size()).clear();
+        return rows.size() - index - 1;
+    }
+
+    /**
+     * Remove all trailing empty rows.
+     * <p>
+     * This should be called once all rows have been loaded.
+     */
+    public void removeEmptyTrailingtRows() {
+        final int count = getEmptyTrailingRowsCount();
+        if (count > 0) {
+            rows.subList(rows.size() - count, rows.size()).clear();
         }
     }
 
