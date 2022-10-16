@@ -11,9 +11,12 @@ import cdc.office.tables.TablesHandler;
  * Base interface of objects that can be used to parse spread sheets using a stream-like API.
  * <p>
  * <b>WARNING:</b> multi-sheet CSV files are currently parsed as a single table.
+ * <p>
+ * <b>WARNING:</b> the number of parsed rows can depend on the implementation.
+ * Sometimes, files contain trailing empty lines. Implementations should try to skip them,
+ * but that is not always possible.
  *
  * @author Damien Carbonne
- *
  */
 public interface SheetParser {
     /**
