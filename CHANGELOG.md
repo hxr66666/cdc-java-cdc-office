@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.25.1] - 2022-10-15
 ### Changed
-- `RowDiff` now accept more data in a row than declared in the corresponding header.
+- `RowDiff` now accept more data in a row than declared in the corresponding header. #35
 
 ### Fixed
 - Added detection of invalid sheet name or sheet index in POI SAX and POI Stream loading. #34
