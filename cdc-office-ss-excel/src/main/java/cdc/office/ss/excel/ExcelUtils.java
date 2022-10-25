@@ -37,7 +37,10 @@ public final class ExcelUtils {
         case XLSX:
         case XLSM:
             if (streaming) {
-                return new SXSSFWorkbook();
+                return new SXSSFWorkbook(null,
+                                         SXSSFWorkbook.DEFAULT_WINDOW_SIZE,
+                                         false,
+                                         true);
             } else {
                 return new XSSFWorkbook();
             }

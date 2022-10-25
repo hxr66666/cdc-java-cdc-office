@@ -29,6 +29,7 @@ import cdc.office.tools.KeyedSheetDiff.MainArgs.Feature;
 import cdc.util.cli.AbstractMainSupport;
 import cdc.util.cli.FeatureMask;
 import cdc.util.cli.OptionEnum;
+import cdc.util.time.Chronometer;
 
 /**
  * Utility used to compare 2 workbook sheets whose lines are identified by key columns.
@@ -126,6 +127,7 @@ public final class KeyedSheetDiff {
     }
 
     void execute() throws IOException {
+        final Chronometer chrono = new Chronometer();
         // Load input files as rows
         final SheetLoader loader = new SheetLoader();
         loader.getFactory().setCharset(margs.charset);
@@ -133,18 +135,24 @@ public final class KeyedSheetDiff {
         loader.getFactory()
               .setEnabled(SheetParserFactory.Feature.DISABLE_VULNERABILITY_PROTECTIONS,
                           margs.isEnabled(MainArgs.Feature.NO_VULNERABILITY_PROTECTIONS));
+
+        chrono.start();
         info("Load " + margs.file1);
         final List<Row> rows1 =
                 margs.sheet1 == null
                         ? loader.load(margs.file1, null, 0)
                         : loader.load(margs.file1, null, margs.sheet1);
-        info("Done (" + rows1.size() + " rows)");
+        chrono.suspend();
+        info("Done (" + rows1.size() + " rows) " + chrono);
+
+        chrono.start();
         info("Load " + margs.file2);
         final List<Row> rows2 =
                 margs.sheet2 == null
                         ? loader.load(margs.file2, null, 0)
                         : loader.load(margs.file2, null, margs.sheet2);
-        info("Done (" + rows2.size() + " rows)");
+        chrono.suspend();
+        info("Done (" + rows2.size() + " rows) " + chrono);
 
         if (rows1.isEmpty()) {
             throw new IllegalArgumentException("No data in file1 sheet.");
@@ -178,6 +186,7 @@ public final class KeyedSheetDiff {
         rows2.remove(0);
 
         // Compare the data rows
+        chrono.start();
         info("Compare rows");
         final KeyedTableDiff diff = KeyedTableDiff.builder()
                                                   .leftSystemId(margs.file1.getName()
@@ -190,11 +199,13 @@ public final class KeyedSheetDiff {
                                                   .rightRows(rows2)
                                                   .keyNames(margs.keys)
                                                   .build();
+        chrono.suspend();
 
         info("Done" + (diff.getNumberOfIgnoredRows() == 0
                 ? ""
                 : " (" + diff.getNumberOfIgnoredRows(Side.LEFT) + "/" + rows1.size() + " "
-                        + diff.getNumberOfIgnoredRows(Side.RIGHT) + "/" + rows2.size() + " ignored)"));
+                        + diff.getNumberOfIgnoredRows(Side.RIGHT) + "/" + rows2.size() + " ignored)")
+                + " " + chrono);
 
         if (margs.isEnabled(MainArgs.Feature.SYNTHESIS)) {
             diff.getSynthesis().print(OUT);
@@ -221,9 +232,11 @@ public final class KeyedSheetDiff {
                                                                margs.features.contains(Feature.AUTO_SIZE_COLUMNS))
                                                    .build());
 
+        chrono.start();
         info("Generate " + margs.output);
         exporter.save(diff, margs.output);
-        info("Done");
+        chrono.suspend();
+        info("Done " + chrono);
     }
 
     String getLineMarkColumn() {

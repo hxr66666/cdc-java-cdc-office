@@ -366,7 +366,7 @@ public class KeyedTableDiffExporter {
                              KeyedTableDiff diff) throws IOException {
             try (final ExcelWorkbookWriter writer = new ExcelWorkbookWriter(file,
                                                                             features,
-                                                                            !showChangeDetails)) {
+                                                                            true)) {
                 createStyles(writer.getWorkbook());
 
                 if (saveSynthesis) {

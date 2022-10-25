@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [Unreleased]
+### Fixed
+- Reduced memory usage and improved performances with XLSX output format in `KeyedTableDiffExporter`.  
+  Streaming workbook now supports rich text. #37
+
+
 ## [0.26.0] - 2022-10-16
 ### Changed
 - Created `KeyedTableDiff.Builder`.
