@@ -37,6 +37,8 @@ public final class ExcelUtils {
         case XLSX:
         case XLSM:
             if (streaming) {
+                // This makes usage of rich text possible with streaming
+                // version of workbook
                 return new SXSSFWorkbook(null,
                                          SXSSFWorkbook.DEFAULT_WINDOW_SIZE,
                                          false,
