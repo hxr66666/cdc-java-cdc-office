@@ -35,42 +35,38 @@ public final class HeaderMapper {
     /**
      * Creates a header mapper from a mandatory, optional and actual headers.
      *
-     * @param mandatory The mandatory header.
-     * @param optional The optional header.
-     * @param actual The actual header.
+     * @param builder The Builder.
      * @throws IllegalArgumentException When {@code mandatory} is {@code null} or invalid,<br>
      *             or when {@code optional} is {@code null} or invalid,<br>
      *             or when {@code actual} is {@code null},<br>
      *             or when {@code mandatory} and {@code optional} intersect each other.
      */
-    private HeaderMapper(Header mandatory,
-                         Header optional,
-                         Header actual) {
-        Checks.isNotNull(mandatory, "mandatory");
-        Checks.isTrue(mandatory.isValid(), "Invalid mandatory header");
-        Checks.isNotNull(optional, "optional");
-        Checks.isTrue(optional.isValid(), "Invalid optional header");
-        Checks.isNotNull(actual, "actual");
-        Checks.isFalse(mandatory.intersects(optional), "Intersection of mandatory and optional");
+    private HeaderMapper(Builder builder) {
+        Checks.isNotNull(builder.mandatory, "mandatory");
+        Checks.isTrue(builder.mandatory.isValid(), "Invalid mandatory header");
+        Checks.isNotNull(builder.optional, "optional");
+        Checks.isTrue(builder.optional.isValid(), "Invalid optional header");
+        Checks.isNotNull(builder.actual, "actual");
+        Checks.isFalse(builder.mandatory.intersects(builder.optional), "Intersection of mandatory and optional");
 
-        this.mandatory = mandatory;
-        this.optional = optional;
-        this.actual = actual;
+        this.mandatory = builder.mandatory;
+        this.optional = builder.optional;
+        this.actual = builder.actual;
 
         final Set<String> missingMandatorySet = new HashSet<>();
-        missingMandatorySet.addAll(mandatory.getNamesSet());
-        missingMandatorySet.removeAll(actual.getNamesSet());
+        missingMandatorySet.addAll(builder.mandatory.getNamesSet());
+        missingMandatorySet.removeAll(builder.actual.getNamesSet());
         this.missingMandatoryNames = Collections.unmodifiableSet(missingMandatorySet);
 
         final Set<String> missingOptionalSet = new HashSet<>();
-        missingOptionalSet.addAll(optional.getNamesSet());
-        missingOptionalSet.removeAll(actual.getNamesSet());
+        missingOptionalSet.addAll(builder.optional.getNamesSet());
+        missingOptionalSet.removeAll(builder.actual.getNamesSet());
         this.missingOptionalNames = Collections.unmodifiableSet(missingOptionalSet);
 
         final Set<String> additionalSet = new HashSet<>();
-        additionalSet.addAll(actual.getNamesSet());
-        additionalSet.removeAll(mandatory.getNamesSet());
-        additionalSet.removeAll(optional.getNamesSet());
+        additionalSet.addAll(builder.actual.getNamesSet());
+        additionalSet.removeAll(builder.mandatory.getNamesSet());
+        additionalSet.removeAll(builder.optional.getNamesSet());
         this.additionalNames = Collections.unmodifiableSet(additionalSet);
     }
 
@@ -207,7 +203,7 @@ public final class HeaderMapper {
         }
 
         public HeaderMapper build() {
-            return new HeaderMapper(mandatory, optional, actual);
+            return new HeaderMapper(this);
         }
     }
 }

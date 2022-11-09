@@ -1,7 +1,6 @@
 package cdc.office.tables;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,16 +10,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 /**
  * Class used to represent a header (an ordered list of names).
  *
  * @author Damien Carbonne
  */
 public class Header {
-    private static final Logger LOGGER = LogManager.getLogger(Header.class);
     private final List<String> names;
     private final Map<String, Integer> map = new HashMap<>();
     private final boolean valid;
@@ -38,27 +33,16 @@ public class Header {
         }
     }
 
-    /**
-     * Creates a Header from a String array.
-     *
-     * @param names The names.
-     * @throws IllegalArgumentException When a name is {@code null}.
-     * @deprecated Use {@link Builder}.
-     */
-    @Deprecated(since = "2022-05-19", forRemoval = true)
-    public Header(String... names) {
+    private Header(Builder builder) {
         boolean invalid = false;
         int index = 0;
         final List<String> list = new ArrayList<>();
-        for (final String name : names) {
+        for (final String name : builder.names) {
             if (name == null) {
                 throw new IllegalArgumentException("Null name");
             }
             list.add(name);
             if (map.containsKey(name)) {
-                if (LOGGER.isWarnEnabled()) {
-                    LOGGER.warn("Duplicate name {} in {}", name, Arrays.toString(names));
-                }
                 invalid = true;
             } else {
                 map.put(name, index);
@@ -67,30 +51,6 @@ public class Header {
         }
         this.names = Collections.unmodifiableList(list);
         this.valid = !invalid;
-    }
-
-    /**
-     * Creates a TableHeader from a String list.
-     *
-     * @param names The names.
-     * @throws IllegalArgumentException When a name is {@code null} or duplicate.
-     * @deprecated Use Builder.
-     */
-    @Deprecated(since = "2022-05-19", forRemoval = true)
-    public Header(List<String> names) {
-        this(names.toArray(new String[names.size()]));
-    }
-
-    /**
-     * Creates a TableHeader from a row.
-     *
-     * @param row The row.
-     * @throws IllegalArgumentException When a name is {@code null} or duplicate.
-     * @deprecated Use Builder.
-     */
-    @Deprecated(since = "2022-05-19", forRemoval = true)
-    public Header(Row row) {
-        this(row.getValues());
     }
 
     /**
@@ -220,7 +180,7 @@ public class Header {
         }
 
         public Header build() {
-            return new Header(names);
+            return new Header(this);
         }
     }
 }
