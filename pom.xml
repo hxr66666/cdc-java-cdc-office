@@ -63,10 +63,10 @@
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-      <cdc.io.version>0.23.0</cdc.io.version>
-      <cdc.kernel.version>0.20.6</cdc.kernel.version>
+      <cdc.io.version>0.23.1</cdc.io.version>
+      <cdc.kernel.version>0.20.7</cdc.kernel.version>
       <cdc.tuples.version>1.2.0</cdc.tuples.version>
-      <cdc.util.version>0.28.0</cdc.util.version>
+      <cdc.util.version>0.28.1</cdc.util.version>
       <fastods.version>0.8.1</fastods.version>
       <htmlflow.version>3.9</htmlflow.version>
       <junit.version>5.9.1</junit.version>

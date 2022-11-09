@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reduced memory usage and improved performances with XLSX output format in `KeyedTableDiffExporter`.  
   Streaming workbook now supports rich text. #37
 
+### Changed
+- Updated dependencies:
+    - cdc-io-0.23.1
+    - cdc-kernel-0.20.7
+    - cdc-util-0.28.1
 
 ## [0.26.0] - 2022-10-16
 ### Changed
