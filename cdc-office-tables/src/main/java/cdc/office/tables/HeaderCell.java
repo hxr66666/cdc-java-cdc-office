@@ -15,6 +15,8 @@ import cdc.util.lang.Checks;
  * @author Damien Carbonne
  */
 public interface HeaderCell {
+    public String getLabel();
+
     /**
      * @param text The text.
      * @return {@code true} if this cell matches {@code text}.
@@ -60,6 +62,11 @@ public interface HeaderCell {
             this.name = Checks.isNotNull(name, "name");
         }
 
+        @Override
+        public String getLabel() {
+            return getName();
+        }
+
         public String getName() {
             return name;
         }
@@ -102,6 +109,11 @@ public interface HeaderCell {
 
         PatternCell(String regex) {
             this.pattern = Pattern.compile(Checks.isNotNull(regex, "regex"));
+        }
+
+        @Override
+        public String getLabel() {
+            return pattern.pattern();
         }
 
         public Pattern getPattern() {
