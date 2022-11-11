@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - cdc-io-0.23.1
     - cdc-kernel-0.20.7
     - cdc-util-0.28.1
+- Modified `Header` and `HeaderMapper` to support patterns. Now a Header is composed of cells. #38
+
 
 ## [0.26.0] - 2022-10-16
 ### Changed

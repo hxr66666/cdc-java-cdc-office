@@ -21,6 +21,7 @@ import cdc.office.ss.SheetLoader;
 import cdc.office.ss.SheetParserFactory;
 import cdc.office.ss.WorkbookWriterFeatures;
 import cdc.office.tables.Header;
+import cdc.office.tables.HeaderCell;
 import cdc.office.tables.HeaderMapper;
 import cdc.office.tables.Row;
 import cdc.office.tables.diff.KeyedTableDiff;
@@ -169,15 +170,17 @@ public final class KeyedSheetDiff {
         final HeaderMapper mapper1 = HeaderMapper.builder().mandatory(expected).actual(header1).build();
         final HeaderMapper mapper2 = HeaderMapper.builder().mandatory(expected).actual(header2).build();
 
-        if (!mapper1.hasAllMandatoryNames()) {
+        if (!mapper1.hasAllMandatoryCells()) {
             throw new IllegalArgumentException("Missing keys: "
-                    + mapper1.getMissingMandatoryNames().stream().sorted().collect(Collectors.joining(",", "[", "]"))
+                    + mapper1.getMissingMandatoryCells().stream().map(HeaderCell::toString).sorted()
+                             .collect(Collectors.joining(",", "[", "]"))
                     + " in file1 header: " + header1);
         }
 
-        if (!mapper2.hasAllMandatoryNames()) {
+        if (!mapper2.hasAllMandatoryCells()) {
             throw new IllegalArgumentException("Missing keys: "
-                    + mapper2.getMissingMandatoryNames().stream().sorted().collect(Collectors.joining(",", "[", "]"))
+                    + mapper2.getMissingMandatoryCells().stream().map(HeaderCell::toString).sorted()
+                             .collect(Collectors.joining(",", "[", "]"))
                     + " in file2 header: " + header2);
         }
 

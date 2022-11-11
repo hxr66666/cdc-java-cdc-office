@@ -21,8 +21,8 @@ class HeaderTest {
         final Header h = Header.builder().names("K1").build();
         assertTrue(h.isValid());
         assertSame(1, h.size());
-        assertTrue(h.contains("K1"));
-        assertFalse(h.contains("K"));
+        assertTrue(h.matches("K1"));
+        assertFalse(h.matches("K"));
     }
 
     @Test
@@ -30,12 +30,12 @@ class HeaderTest {
         final Header h = Header.builder().names("K1", "K2").build();
         assertTrue(h.isValid());
         assertSame(2, h.size());
-        assertTrue(h.contains("K1"));
-        assertTrue(h.contains("K2"));
-        assertFalse(h.contains("K"));
-        assertSame(0, h.getIndex("K1"));
-        assertSame(1, h.getIndex("K2"));
-        assertSame(-1, h.getIndex("K"));
+        assertTrue(h.matches("K1"));
+        assertTrue(h.matches("K2"));
+        assertFalse(h.matches("K"));
+        assertSame(0, h.getMatchingIndex("K1"));
+        assertSame(1, h.getMatchingIndex("K2"));
+        assertSame(-1, h.getMatchingIndex("K"));
     }
 
     @Test

@@ -128,7 +128,7 @@ public class KeyedTableDiff {
                                          List<String> keyNames) {
         final int[] result = new int[keyNames.size()];
         for (int index = 0; index < keyNames.size(); index++) {
-            final int column = header.getIndex(keyNames.get(index));
+            final int column = header.getMatchingIndex(keyNames.get(index));
             if (column < 0) {
                 throw new IllegalArgumentException("Key '" + keyNames.get(index) + "' missing in " + header);
             }

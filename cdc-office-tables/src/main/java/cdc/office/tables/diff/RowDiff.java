@@ -29,7 +29,7 @@ public class RowDiff {
         // Start comparison with right names
         for (int rightCol = 0; rightCol < rightHeader.size(); rightCol++) {
             final String name = rightHeader.getNameAt(rightCol);
-            final int leftCol = leftHeader.getIndex(name);
+            final int leftCol = leftHeader.getMatchingIndex(name);
             final CellDiff diff;
             if (leftCol >= 0) {
                 // column name is present left and right
@@ -44,7 +44,7 @@ public class RowDiff {
         // Finish comparison with left specific names
         for (int leftCol = 0; leftCol < leftHeader.size(); leftCol++) {
             final String name = leftHeader.getNameAt(leftCol);
-            if (!rightHeader.contains(name)) {
+            if (!rightHeader.matches(name)) {
                 // column name is specific to left
                 final CellDiff diff = new CellDiff(leftRow.getValue(leftCol), null);
                 diffs.add(new LocalizedCellDiff(diff, name));
