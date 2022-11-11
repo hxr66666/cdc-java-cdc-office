@@ -25,10 +25,10 @@ class HeaderMapperTest {
         assertEquals(o, mapper.getOptionalHeader());
         assertEquals(a, mapper.getActualHeader());
 
-        assertEquals(m.getCellsSet(), mapper.getExpectedMandatoryCells());
-        assertEquals(o.getCellsSet(), mapper.getExpectedOptionalCells());
-        assertEquals(m.getNames(), mapper.getActualMandatoryNames());
-        assertEquals(o.getNames(), mapper.getActualOptionalNames());
+        assertEquals(m.getDeclaredCells(), mapper.getExpectedMandatoryCells());
+        assertEquals(o.getDeclaredCells(), mapper.getExpectedOptionalCells());
+        assertEquals(m.getDeclaredNames(), mapper.getActualMandatoryNames());
+        assertEquals(o.getDeclaredNames(), mapper.getActualOptionalNames());
 
         assertFalse(mapper.hasMissingMandatoryCells());
         assertFalse(mapper.hasMissingOptionalCells());

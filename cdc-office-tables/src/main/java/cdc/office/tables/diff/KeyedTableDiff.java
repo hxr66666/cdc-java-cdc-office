@@ -350,8 +350,8 @@ public class KeyedTableDiff {
 
         private void compute(KeyedTableDiff diffs) {
             // retrieve all column names.
-            this.columnNames.addAll(diffs.leftHeader.getNames());
-            for (final String name : diffs.rightHeader.getNames()) {
+            this.columnNames.addAll(diffs.leftHeader.getSortedNames());
+            for (final String name : diffs.rightHeader.getSortedNames()) {
                 if (!columnNames.contains(name)) {
                     columnNames.add(name);
                 }
@@ -366,7 +366,7 @@ public class KeyedTableDiff {
                 case ADDED:
                     lines[Action.ADDED.ordinal()]++;
                     cells[Action.ADDED.ordinal()] += diffs.rightHeader.size();
-                    for (final String name : diffs.rightHeader.getNames()) {
+                    for (final String name : diffs.rightHeader.getDeclaredNames()) {
                         final int[] counts = columnToCells.get(name);
                         counts[Action.ADDED.ordinal()]++;
                     }
@@ -401,7 +401,7 @@ public class KeyedTableDiff {
                 case REMOVED:
                     lines[Action.REMOVED.ordinal()]++;
                     cells[Action.REMOVED.ordinal()] += diffs.leftHeader.size();
-                    for (final String name : diffs.leftHeader.getNames()) {
+                    for (final String name : diffs.leftHeader.getDeclaredNames()) {
                         final int[] counts = columnToCells.get(name);
                         counts[Action.REMOVED.ordinal()]++;
                     }
@@ -410,7 +410,7 @@ public class KeyedTableDiff {
                     lines[Action.SAME.ordinal()]++;
                     // left and right header have the same size
                     cells[Action.SAME.ordinal()] += diffs.leftHeader.size();
-                    for (final String name : diffs.leftHeader.getNames()) {
+                    for (final String name : diffs.leftHeader.getDeclaredNames()) {
                         final int[] counts = columnToCells.get(name);
                         counts[Action.SAME.ordinal()]++;
                     }

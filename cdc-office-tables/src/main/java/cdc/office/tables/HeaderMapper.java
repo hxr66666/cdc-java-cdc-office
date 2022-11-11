@@ -59,8 +59,8 @@ public final class HeaderMapper {
 
         final Set<HeaderCell> missingMandatorySet = new HashSet<>();
         final Set<String> actualMandatorySet = new HashSet<>();
-        missingMandatorySet.addAll(builder.mandatory.getCells());
-        for (final String name : actual.getNames()) {
+        missingMandatorySet.addAll(builder.mandatory.getSortedCells());
+        for (final String name : actual.getDeclaredNames()) {
             final HeaderCell matching = mandatory.getMatchingCell(name);
             if (matching != null) {
                 missingMandatorySet.remove(matching);
@@ -72,8 +72,8 @@ public final class HeaderMapper {
 
         final Set<HeaderCell> missingOptionalSet = new HashSet<>();
         final Set<String> actualOptionalSet = new HashSet<>();
-        missingOptionalSet.addAll(builder.optional.getCells());
-        for (final String name : actual.getNames()) {
+        missingOptionalSet.addAll(builder.optional.getSortedCells());
+        for (final String name : actual.getDeclaredNames()) {
             final HeaderCell matching = optional.getMatchingCell(name);
             if (matching != null) {
                 missingOptionalSet.remove(matching);
@@ -84,7 +84,7 @@ public final class HeaderMapper {
         this.actualOptionalNames = Collections.unmodifiableSet(actualOptionalSet);
 
         final Set<String> additionalSet = new HashSet<>();
-        additionalSet.addAll(builder.actual.getNames());
+        additionalSet.addAll(builder.actual.getDeclaredNames());
         additionalSet.removeAll(this.actualMandatoryNames);
         additionalSet.removeAll(this.actualOptionalNames);
         this.additionalNames = Collections.unmodifiableSet(additionalSet);
@@ -112,10 +112,10 @@ public final class HeaderMapper {
     }
 
     /**
-     * @return A set of expected mandatory names.
+     * @return A set of expected mandatory cells.
      */
     public Set<HeaderCell> getExpectedMandatoryCells() {
-        return mandatory.getCellsSet();
+        return mandatory.getDeclaredCells();
     }
 
     /**
@@ -151,7 +151,7 @@ public final class HeaderMapper {
      * @return A set of expected optional cells.
      */
     public Set<HeaderCell> getExpectedOptionalCells() {
-        return optional.getCellsSet();
+        return optional.getDeclaredCells();
     }
 
     /**

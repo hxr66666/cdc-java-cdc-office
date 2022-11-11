@@ -23,6 +23,7 @@ import cdc.office.ss.csv.CsvWorkbookWriter;
 import cdc.office.ss.excel.ExcelWorkbookWriter;
 import cdc.office.ss.odf.OdsWorkbookWriter;
 import cdc.office.tables.Header;
+import cdc.office.tables.HeaderCell;
 import cdc.office.tables.TableSection;
 import cdc.office.tables.diff.CellDiff;
 import cdc.office.tables.diff.CellDiffKind;
@@ -229,7 +230,7 @@ public class KeyedTableDiffExporter {
                 if (insertLineMarkColumn) {
                     writer.addCell(lineMarkColumn);
                 }
-                writer.addCells(header.getNames());
+                writer.addCells(header.getSortedCells());
 
                 // Data
                 final List<CTupleN<String>> keys = diff.getKeys();
@@ -381,8 +382,8 @@ public class KeyedTableDiffExporter {
                     writer.addCell(lineMarkColumn);
                     writer.getCell().setCellStyle(headerStyle);
                 }
-                for (final String name : header.getNames()) {
-                    writer.addCell(name);
+                for (final HeaderCell cell : header.getSortedCells()) {
+                    writer.addCell(cell);
                     writer.getCell().setCellStyle(headerStyle);
                 }
 
@@ -485,8 +486,8 @@ public class KeyedTableDiffExporter {
                     writer.addCell(lineMarkColumn);
                     // TODO style
                 }
-                for (final String name : header.getNames()) {
-                    writer.addCell(name);
+                for (final HeaderCell cell : header.getSortedCells()) {
+                    writer.addCell(cell);
                     // TODO style
                 }
 

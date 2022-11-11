@@ -117,28 +117,36 @@ public final class Header {
     /**
      * @return An ordered list of all declared cells (even if this header is invalid).
      */
-    public List<HeaderCell> getCells() {
+    public List<HeaderCell> getSortedCells() {
         return cells;
+    }
+
+    public List<String> getSortedNames() {
+        final List<String> list = new ArrayList<>();
+        for (final HeaderCell cell : cells) {
+            list.add(((NameCell) cell).getName());
+        }
+        return list;
     }
 
     /**
      * @return A set of all declared cells.
      */
-    public Set<HeaderCell> getCellsSet() {
+    public Set<HeaderCell> getDeclaredCells() {
         return cellToIndex.keySet();
     }
 
     /**
      * @return The set of names declared in this Header.
      */
-    public Set<String> getNames() {
+    public Set<String> getDeclaredNames() {
         return nameToIndex.keySet();
     }
 
     /**
      * @return The set of patterns declared in this Header.
      */
-    public Set<Pattern> getPatterns() {
+    public Set<Pattern> getDeclaredPatterns() {
         return patternToIndex.keySet();
     }
 
@@ -150,6 +158,16 @@ public final class Header {
      */
     public boolean contains(HeaderCell cell) {
         return cellToIndex.containsKey(cell);
+    }
+
+    /**
+     * Return {@code true} when this header contains a {@link NameCell} having a particular name.
+     *
+     * @param name The name.
+     * @return {@code true} when this header contains a {@link NameCell} whose name is {@code name}.
+     */
+    public boolean contains(String name) {
+        return nameToIndex.containsKey(name);
     }
 
     public boolean containsAll(Collection<HeaderCell> cells) {
@@ -178,6 +196,20 @@ public final class Header {
         } else {
             return -1;
         }
+    }
+
+    /**
+     * Returns the index of the cell that matches an actual name, or -1.
+     *
+     * @param name The actual name.
+     * @return The cell index matching {@code name}, of -1.
+     * @throws IllegalStateException When this header is invalid.
+     * @deprecated Use {@link #getMatchingIndex(String)}.
+     */
+    @Deprecated(since = "2022-11-11", forRemoval = true)
+    public int getIndex(String name) {
+        return getMatchingIndex(name);
+
     }
 
     /**
@@ -210,8 +242,8 @@ public final class Header {
      * @return {@code true} if this Header and {@code other} have a non-empty intersection.
      */
     public boolean intersects(Header other) {
-        final Set<HeaderCell> set = new HashSet<>(getCells());
-        set.retainAll(other.getCells());
+        final Set<HeaderCell> set = new HashSet<>(getSortedCells());
+        set.retainAll(other.getSortedCells());
         return !set.isEmpty();
     }
 
@@ -224,7 +256,7 @@ public final class Header {
      * @return {@code true} if this Header contains {@code other}.
      */
     public boolean contains(Header other) {
-        return cellToIndex.keySet().containsAll(other.getCells());
+        return cellToIndex.keySet().containsAll(other.getSortedCells());
     }
 
     @Override
@@ -284,7 +316,7 @@ public final class Header {
         }
 
         public Builder names(Header header) {
-            this.cells.addAll(header.getCells());
+            this.cells.addAll(header.getSortedCells());
             return this;
         }
 
