@@ -216,20 +216,6 @@ public interface WorkbookWriter<W extends WorkbookWriter<W>> extends Closeable, 
     }
 
     /**
-     * Adds text cells to current row.
-     *
-     * @param values The values.
-     * @return This WorkbookWriter.
-     * @throws IOException When an IO error occurs.
-     */
-    public default W addCells(List<String> values) throws IOException {
-        for (final String value : values) {
-            addCell(value);
-        }
-        return self();
-    }
-
-    /**
      * Adds a character cell to current row.
      *
      * @param value The character value.
@@ -592,6 +578,13 @@ public interface WorkbookWriter<W extends WorkbookWriter<W>> extends Closeable, 
      * @see #addCell(Object)
      */
     public default W addCells(Object... values) throws IOException {
+        for (final Object value : values) {
+            addCell(value);
+        }
+        return self();
+    }
+
+    public default W addCells(List<? extends Object> values) throws IOException {
         for (final Object value : values) {
             addCell(value);
         }
