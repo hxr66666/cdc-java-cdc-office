@@ -315,8 +315,18 @@ public final class Header {
             return this;
         }
 
-        public Builder names(Header header) {
+        public Builder cells(Header header) {
             this.cells.addAll(header.getSortedCells());
+            return this;
+        }
+
+        public Builder cells(HeaderCell... cells) {
+            Collections.addAll(this.cells, cells);
+            return this;
+        }
+
+        public Builder cells(List<? extends HeaderCell> cells) {
+            this.cells.addAll(cells);
             return this;
         }
 
