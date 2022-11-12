@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Modified `Header` and `HeaderMapper` to support patterns. Now a Header is composed of cells. #38
 - Changed `addCells(List<String>)` to `addCells(List<? extends Object>)` in `WorkbookWriter`.
 
+### Removed
+- Removed  deprecated constructors (since 2022-05-19) of `Header`.
+
+
 ## [0.26.0] - 2022-10-16
 ### Changed
 - Created `KeyedTableDiff.Builder`.
