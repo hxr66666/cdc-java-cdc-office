@@ -6,9 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Added
+- Added `WorkbookWriterFeatures.Feature.RICH_TEXT` to explicitly indicate that rich text should be supported. #39
+
 ### Fixed
 - Reduced memory usage and improved performances with XLSX output format in `KeyedTableDiffExporter`.  
   Streaming workbook now supports rich text. #37
+- Fixed performance regression introduced by #37 when compared to 0.26.0. #39
 
 ### Changed
 - Updated dependencies:

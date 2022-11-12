@@ -85,6 +85,13 @@ public class WorkbookWriterFeatures {
         AUTO_FILTER_COLUMNS,
 
         /**
+         * If enabled,make support of rich text possible.
+         * <p>
+         * Currently, this is necessary with POI streaming.
+         */
+        RICH_TEXT,
+
+        /**
          * If enabled, cells are truncated to remain in allowed limits.
          * <p>
          * Limit depends on workbook kind.

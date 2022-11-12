@@ -233,6 +233,8 @@ public final class KeyedSheetDiff {
                                                    .enable(WorkbookWriterFeatures.Feature.AUTO_FILTER_COLUMNS)
                                                    .setEnabled(WorkbookWriterFeatures.Feature.AUTO_SIZE_COLUMNS,
                                                                margs.features.contains(Feature.AUTO_SIZE_COLUMNS))
+                                                   .setEnabled(WorkbookWriterFeatures.Feature.RICH_TEXT,
+                                                               !margs.features.contains(Feature.NO_COLORS))
                                                    .build());
 
         chrono.start();

@@ -28,21 +28,35 @@ public final class ExcelUtils {
     /** This value was copied from {@link ZipSecureFile}. */
     public static final double DEFAULT_MIN_INFLATE_RATIO = 0.01;
 
+    /**
+     * Creates a {@link Workbook} instance.
+     *
+     * @param kind The workbook kind.
+     * @param streaming When {@code kind} is {@link WorkbookKind#XLSM XLSM} or {@link WorkbookKind#XLSX XLSX},
+     *            if {@code true}, a {@link SXSSFWorkbook} is created, a {@link XSSFWorkbook} otherwise.
+     * @param useSharedStringTables {@code true} if shared string tables must be used.
+     *            Used when a {@link SXSSFWorkbook} is created.<br>
+     *            This is necessary when Rich Text must be generated in streaming mode,
+     *            but this has a negative impact on performances.
+     * @return A new {@link Workbook} instance.
+     */
     public static Workbook create(WorkbookKind kind,
-                                  boolean streaming) {
-        Checks.isNotNull(kind, "kibnd");
+                                  boolean streaming,
+                                  boolean useSharedStringTables) {
+        Checks.isNotNull(kind, "kind");
         switch (kind) {
         case XLS:
             return new HSSFWorkbook();
         case XLSX:
         case XLSM:
             if (streaming) {
-                // This makes usage of rich text possible with streaming
-                // version of workbook
-                return new SXSSFWorkbook(null,
-                                         SXSSFWorkbook.DEFAULT_WINDOW_SIZE,
-                                         false,
-                                         true);
+                // Streaming is compliant with rich text if shared string tables are used
+                // But using them has a negative impact one performances.
+                return new SXSSFWorkbook(null, // workbook
+                                         SXSSFWorkbook.DEFAULT_WINDOW_SIZE, // row access window size
+                                         false, // compress tmp files
+                                         useSharedStringTables); // use shared string tables
+
             } else {
                 return new XSSFWorkbook();
             }

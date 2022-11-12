@@ -86,7 +86,7 @@ public class ExcelWorkbookWriter implements WorkbookWriter<ExcelWorkbookWriter> 
         this.out = out;
         this.features = features;
         this.kind = file == null ? kind : WorkbookKind.from(file);
-        this.workbook = ExcelUtils.create(this.kind, streaming);
+        this.workbook = ExcelUtils.create(this.kind, streaming, features.isEnabled(WorkbookWriterFeatures.Feature.RICH_TEXT));
         this.sheet = null;
         this.row = null;
         this.cell = null;
